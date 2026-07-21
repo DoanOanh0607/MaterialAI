@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bảng điều khiển nhà bán hàng – Material AI</title>
+<link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="images/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="images/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
+    boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)' },
+  }}}
+</script>
+<style>
+  body{font-family:'Roboto',sans-serif;color:#211E1A;background:#FBF6F0}
+  h1,h2,h3,h4,.font-heading{font-family:'Inter',sans-serif}
+  .font-script{font-family:'Inter',sans-serif;font-style:italic;font-weight:700}
+  .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
+  .hidden{display:none}
+  .badge-pending{background:#F1F2F0;color:#7D8688}
+  .badge-approved{background:#EAF3EA;color:#3E7A45}
+  .badge-blocked{background:#FBE9E7;color:#B3261E}
+</style>
+</head>
+<body class="bg-cream text-ink overflow-x-hidden min-h-screen">
+
+<!-- NAVBAR -->
+<header class="fixed top-3 md:top-5 inset-x-3 md:inset-x-6 z-50">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-5 py-2 glass rounded-full shadow-soft">
+    <a href="index.html" class="flex items-center shrink-0"><img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto"></a>
+    <div class="hidden sm:block text-sm font-semibold text-secondary">Bảng điều khiển nhà bán hàng</div>
+    <div class="flex items-center gap-3">
+      <span id="userGreeting" class="hidden sm:inline text-sm text-muted"></span>
+      <button id="logoutBtn" class="border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors">Đăng xuất</button>
+    </div>
+  </nav>
+</header>
+
+<section class="relative pt-28 pb-16 px-6">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-8">
+      <div>
+        <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-1">Xin chào, <span id="businessNameHeading">...</span></h1>
+        <p class="font-script text-2xl text-accent-600">quản lý gian hàng của bạn</p>
+      </div>
+      <span id="statusBadge" class="text-sm font-semibold px-4 py-1.5 rounded-full"></span>
+    </div>
+
+    <div id="pendingNotice" class="hidden bg-accent-50 border border-accent/30 rounded-2xl p-5 mb-8 text-sm">
+      Tài khoản của bạn đang <strong>chờ admin duyệt</strong>. Bạn có thể cập nhật hồ sơ ngay bây giờ, nhưng cần được duyệt trước khi đăng vật liệu lên hệ thống.
+    </div>
+    <div id="blockedNotice" class="hidden bg-red-50 border border-red-200 rounded-2xl p-5 mb-8 text-sm text-red-700">
+      Tài khoản của bạn đã <strong>bị khóa</strong>. Vui lòng liên hệ quản trị viên nếu có thắc mắc.
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="bg-white rounded-3xl shadow-soft mb-8 overflow-hidden">
+      <div class="flex items-center justify-between px-6 md:px-8 pt-6 md:pt-8 pb-5">
+        <h2 class="font-bold text-xl">Tin nhắn khách hàng</h2>
+        <span id="chatUnreadTotal" class="hidden bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"></span>
+      </div>
+      <div id="chatListView">
+        <div id="chatConvList" class="border-t border-secondary-50"></div>
+        <p id="chatConvEmpty" class="hidden text-sm text-muted text-center py-10">Chưa có khách hàng nào nhắn tin.</p>
+      </div>
+      <div id="chatThreadView" class="hidden border-t border-secondary-50">
+        <div class="flex items-center gap-3 px-6 md:px-8 py-4 border-b border-secondary-50 bg-secondary-50/40">
+          <button id="chatThreadBack" type="button" class="text-secondary shrink-0" aria-label="Quay lại"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="#211E1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <span id="chatThreadCustomerName" class="font-semibold text-sm"></span>
+        </div>
+        <div id="chatThreadMessages" class="px-2 py-3 overflow-y-auto" style="height:340px"></div>
+        <form id="chatThreadForm" class="flex items-center gap-2 px-6 md:px-8 py-4 border-t border-secondary-50">
+          <input id="chatThreadInput" type="text" placeholder="Nhập tin nhắn..." class="flex-1 rounded-full border border-secondary-100 px-4 py-2.5 text-sm outline-none focus:border-secondary" autocomplete="off">
+          <button type="submit" class="bg-accent text-ink font-semibold px-5 py-2.5 rounded-full text-sm shrink-0">Gửi</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+      <h2 class="font-bold text-xl mb-5">Hồ sơ nhà bán hàng</h2>
+      <form id="profileForm" class="space-y-4">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-semibold block mb-1.5">Tên nhà bán hàng</label>
+            <input id="pBusinessName" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5">Ngành hàng</label>
+            <select id="pCategory" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white">
+              <option value="van">Ván công nghiệp</option>
+              <option value="son">Sơn</option>
+              <option value="gach">Gạch</option>
+              <option value="da">Đá</option>
+              <option value="kinh">Kính</option>
+              <option value="go">Gỗ tự nhiên</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-semibold block mb-1.5">Số điện thoại</label>
+            <input id="pPhone" type="tel" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5">Website</label>
+            <input id="pWebsite" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
+          </div>
+        </div>
+        <div>
+          <label class="text-sm font-semibold block mb-1.5">Địa chỉ</label>
+          <input id="pAddress" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
+        </div>
+        <div>
+          <label class="text-sm font-semibold block mb-1.5">Giới thiệu</label>
+          <textarea id="pDescription" rows="3" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary"></textarea>
+        </div>
+        <p id="profileMsg" class="hidden text-sm text-secondary font-medium"></p>
+        <button type="submit" class="bg-secondary text-white font-semibold px-6 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all">Lưu hồ sơ</button>
+      </form>
+    </div>
+
+    <!-- ADD MATERIAL -->
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+      <h2 class="font-bold text-xl mb-5">Đăng vật liệu mới</h2>
+      <form id="materialForm" class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-semibold block mb-1.5">Danh mục</label>
+          <select id="mCategory" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white">
+            <option value="van">Ván công nghiệp</option>
+            <option value="son">Sơn</option>
+            <option value="gach">Gạch</option>
+            <option value="da">Đá</option>
+            <option value="kinh">Kính</option>
+            <option value="go">Gỗ tự nhiên</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm font-semibold block mb-1.5">Tên vật liệu</label>
+          <input id="mTitle" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Ván MDF phủ Melamine vân sồi">
+        </div>
+        <div>
+          <label class="text-sm font-semibold block mb-1.5">Thông số</label>
+          <input id="mSpec" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Dày 18mm · Kích thước 1220x2440mm">
+        </div>
+        <div>
+          <label class="text-sm font-semibold block mb-1.5">Giá</label>
+          <input id="mPrice" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: 450.000đ/tấm">
+        </div>
+        <p id="materialMsg" class="hidden sm:col-span-2 text-sm font-medium"></p>
+        <button id="materialSubmitBtn" type="submit" class="sm:col-span-2 bg-accent text-ink font-semibold px-6 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all">Đăng vật liệu</button>
+      </form>
+    </div>
+
+    <!-- MATERIALS LIST -->
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
+      <h2 class="font-bold text-xl mb-5">Vật liệu đang bán (<span id="materialsCount">0</span>)</h2>
+      <div id="materialsList" class="space-y-3"></div>
+      <p id="materialsEmpty" class="hidden text-sm text-muted text-center py-8">Bạn chưa đăng vật liệu nào.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  async function api(url, options = {}) {
+    const res = await fetch(url, {
+      method: options.method || 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: options.body ? JSON.stringify(options.body) : undefined
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Đã có lỗi xảy ra.');
+    return data;
+  }
+
+  const CAT_LABELS = { van: 'Ván công nghiệp', son: 'Sơn', gach: 'Gạch', da: 'Đá', kinh: 'Kính', go: 'Gỗ tự nhiên' };
+  const STATUS_LABELS = { pending: 'Chờ duyệt', approved: 'Đã duyệt', blocked: 'Bị khóa' };
+
+  let currentStatus = 'pending';
+
+  function applyStatusUI(status) {
+    currentStatus = status;
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = STATUS_LABELS[status];
+    badge.className = 'text-sm font-semibold px-4 py-1.5 rounded-full badge-' + status;
+    document.getElementById('pendingNotice').classList.toggle('hidden', status !== 'pending');
+    document.getElementById('blockedNotice').classList.toggle('hidden', status !== 'blocked');
+    const submitBtn = document.getElementById('materialSubmitBtn');
+    submitBtn.disabled = status !== 'approved';
+    submitBtn.classList.toggle('opacity-50', status !== 'approved');
+    submitBtn.classList.toggle('cursor-not-allowed', status !== 'approved');
+  }
+
+  async function loadProfile() {
+    const { profile } = await api('/api/seller/profile');
+    document.getElementById('businessNameHeading').textContent = profile.business_name;
+    document.getElementById('userGreeting').textContent = profile.email;
+    document.getElementById('pBusinessName').value = profile.business_name;
+    document.getElementById('pCategory').value = profile.category;
+    document.getElementById('pPhone').value = profile.phone || '';
+    document.getElementById('pWebsite').value = profile.website || '';
+    document.getElementById('pAddress').value = profile.address || '';
+    document.getElementById('pDescription').value = profile.description || '';
+    applyStatusUI(profile.status);
+  }
+
+  function materialRow(m) {
+    const div = document.createElement('div');
+    div.className = 'flex items-center justify-between gap-4 border border-secondary-50 rounded-xl px-5 py-4';
+    div.innerHTML = `
+      <div class="min-w-0">
+        <p class="font-semibold text-sm truncate">${m.title}</p>
+        <p class="text-xs text-muted">${CAT_LABELS[m.category] || m.category}${m.spec ? ' · ' + m.spec : ''}</p>
+      </div>
+      <div class="flex items-center gap-4 shrink-0">
+        <span class="font-heading font-bold text-accent-600 text-sm">${m.price || ''}</span>
+        <button data-id="${m.id}" class="delete-material text-xs font-semibold text-red-600 hover:underline">Xóa</button>
+      </div>`;
+    return div;
+  }
+
+  async function loadMaterials() {
+    const { materials } = await api('/api/seller/materials');
+    const list = document.getElementById('materialsList');
+    list.innerHTML = '';
+    document.getElementById('materialsCount').textContent = materials.length;
+    document.getElementById('materialsEmpty').classList.toggle('hidden', materials.length > 0);
+    materials.forEach(m => list.appendChild(materialRow(m)));
+    list.querySelectorAll('.delete-material').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Xóa vật liệu này?')) return;
+        await api('/api/seller/materials/' + btn.dataset.id, { method: 'DELETE' });
+        loadMaterials();
+      });
+    });
+  }
+
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('profileMsg');
+    try {
+      await api('/api/seller/profile', {
+        method: 'PUT',
+        body: {
+          businessName: document.getElementById('pBusinessName').value.trim(),
+          category: document.getElementById('pCategory').value,
+          phone: document.getElementById('pPhone').value.trim(),
+          website: document.getElementById('pWebsite').value.trim(),
+          address: document.getElementById('pAddress').value.trim(),
+          description: document.getElementById('pDescription').value.trim()
+        }
+      });
+      msg.textContent = 'Đã lưu hồ sơ.';
+      msg.className = 'text-sm text-secondary font-medium';
+      msg.classList.remove('hidden');
+      loadProfile();
+    } catch (err) {
+      msg.textContent = err.message;
+      msg.className = 'text-sm text-red-600 font-medium';
+      msg.classList.remove('hidden');
+    }
+  });
+
+  document.getElementById('materialForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('materialMsg');
+    if (currentStatus !== 'approved') return;
+    try {
+      await api('/api/seller/materials', {
+        method: 'POST',
+        body: {
+          category: document.getElementById('mCategory').value,
+          title: document.getElementById('mTitle').value.trim(),
+          spec: document.getElementById('mSpec').value.trim(),
+          price: document.getElementById('mPrice').value.trim()
+        }
+      });
+      document.getElementById('materialForm').reset();
+      msg.textContent = 'Đã đăng vật liệu.';
+      msg.className = 'sm:col-span-2 text-sm text-secondary font-medium';
+      msg.classList.remove('hidden');
+      loadMaterials();
+    } catch (err) {
+      msg.textContent = err.message;
+      msg.className = 'sm:col-span-2 text-sm text-red-600 font-medium';
+      msg.classList.remove('hidden');
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await api('/api/auth/logout', { method: 'POST' });
+    window.location.href = 'login.html';
+  });
+
+  // ===== Tin nhắn khách hàng =====
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function fmtTime(iso) {
+    if (!iso) return '';
+    const d = new Date(iso.replace(' ', 'T') + 'Z');
+    return d.toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+  }
+
+  let chatListTimer = null, chatThreadTimer = null, activeConvId = null;
+
+  function stopChatTimers() {
+    if (chatListTimer) { clearInterval(chatListTimer); chatListTimer = null; }
+    if (chatThreadTimer) { clearInterval(chatThreadTimer); chatThreadTimer = null; }
+  }
+
+  async function loadConvList() {
+    const { conversations } = await api('/api/seller/conversations');
+    const list = document.getElementById('chatConvList');
+    const totalUnread = conversations.reduce((sum, c) => sum + c.unread, 0);
+    const badge = document.getElementById('chatUnreadTotal');
+    if (totalUnread > 0) { badge.textContent = totalUnread > 9 ? '9+' : totalUnread; badge.classList.remove('hidden'); }
+    else badge.classList.add('hidden');
+
+    document.getElementById('chatConvEmpty').classList.toggle('hidden', conversations.length > 0);
+    list.innerHTML = '';
+    conversations.forEach(c => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'w-full flex items-center gap-3 px-6 md:px-8 py-4 hover:bg-secondary-50/50 text-left border-b border-secondary-50 last:border-0';
+      row.innerHTML = `
+        <span class="w-10 h-10 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-xs font-bold text-accent-600">${escapeHtml(c.customerName.slice(0,2).toUpperCase())}</span>
+        <span class="flex-1 min-w-0">
+          <span class="flex items-center justify-between gap-2"><span class="text-sm font-semibold truncate">${escapeHtml(c.customerName)}</span><span class="text-[10px] text-muted shrink-0">${fmtTime(c.lastMessageAt)}</span></span>
+          <span class="block text-xs text-muted truncate">${escapeHtml(c.lastMessage)}</span>
+        </span>
+        ${c.unread > 0 ? `<span class="shrink-0 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">${c.unread}</span>` : ''}
+      `;
+      row.addEventListener('click', () => openChatThread(c.id, c.customerName));
+      list.appendChild(row);
+    });
+  }
+
+  function messageBubble(m) {
+    const mine = m.sender_role === 'seller';
+    const div = document.createElement('div');
+    div.className = 'flex ' + (mine ? 'justify-end' : 'justify-start') + ' px-4 py-1';
+    div.innerHTML = `<div class="max-w-[75%] ${mine ? 'bg-accent text-ink' : 'bg-secondary-50 text-ink'} rounded-2xl px-4 py-2 text-sm">
+      <p>${escapeHtml(m.body)}</p>
+      <p class="text-[10px] opacity-60 mt-0.5">${fmtTime(m.created_at)}</p>
+    </div>`;
+    return div;
+  }
+
+  async function loadThreadMessages(convId) {
+    const data = await api('/api/seller/conversations/' + convId + '/messages');
+    const box = document.getElementById('chatThreadMessages');
+    box.innerHTML = '';
+    data.messages.forEach(m => box.appendChild(messageBubble(m)));
+    box.scrollTop = box.scrollHeight;
+    loadConvList();
+  }
+
+  function openChatThread(convId, customerName) {
+    stopChatTimers();
+    activeConvId = convId;
+    document.getElementById('chatListView').classList.add('hidden');
+    document.getElementById('chatThreadView').classList.remove('hidden');
+    document.getElementById('chatThreadCustomerName').textContent = customerName;
+    loadThreadMessages(convId);
+    chatThreadTimer = setInterval(() => loadThreadMessages(convId), 4000);
+  }
+
+  function backToChatList() {
+    stopChatTimers();
+    activeConvId = null;
+    document.getElementById('chatThreadView').classList.add('hidden');
+    document.getElementById('chatListView').classList.remove('hidden');
+    loadConvList();
+    chatListTimer = setInterval(loadConvList, 5000);
+  }
+
+  document.getElementById('chatThreadBack').addEventListener('click', backToChatList);
+  document.getElementById('chatThreadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('chatThreadInput');
+    const val = input.value.trim();
+    if (!val || !activeConvId) return;
+    input.value = '';
+    await api('/api/seller/conversations/' + activeConvId + '/messages', { method: 'POST', body: { body: val } });
+    loadThreadMessages(activeConvId);
+  });
+
+  (async function init() {
+    try {
+      const { user } = await api('/api/auth/me');
+      if (user.role !== 'seller') { window.location.href = 'admin-dashboard.html'; return; }
+      await loadProfile();
+      await loadMaterials();
+      await loadConvList();
+      chatListTimer = setInterval(loadConvList, 5000);
+    } catch (err) {
+      window.location.href = 'login.html';
+    }
+  })();
+</script>
+</body>
+</html>

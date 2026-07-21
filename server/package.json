@@ -1,0 +1,17 @@
+{
+  "name": "materialai-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend API + static server for Material AI (auth, seller dashboard, admin dashboard)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0"
+  }
+}

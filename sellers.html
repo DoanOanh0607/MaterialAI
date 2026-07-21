@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi" data-i18n-doc-title="sellers.doc_title">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var l=localStorage.getItem('materialai_lang')==='en'?'en':'vi';document.documentElement.lang=l;if(l==='en')document.documentElement.style.visibility='hidden';})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh sách nhà bán hàng – Vật liệu nội thất | Material AI</title>
+<link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="images/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="images/favicon-180.png">
+<meta name="description" data-i18n-content="sellers.doc_desc" content="Khám phá danh sách nhà bán vật liệu nội thất trên Material AI: ván công nghiệp, sơn, gạch, đá, kính, gỗ tự nhiên. Xem hồ sơ, đánh giá và thông tin liên hệ đầy đủ của từng nhà bán hàng.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="i18n.js"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
+    boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)' },
+  }}}
+</script>
+<style>
+  body{font-family:'Roboto',sans-serif;color:#211E1A;background:#FBF6F0}
+  h1,h2,h3,h4,.font-heading{font-family:'Inter',sans-serif}
+  .font-script{font-family:'Inter',sans-serif;font-style:italic;font-weight:700}
+  .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .reveal.in-view{opacity:1;transform:translateY(0)}
+  .cat-btn.active{background:#9AA3A4;color:#211E1A;border-color:#9AA3A4}
+  .seller-card{display:block}
+  .seller-card.filtered-out{display:none}
+  #sellerModal{transition:opacity .25s ease}
+  #sellerModalPanel{transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .3s ease}
+  .lang-btn.active,
+  html[lang="vi"] .lang-btn[data-lang="vi"],
+  html[lang="en"] .lang-btn[data-lang="en"]{background:#3A3632;color:#fff}
+  .nav-active{background:#9AA3A4;color:#211E1A;font-weight:600}
+</style>
+</head>
+<body class="bg-cream text-ink overflow-x-hidden">
+
+<!-- NAVBAR -->
+<header class="fixed top-3 md:top-5 inset-x-3 md:inset-x-6 z-50">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-5 py-2 glass rounded-full shadow-soft">
+    <a href="index.html" class="flex items-center shrink-0"><img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto"></a>
+    <div class="hidden md:flex items-center gap-1 text-sm font-medium">
+      <a href="index.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.home">Trang chủ</a>
+      <a href="materials.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.materials">Vật liệu</a>
+      <a href="sellers.html" class="nav-active px-4 py-2 rounded-full transition-colors" data-i18n="nav.sellers">Nhà bán hàng</a>
+      <a href="faq.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.faq">Hỏi đáp</a>
+      <a href="contact.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.contact">Liên hệ</a>
+    </div>
+    <div class="hidden md:flex items-center gap-3">
+      <a href="login.html" class="border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+      </div>
+    </div>
+    <button id="menuBtn" class="md:hidden text-secondary shrink-0">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </nav>
+  <div id="mobileMenu" class="hidden md:hidden mt-2 glass rounded-3xl px-6 py-6 flex flex-col gap-3 font-medium shadow-soft">
+    <a href="index.html" class="px-4 py-2.5" data-i18n="nav.home">Trang chủ</a><a href="materials.html" class="px-4 py-2.5" data-i18n="nav.materials">Vật liệu</a><a href="sellers.html" class="nav-active px-4 py-2.5 rounded-full w-fit" data-i18n="nav.sellers">Nhà bán hàng</a><a href="faq.html" class="px-4 py-2.5" data-i18n="nav.faq">Hỏi đáp</a><a href="contact.html" class="px-4 py-2.5" data-i18n="nav.contact">Liên hệ</a>
+    <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold w-fit ml-4">
+      <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
+      <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+    </div>
+    <a href="login.html" class="border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+  </div>
+</header>
+
+<!-- HEADER + SEARCH -->
+<section class="pt-[85px] pb-6 md:pt-[107px] px-6 bg-secondary-50/30">
+  <div class="max-w-7xl mx-auto reveal">
+    <h1 class="font-extrabold text-3xl md:text-4xl mb-2" data-i18n="sellers.h1">Danh sách nhà bán hàng</h1>
+    <p class="font-script text-2xl text-accent-600 mb-3" data-i18n="sellers.tagline">những đối tác đáng tin cậy</p>
+    <p class="text-muted mb-8" data-i18n="sellers.subtitle">Khám phá hồ sơ các nhà bán vật liệu nội thất trên Material AI — bấm vào một nhà bán hàng để xem đầy đủ thông tin.</p>
+
+    <div class="glass rounded-2xl p-4 md:p-5 shadow-soft flex flex-col md:flex-row gap-4">
+      <input id="sellerSearch" type="text" data-i18n-placeholder="sellers.search_placeholder" placeholder="Tìm theo tên nhà bán hàng, khu vực..." class="flex-1 rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary">
+      <button class="bg-accent text-ink font-semibold text-sm px-6 py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="materials.search_button">Tìm kiếm</button>
+    </div>
+
+    <!-- CATEGORY TABS -->
+    <div class="flex flex-wrap gap-3 mt-8">
+      <button class="cat-btn active border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="all" data-i18n="common.all">Tất cả</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="van" data-i18n="common.cat_van">Ván công nghiệp</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="son" data-i18n="common.cat_son">Sơn</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="gach" data-i18n="common.cat_gach">Gạch</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="da" data-i18n="common.cat_da">Đá</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="kinh" data-i18n="common.cat_kinh">Kính</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="go" data-i18n="common.cat_go">Gỗ tự nhiên</button>
+    </div>
+  </div>
+</section>
+
+<!-- SELLER GRID -->
+<section class="py-8 md:py-10 px-6">
+  <div class="max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="sellerGrid">
+    <!-- Cards được render bằng JS từ mảng SELLERS -->
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-ink text-white/80 px-6 py-8">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
+    <div><div class="bg-white rounded-lg inline-block p-1.5 mb-3"><img src="images/LOGO.png" alt="MateriAI" class="h-12 w-auto"></div><p class="text-sm" data-i18n="footer.tagline">Nền tảng tìm kiếm và kết nối vật liệu nội thất bằng AI.</p><div class="flex gap-2 mt-4"><a href="#" aria-label="Facebook" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M14 8.5h2.5V5.7c-.4-.1-1.9-.2-2.7-.2-2.7 0-4.3 1.6-4.3 4.5v2.3H6.8V15h2.7v9h3.4v-9h2.6l.4-3.2h-3v-2c0-.8.3-1.3 1.1-1.3z"/></svg></a><a href="#" aria-label="TikTok" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M16.6 5.8c-.9-.9-1.4-2.1-1.4-3.4h-3.1v13.8c0 1.5-1.2 2.7-2.7 2.7s-2.7-1.2-2.7-2.7 1.2-2.7 2.7-2.7c.3 0 .5 0 .8.1V10.5c-.3 0-.5-.1-.8-.1-3.2 0-5.8 2.6-5.8 5.8S6.2 22 9.4 22s5.8-2.6 5.8-5.8V9.1c1.2.9 2.7 1.4 4.3 1.4V7.4c-1 0-2-.4-2.9-1.2z"/></svg></a><a href="#" aria-label="Twitter" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.6.8-2.5 1-.7-.8-1.7-1.2-2.9-1.2-2.2 0-3.9 1.8-3.9 3.9 0 .3 0 .6.1.9-3.3-.2-6.2-1.7-8.1-4.1-.3.6-.5 1.3-.5 2 0 1.4.7 2.6 1.8 3.3-.6 0-1.3-.2-1.8-.5v.1c0 1.9 1.4 3.5 3.2 3.9-.3.1-.7.1-1.1.1-.3 0-.5 0-.8-.1.5 1.6 2 2.7 3.7 2.8-1.4 1.1-3.1 1.7-5 1.7-.3 0-.6 0-1-.1 1.8 1.2 4 1.8 6.2 1.8 7.5 0 11.6-6.2 11.6-11.6v-.5c.8-.6 1.5-1.3 2-2.1z"/></svg></a><a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M6.9 8.4H3.6V20h3.3V8.4zM5.3 3.3c-1.1 0-1.9.8-1.9 1.9 0 1 .8 1.9 1.9 1.9 1.1 0 1.9-.8 1.9-1.9-.1-1.1-.9-1.9-1.9-1.9zM20.4 13.4c0-3.1-1.6-4.5-3.8-4.5-1.7 0-2.5 1-2.9 1.6V8.4h-3.3c0 .1 0 11 0 11.6h3.3v-6.5c0-.3 0-.7.1-.9.3-.7.9-1.4 2-1.4 1.4 0 2 1.1 2 2.7v6.1h3.3v-6.6z"/></svg></a><a href="#" aria-label="YouTube" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M21.6 7.2c-.3-1-1-1.8-2-2C17.9 4.7 12 4.7 12 4.7s-5.9 0-7.6.5c-1 .3-1.8 1-2 2C2 8.9 2 12 2 12s0 3.1.5 4.8c.3 1 1 1.8 2 2 1.7.5 7.6.5 7.6.5s5.9 0 7.6-.5c1-.3 1.8-1 2-2C22 15.1 22 12 22 12s0-3.1-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z"/></svg></a></div></div>
+    <div><p class="font-semibold text-white mb-3" data-i18n="footer.nav_title">Điều hướng</p><ul class="space-y-2 text-sm"><li><a href="index.html" class="hover:text-accent" data-i18n="nav.home">Trang chủ</a></li><li><a href="materials.html" class="hover:text-accent" data-i18n="nav.materials">Vật liệu</a></li><li><a href="sellers.html" class="hover:text-accent" data-i18n="nav.sellers">Nhà bán hàng</a></li><li><a href="faq.html" class="hover:text-accent" data-i18n="nav.faq">Hỏi đáp</a></li><li><a href="contact.html" class="hover:text-accent" data-i18n="nav.contact">Liên hệ</a></li></ul></div>
+    <div><p class="font-semibold text-white mb-3" data-i18n="footer.contact_title">Liên hệ</p><ul class="space-y-2 text-sm"><li>hotro@materialai.vn</li><li>+84 909 000 000</li></ul></div>
+    
+  </div>
+  <p class="text-center text-xs text-white/40 mt-10" data-i18n="footer.copyright">© 2026 Material AI. All rights reserved.</p>
+</footer>
+
+<!-- SELLER DETAIL MODAL -->
+<div id="sellerModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8">
+  <div id="sellerModalBackdrop" class="absolute inset-0 bg-ink/60 backdrop-blur-sm"></div>
+  <div id="sellerModalPanel" class="relative bg-white w-full max-w-3xl max-h-[88vh] overflow-y-auto rounded-3xl shadow-soft opacity-0 translate-y-6">
+    <button id="sellerModalClose" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/90 shadow-soft flex items-center justify-center hover:bg-secondary-50 transition-colors" data-i18n-aria-label="common.close" aria-label="Đóng">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#211E1A" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+
+    <div id="modalCover" class="h-36 md:h-44 rounded-t-3xl bg-secondary-50"></div>
+
+    <div class="px-6 md:px-10 pb-10">
+      <div class="flex items-end gap-4 -mt-10 mb-6">
+        <div id="modalLogo" class="w-20 h-20 rounded-2xl border-4 border-white shadow-soft bg-accent-50 flex items-center justify-center font-heading font-extrabold text-2xl text-secondary"></div>
+        <div class="pb-1">
+          <h2 id="modalName" class="font-heading font-bold text-2xl"></h2>
+          <p id="modalCategory" class="text-sm text-muted"></p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-6">
+        <span id="modalRating" class="inline-flex items-center gap-1 bg-accent-50 text-accent-600 text-sm font-semibold px-3 py-1.5 rounded-full"></span>
+        <span id="modalCount" class="inline-flex items-center gap-1 bg-secondary-50 text-secondary text-sm font-semibold px-3 py-1.5 rounded-full"></span>
+        <span id="modalYear" class="inline-flex items-center gap-1 bg-secondary-50 text-secondary text-sm font-semibold px-3 py-1.5 rounded-full"></span>
+      </div>
+
+      <p id="modalDesc" class="text-muted mb-8 leading-relaxed"></p>
+
+      <div class="grid sm:grid-cols-2 gap-4 mb-8">
+        <div class="flex items-start gap-3 bg-secondary-50/40 rounded-xl p-4">
+          <span class="w-9 h-9 shrink-0 rounded-full bg-white flex items-center justify-center text-secondary shadow-soft">📍</span>
+          <div><p class="text-xs text-muted mb-0.5" data-i18n="sellers.modal_address">Địa chỉ</p><p id="modalAddress" class="text-sm font-medium"></p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-secondary-50/40 rounded-xl p-4">
+          <span class="w-9 h-9 shrink-0 rounded-full bg-white flex items-center justify-center text-secondary shadow-soft">☎</span>
+          <div><p class="text-xs text-muted mb-0.5" data-i18n="sellers.modal_phone">Điện thoại</p><p id="modalPhone" class="text-sm font-medium"></p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-secondary-50/40 rounded-xl p-4">
+          <span class="w-9 h-9 shrink-0 rounded-full bg-white flex items-center justify-center text-secondary shadow-soft">✉</span>
+          <div><p class="text-xs text-muted mb-0.5" data-i18n="sellers.modal_email">Email</p><p id="modalEmail" class="text-sm font-medium"></p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-secondary-50/40 rounded-xl p-4">
+          <span class="w-9 h-9 shrink-0 rounded-full bg-white flex items-center justify-center text-secondary shadow-soft">🌐</span>
+          <div><p class="text-xs text-muted mb-0.5" data-i18n="sellers.modal_website">Website</p><p id="modalWebsite" class="text-sm font-medium"></p></div>
+        </div>
+      </div>
+
+      <h3 class="font-semibold text-lg mb-4" data-i18n="sellers.modal_materials_heading">Vật liệu tiêu biểu</h3>
+      <div id="modalMaterials" class="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-8"></div>
+
+      <div class="flex flex-wrap gap-4">
+        <a href="materials.html" class="bg-accent text-ink px-7 py-3.5 rounded-full font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="sellers.modal_view_all">Xem tất cả vật liệu</a>
+        <button id="modalChatBtn" type="button" class="bg-white border border-secondary-100 text-secondary px-7 py-3.5 rounded-full font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="sellers.modal_contact_seller">Liên hệ nhà bán hàng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Dữ liệu mẫu nhà bán hàng =====
+  const SELLERS = [
+    {
+      id: 1, cat: 'da', catLabel: 'Đá tự nhiên', catLabel_en: 'Natural stone', name: 'Đá Tự Nhiên Minh Khôi', initials: 'MK',
+      coverClass: 'bg-secondary-50', logoClass: 'bg-secondary-50 text-secondary',
+      rating: 4.8, reviews: 126, materialsCount: 58, year: 2014,
+      desc: 'Chuyên cung cấp đá granite, marble tự nhiên khai thác trực tiếp từ Phú Yên, Bình Định. Hơn 10 năm kinh nghiệm cung ứng cho các công trình nhà ở và thương mại trên toàn quốc.',
+      desc_en: 'Specializes in supplying natural granite and marble quarried directly from Phu Yen and Binh Dinh. Over 10 years of experience supplying residential and commercial projects nationwide.',
+      address: '123 Lê Văn Sỹ, Q. Phú Nhuận, TP. Hồ Chí Minh',
+      phone: '+84 909 111 222', email: 'minhkhoi@daminhkhoi.vn', website: 'daminhkhoi.vn',
+      materials: [
+        { name: 'Granite đen Phú Yên', name_en: 'Phu Yen black granite', class: 'bg-secondary-50' },
+        { name: 'Marble trắng vân mây', name_en: 'White cloud-vein marble', class: 'bg-accent-50' },
+        { name: 'Đá bazan xám', name_en: 'Grey basalt stone', class: 'bg-secondary-50' },
+        { name: 'Marble kem Ý', name_en: 'Italian cream marble', class: 'bg-accent-50' },
+      ]
+    },
+    {
+      id: 2, cat: 'son', catLabel: 'Sơn nội thất', catLabel_en: 'Interior paint', name: 'Sơn Bích Ngọc', initials: 'BN',
+      coverClass: 'bg-accent-50', logoClass: 'bg-accent-50 text-accent-600',
+      rating: 4.6, reviews: 89, materialsCount: 34, year: 2017,
+      desc: 'Đại lý phân phối sơn nội – ngoại thất cao cấp, chuyên các dòng sơn bóng mờ, chống ẩm và sơn trang trí hiệu ứng cho các dự án căn hộ, biệt thự.',
+      desc_en: 'Distributor of premium interior and exterior paint, specializing in matte, damp-proof, and decorative effect paint lines for apartment and villa projects.',
+      address: '45 Nguyễn Trãi, Q.5, TP. Hồ Chí Minh',
+      phone: '+84 908 222 333', email: 'lienhe@sonbichngoc.vn', website: 'sonbichngoc.vn',
+      materials: [
+        { name: 'Sơn bóng mờ cao cấp', name_en: 'Premium matte paint', class: 'bg-accent-50' },
+        { name: 'Sơn chống ẩm', name_en: 'Damp-proof paint', class: 'bg-secondary-50' },
+        { name: 'Sơn hiệu ứng bê tông', name_en: 'Concrete-effect paint', class: 'bg-accent-50' },
+      ]
+    },
+    {
+      id: 3, cat: 'van', catLabel: 'Ván công nghiệp', catLabel_en: 'Engineered wood', name: 'Xưởng Ván Văn Hải', initials: 'VH',
+      coverClass: 'bg-secondary-50', logoClass: 'bg-secondary-50 text-secondary',
+      rating: 4.7, reviews: 152, materialsCount: 76, year: 2011,
+      desc: 'Sản xuất và phân phối ván MDF, MFC, Plywood phủ Melamine/Laminate với đa dạng vân màu, phục vụ ngành sản xuất nội thất và thi công trọn gói.',
+      desc_en: 'Manufactures and distributes MDF, MFC, and plywood boards with Melamine/Laminate finishes in a wide range of colors, serving furniture manufacturing and full-package construction.',
+      address: '78 Quốc lộ 1A, Bình Tân, TP. Hồ Chí Minh',
+      phone: '+84 907 333 444', email: 'kinhdoanh@vanvanhai.vn', website: 'vanvanhai.vn',
+      materials: [
+        { name: 'MDF phủ Melamine vân sồi', name_en: 'Oak-grain Melamine MDF', class: 'bg-secondary-50' },
+        { name: 'Plywood phủ Phenolic', name_en: 'Phenolic-coated plywood', class: 'bg-accent-50' },
+        { name: 'MFC chống ẩm', name_en: 'Moisture-resistant MFC', class: 'bg-secondary-50' },
+        { name: 'Ván Laminate vân đá', name_en: 'Stone-grain laminate board', class: 'bg-accent-50' },
+      ]
+    },
+    {
+      id: 4, cat: 'gach', catLabel: 'Gạch ốp lát', catLabel_en: 'Wall & floor tile', name: 'Gạch Ốp Lát Đông Á', initials: 'DA',
+      coverClass: 'bg-accent-50', logoClass: 'bg-accent-50 text-accent-600',
+      rating: 4.5, reviews: 64, materialsCount: 42, year: 2019,
+      desc: 'Nhà phân phối gạch ốp lát vân đá marble, gạch bóng gương và gạch trang trí nhập khẩu, phục vụ các công trình nhà ở, showroom, khách sạn.',
+      desc_en: 'Distributor of marble-look wall and floor tile, polished mirror tile, and imported decorative tile, serving residential projects, showrooms, and hotels.',
+      address: '212 Cách Mạng Tháng 8, Q.10, TP. Hồ Chí Minh',
+      phone: '+84 906 444 555', email: 'sales@gachdonga.vn', website: 'gachdonga.vn',
+      materials: [
+        { name: 'Gạch vân đá marble 600x600', name_en: 'Marble-look tile 600x600', class: 'bg-secondary-50' },
+        { name: 'Gạch bóng gương', name_en: 'Polished mirror tile', class: 'bg-accent-50' },
+        { name: 'Gạch trang trí mosaic', name_en: 'Decorative mosaic tile', class: 'bg-secondary-50' },
+      ]
+    },
+    {
+      id: 5, cat: 'kinh', catLabel: 'Kính xây dựng', catLabel_en: 'Construction glass', name: 'Kính An Toàn Phúc Long', initials: 'PL',
+      coverClass: 'bg-secondary-50', logoClass: 'bg-secondary-50 text-secondary',
+      rating: 4.9, reviews: 47, materialsCount: 21, year: 2016,
+      desc: 'Chuyên gia công kính cường lực, kính dán an toàn, kính phản quang cho vách ngăn, cầu thang, mặt dựng công trình dân dụng và thương mại.',
+      desc_en: 'Specializes in processing tempered glass, laminated safety glass, and reflective glass for partitions, staircases, and facades of residential and commercial buildings.',
+      address: '9 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh',
+      phone: '+84 905 555 666', email: 'contact@kinhphuclong.vn', website: 'kinhphuclong.vn',
+      materials: [
+        { name: 'Kính cường lực trong suốt', name_en: 'Clear tempered glass', class: 'bg-secondary-50' },
+        { name: 'Kính dán an toàn 2 lớp', name_en: '2-layer laminated safety glass', class: 'bg-accent-50' },
+        { name: 'Kính phản quang xanh', name_en: 'Blue reflective glass', class: 'bg-secondary-50' },
+      ]
+    },
+    {
+      id: 6, cat: 'go', catLabel: 'Gỗ tự nhiên', catLabel_en: 'Natural wood', name: 'Gỗ Tự Nhiên Đức Anh', initials: 'DA',
+      coverClass: 'bg-accent-50', logoClass: 'bg-accent-50 text-accent-600',
+      rating: 4.7, reviews: 98, materialsCount: 39, year: 2009,
+      desc: 'Cung cấp gỗ sồi, gỗ óc chó, gỗ căm xe nguyên tấm đã qua xử lý sấy tẩm chống mối mọt, phục vụ đóng đồ nội thất cao cấp và sàn gỗ.',
+      desc_en: 'Supplies solid oak, walnut, and cam xe wood that has been kiln-dried and termite-treated, for premium furniture making and wood flooring.',
+      address: '56 Phạm Văn Đồng, Thủ Đức, TP. Hồ Chí Minh',
+      phone: '+84 904 666 777', email: 'go.ducanh@gmail.com', website: 'goducanh.vn',
+      materials: [
+        { name: 'Gỗ sồi tự nhiên nguyên tấm', name_en: 'Solid natural oak wood', class: 'bg-secondary-50' },
+        { name: 'Gỗ óc chó nhập khẩu', name_en: 'Imported walnut wood', class: 'bg-accent-50' },
+        { name: 'Gỗ căm xe sấy tẩm', name_en: 'Kiln-dried cam xe wood', class: 'bg-secondary-50' },
+      ]
+    },
+    {
+      id: 7, cat: 'van', catLabel: 'Ván công nghiệp', catLabel_en: 'Engineered wood', name: 'Nội Thất Thành Phát', initials: 'TP',
+      coverClass: 'bg-secondary-50', logoClass: 'bg-secondary-50 text-secondary',
+      rating: 4.4, reviews: 53, materialsCount: 28, year: 2020,
+      desc: 'Cung cấp ván công nghiệp và phụ kiện nội thất cho xưởng sản xuất, ưu tiên hàng có sẵn kho, giao nhanh trong 24h nội thành.',
+      desc_en: 'Supplies engineered wood boards and furniture hardware for production workshops, prioritizing in-stock items with fast delivery within 24 hours inner-city.',
+      address: '33 Lũy Bán Bích, Tân Phú, TP. Hồ Chí Minh',
+      phone: '+84 903 777 888', email: 'info@thanhphatnt.vn', website: 'thanhphatnt.vn',
+      materials: [
+        { name: 'Ván MFC phủ nhựa', name_en: 'Plastic-coated MFC board', class: 'bg-secondary-50' },
+        { name: 'Ván ép chịu nước', name_en: 'Water-resistant plywood', class: 'bg-accent-50' },
+      ]
+    },
+    {
+      id: 8, cat: 'da', catLabel: 'Đá tự nhiên', catLabel_en: 'Natural stone', name: 'Đá Marble Ý Gia Bảo', initials: 'GB',
+      coverClass: 'bg-accent-50', logoClass: 'bg-accent-50 text-accent-600',
+      rating: 4.9, reviews: 71, materialsCount: 33, year: 2013,
+      desc: 'Nhập khẩu và phân phối đá marble cao cấp trực tiếp từ Ý, phục vụ các dự án biệt thự, khách sạn 5 sao và showroom sang trọng.',
+      desc_en: 'Imports and distributes premium marble directly from Italy, serving villa projects, 5-star hotels, and luxury showrooms.',
+      address: '19 Trường Sơn, Tân Bình, TP. Hồ Chí Minh',
+      phone: '+84 902 888 999', email: 'giabao@marbleitaly.vn', website: 'marbleitaly.vn',
+      materials: [
+        { name: 'Marble Ý kem vân vàng', name_en: 'Italian cream marble with gold veining', class: 'bg-secondary-50' },
+        { name: 'Marble Ý trắng Carrara', name_en: 'Italian white Carrara marble', class: 'bg-accent-50' },
+        { name: 'Marble Ý xám Bardiglio', name_en: 'Italian grey Bardiglio marble', class: 'bg-secondary-50' },
+      ]
+    },
+  ];
+
+  const grid = document.getElementById('sellerGrid');
+  function isEn(){ return I18N.getLang() === 'en'; }
+  function sCat(s){ return isEn() ? s.catLabel_en : s.catLabel; }
+  function sDesc(s){ return isEn() ? s.desc_en : s.desc; }
+  function mName(m){ return isEn() ? m.name_en : m.name; }
+
+  function renderSellers(list) {
+    grid.innerHTML = list.map(s => `
+      <article class="seller-card reveal in-view bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300 cursor-pointer" data-cat="${s.cat}" data-id="${s.id}">
+        <div class="h-24 ${s.coverClass}"></div>
+        <div class="px-5 pb-5">
+          <div class="w-16 h-16 rounded-2xl border-4 border-white shadow-soft -mt-8 mb-3 ${s.logoClass} flex items-center justify-center font-heading font-extrabold text-lg">${s.initials}</div>
+          <h3 class="font-semibold text-lg mb-1">${s.name}</h3>
+          <p class="text-xs text-muted mb-3">${sCat(s)} · ${s.address.split(',').slice(-1)[0].trim()}</p>
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-1 text-accent-600 text-sm font-semibold">★ ${s.rating.toFixed(1)} <span class="text-muted font-normal">(${s.reviews})</span></span>
+            <span class="text-xs font-semibold text-secondary">${s.materialsCount} ${I18N.t('sellers.materials_count_short')}</span>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  renderSellers(SELLERS);
+  document.addEventListener('i18n:change', () => renderSellers(SELLERS));
+
+  // ===== Modal chi tiết nhà bán hàng =====
+  const modal = document.getElementById('sellerModal');
+  const modalPanel = document.getElementById('sellerModalPanel');
+  let activeSeller = null;
+
+  function openSellerModal(seller) {
+    activeSeller = seller;
+    document.getElementById('modalCover').className = 'h-36 md:h-44 rounded-t-3xl ' + seller.coverClass;
+    const logo = document.getElementById('modalLogo');
+    logo.className = 'w-20 h-20 rounded-2xl border-4 border-white shadow-soft flex items-center justify-center font-heading font-extrabold text-2xl ' + seller.logoClass;
+    logo.textContent = seller.initials;
+    document.getElementById('modalName').textContent = seller.name;
+    document.getElementById('modalCategory').textContent = sCat(seller) + ' · ' + I18N.t('sellers.established') + ' ' + seller.year;
+    document.getElementById('modalRating').innerHTML = '★ ' + seller.rating.toFixed(1) + ' (' + seller.reviews + ' ' + I18N.t('sellers.reviews_label') + ')';
+    document.getElementById('modalCount').textContent = seller.materialsCount + ' ' + I18N.t('sellers.materials_selling');
+    document.getElementById('modalYear').textContent = (new Date().getFullYear() - seller.year) + ' ' + I18N.t('sellers.years_active');
+    document.getElementById('modalDesc').textContent = sDesc(seller);
+    document.getElementById('modalAddress').textContent = seller.address;
+    document.getElementById('modalPhone').textContent = seller.phone;
+    document.getElementById('modalEmail').textContent = seller.email;
+    document.getElementById('modalWebsite').textContent = seller.website;
+    document.getElementById('modalMaterials').innerHTML = seller.materials.map(m => `
+      <div>
+        <div class="aspect-square rounded-xl ${m.class}"></div>
+        <p class="text-xs text-muted mt-1.5 leading-snug">${mName(m)}</p>
+      </div>
+    `).join('');
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    requestAnimationFrame(() => {
+      modalPanel.classList.remove('opacity-0', 'translate-y-6');
+    });
+  }
+  document.addEventListener('i18n:change', () => { if (activeSeller && !modal.classList.contains('hidden')) openSellerModal(activeSeller); });
+
+  function closeSellerModal() {
+    modalPanel.classList.add('opacity-0', 'translate-y-6');
+    document.body.classList.remove('overflow-hidden');
+    setTimeout(() => modal.classList.add('hidden'), 250);
+  }
+
+  grid.addEventListener('click', (e) => {
+    const card = e.target.closest('.seller-card');
+    if (!card) return;
+    const seller = SELLERS.find(s => s.id === Number(card.dataset.id));
+    if (seller) openSellerModal(seller);
+  });
+
+  document.getElementById('sellerModalClose').addEventListener('click', closeSellerModal);
+  document.getElementById('sellerModalBackdrop').addEventListener('click', closeSellerModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeSellerModal();
+  });
+  document.getElementById('modalChatBtn').addEventListener('click', () => {
+    if (!activeSeller) return;
+    closeSellerModal();
+    // Local SELLERS ids start at 1; the real accounts in the DB start at 2 (admin took id 1).
+    window.ChatWidget.openWithSeller(activeSeller.id + 1);
+  });
+
+  // ===== Lọc theo danh mục =====
+  function applySellerFilters() {
+    const cat = document.querySelector('.cat-btn.active')?.dataset.cat || 'all';
+    const q = sellerSearchInput.value.trim().toLowerCase();
+    document.querySelectorAll('.seller-card').forEach(card => {
+      const id = Number(card.dataset.id);
+      const seller = SELLERS.find(s => s.id === id);
+      const matchCat = cat === 'all' || card.dataset.cat === cat;
+      const matchSearch = !q || seller.name.toLowerCase().includes(q) || seller.address.toLowerCase().includes(q);
+      card.classList.toggle('filtered-out', !matchCat);
+      card.classList.toggle('hidden', !matchSearch);
+    });
+  }
+
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applySellerFilters();
+    });
+  });
+
+  // ===== Tìm kiếm theo tên/khu vực =====
+  const sellerSearchInput = document.getElementById('sellerSearch');
+  sellerSearchInput.addEventListener('input', applySellerFilters);
+
+  document.addEventListener('i18n:change', applySellerFilters);
+
+  // ===== Menu mobile & hiệu ứng cuộn =====
+  document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('mobileMenu')?.classList.toggle('hidden'));
+  const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } }), { threshold: .1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+<script src="chat-widget.js"></script>
+</body>
+</html>

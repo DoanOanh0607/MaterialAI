@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="vi" data-i18n-doc-title="materials.doc_title">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var l=localStorage.getItem('materialai_lang')==='en'?'en':'vi';document.documentElement.lang=l;if(l==='en')document.documentElement.style.visibility='hidden';})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh mục vật liệu nội thất – Ván, Đá, Gạch, Sơn, Kính | Material AI</title>
+<link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="images/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="images/favicon-180.png">
+<meta name="description" data-i18n-content="materials.doc_desc" content="Khám phá kho vật liệu nội thất từ hàng ngàn nhà bán hàng: ván công nghiệp, sơn, gạch, đá, kính, gỗ tự nhiên. Xem thông số kỹ thuật và giá, hoặc upload ảnh để tìm vật liệu tương tự.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="i18n.js"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
+    boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)' },
+  }}}
+</script>
+<style>
+  body{font-family:'Roboto',sans-serif;color:#211E1A;background:#FBF6F0}
+  h1,h2,h3,h4,.font-heading{font-family:'Inter',sans-serif}
+  .font-script{font-family:'Inter',sans-serif;font-style:italic;font-weight:700}
+  .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .reveal.in-view{opacity:1;transform:translateY(0)}
+  .cat-btn.active{background:#9AA3A4;color:#211E1A;border-color:#9AA3A4}
+  .mat-card{display:block}
+  .mat-card.filtered-out{display:none}
+
+  /* Texture swatches — mô phỏng chất liệu vật liệu, không dùng ảnh chụp có bản quyền */
+  .tex-son-1{background:
+    radial-gradient(ellipse at 30% 15%,rgba(255,255,255,.35),transparent 55%),
+    linear-gradient(160deg,#9CB09E 0%,#7E9683 55%,#647B6C 100%);}
+  .tex-son-2{background:
+    radial-gradient(ellipse at 30% 15%,rgba(255,255,255,.35),transparent 55%),
+    linear-gradient(160deg,#9BAEBD 0%,#7E93A5 55%,#64798C 100%);}
+  .tex-son-3{background:
+    radial-gradient(ellipse at 30% 15%,rgba(255,255,255,.35),transparent 55%),
+    linear-gradient(160deg,#C79170 0%,#B07752 55%,#8F5D3D 100%);}
+  .tex-son-4{background:
+    radial-gradient(ellipse at 30% 15%,rgba(255,255,255,.4),transparent 55%),
+    linear-gradient(160deg,#D9CDB6 0%,#C4B594 55%,#A89571 100%);}
+  .tex-kinh-1{background:
+    linear-gradient(115deg,rgba(255,255,255,.75) 0%,rgba(255,255,255,0) 12%,rgba(255,255,255,0) 46%,rgba(255,255,255,.55) 52%,rgba(255,255,255,0) 58%,rgba(255,255,255,0) 88%,rgba(255,255,255,.5) 100%),
+    linear-gradient(160deg,#eaf6ff,#cfe8fb 60%,#a9d3f2);}
+  .tex-go-1{background:
+    radial-gradient(ellipse 14px 20px at 70% 55%,rgba(70,40,15,.35),transparent 70%),
+    repeating-linear-gradient(88deg,#a9713f 0px,#a9713f 3px,#96602f 4px,#a9713f 9px,#b98249 13px,#a9713f 17px);}
+
+  .lang-btn.active,
+  html[lang="vi"] .lang-btn[data-lang="vi"],
+  html[lang="en"] .lang-btn[data-lang="en"]{background:#3A3632;color:#fff}
+  .nav-active{background:#9AA3A4;color:#211E1A;font-weight:600}
+</style>
+</head>
+<body class="bg-cream text-ink overflow-x-hidden">
+
+<!-- NAVBAR -->
+<header class="fixed top-3 md:top-5 inset-x-3 md:inset-x-6 z-50">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-5 py-2 glass rounded-full shadow-soft">
+    <a href="index.html" class="flex items-center shrink-0"><img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto"></a>
+    <div class="hidden md:flex items-center gap-1 text-sm font-medium">
+      <a href="index.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.home">Trang chủ</a>
+      <a href="materials.html" class="nav-active px-4 py-2 rounded-full transition-colors" data-i18n="nav.materials">Vật liệu</a>
+      <a href="sellers.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.sellers">Nhà bán hàng</a>
+      <a href="faq.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.faq">Hỏi đáp</a>
+      <a href="contact.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.contact">Liên hệ</a>
+    </div>
+    <div class="hidden md:flex items-center gap-3">
+      <a href="login.html" class="border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+      </div>
+    </div>
+    <button id="menuBtn" class="md:hidden text-secondary shrink-0">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </nav>
+  <div id="mobileMenu" class="hidden md:hidden mt-2 glass rounded-3xl px-6 py-6 flex flex-col gap-3 font-medium shadow-soft">
+    <a href="index.html" class="px-4 py-2.5" data-i18n="nav.home">Trang chủ</a><a href="materials.html" class="nav-active px-4 py-2.5 rounded-full w-fit" data-i18n="nav.materials">Vật liệu</a><a href="sellers.html" class="px-4 py-2.5" data-i18n="nav.sellers">Nhà bán hàng</a><a href="faq.html" class="px-4 py-2.5" data-i18n="nav.faq">Hỏi đáp</a><a href="contact.html" class="px-4 py-2.5" data-i18n="nav.contact">Liên hệ</a>
+    <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold w-fit ml-4">
+      <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
+      <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+    </div>
+    <a href="login.html" class="border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+  </div>
+</header>
+
+<!-- HEADER + SEARCH -->
+<section id="upload" class="pt-[85px] pb-6 md:pt-[107px] px-6 bg-secondary-50/30">
+  <div class="max-w-7xl mx-auto reveal">
+    <h1 class="font-extrabold text-3xl md:text-4xl mb-2" data-i18n="materials.h1">Kho vật liệu nội thất</h1>
+    <p class="font-script text-2xl text-accent-600 mb-3" data-i18n="materials.tagline">đúng chất liệu, đúng lựa chọn</p>
+    <p class="text-muted mb-8" data-i18n="materials.subtitle">Duyệt theo danh mục hoặc upload ảnh để AI tìm vật liệu tương tự nhất.</p>
+
+    <div class="glass rounded-2xl p-4 md:p-5 shadow-soft flex flex-col md:flex-row gap-4">
+      <label class="flex items-center gap-2 border border-dashed border-secondary-100 rounded-xl px-4 py-3 cursor-pointer text-sm font-semibold text-secondary bg-white">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14" stroke="#3A3632" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="materials.upload_label">Upload ảnh tìm kiếm</span>
+        <input type="file" accept="image/*" class="hidden">
+      </label>
+      <input type="text" data-i18n-placeholder="materials.search_placeholder" placeholder="Tìm theo tên vật liệu, mã sản phẩm..." class="flex-1 rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary">
+      <button class="bg-accent text-ink font-semibold text-sm px-6 py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="materials.search_button">Tìm kiếm</button>
+    </div>
+
+    <!-- CATEGORY TABS -->
+    <div class="flex flex-wrap gap-3 mt-8">
+      <button class="cat-btn active border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="all" data-i18n="common.all">Tất cả</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="van" data-i18n="common.cat_van">Ván công nghiệp</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="son" data-i18n="common.cat_son">Sơn</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="gach" data-i18n="common.cat_gach">Gạch</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="da" data-i18n="common.cat_da">Đá</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="kinh" data-i18n="common.cat_kinh">Kính</button>
+      <button class="cat-btn border border-secondary-100 px-5 py-2 rounded-full text-sm font-semibold" data-cat="go" data-i18n="common.cat_go">Gỗ tự nhiên</button>
+    </div>
+  </div>
+</section>
+
+<!-- MATERIAL GRID -->
+<section class="py-8 md:py-10 px-6">
+  <div class="max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="matGrid">
+
+    <!-- Card mẫu — lặp lại cho từng vật liệu -->
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="van">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/melamine/thumbs/005_MFC-MS_LUX528_MTQ_FRENCH_VANILLA_OAK.jpg" alt="Ván MDF phủ Melamine vân sồi" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_van">Ván công nghiệp</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card1_title">Ván MDF phủ Melamine vân sồi</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card1_spec">Dày 18mm · Kích thước 1220x2440mm</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="VH" data-seller-id="4" data-name="Xưởng Ván Công Nghiệp Văn Hải" data-rating="4.7" data-verified="true" data-address="KCN Tân Bình, TP.HCM" data-phone="0908 111 222" data-products="36">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">VH</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Xưởng Ván Công Nghiệp Văn Hải</span>
+            <span class="block text-[11px] text-muted">★ 4.7 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card1_price">450.000đ/tấm</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="son">
+      <div class="aspect-[4/3] tex-son-1 relative">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_son">Sơn</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card2_title">Sơn nội thất bóng mờ cao cấp</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card2_spec">18L · Phủ 40-45m²/lít</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="BN" data-seller-id="3" data-name="Đại Lý Sơn Bích Ngọc" data-rating="4.9" data-verified="true" data-address="Q. Bình Thạnh, TP.HCM" data-phone="0912 333 444" data-products="52">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">BN</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Sơn Bích Ngọc</span>
+            <span class="block text-[11px] text-muted">★ 4.9 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card2_price">1.250.000đ/thùng</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="gach">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/010_SOFIA_IVORY.png" alt="Gạch ốp lát vân đá marble" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_gach">Gạch</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card3_title">Gạch ốp lát vân đá marble</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card3_spec">600x600mm · Bề mặt bóng gương</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="HP" data-seller-id="5" data-name="Đại Lý Gạch Hoàng Phúc" data-rating="4.6" data-verified="true" data-address="Q. 12, TP.HCM" data-phone="0933 555 666" data-products="78">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">HP</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Gạch Hoàng Phúc</span>
+            <span class="block text-[11px] text-muted">★ 4.6 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card3_price">185.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="da">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/016_PIETRA_2.0_NEO_CHARCOAL.png" alt="Đá granite tự nhiên đen Phú Yên" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_da">Đá</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card4_title">Đá granite tự nhiên đen Phú Yên</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card4_spec">Dày 20mm · Bề mặt mài bóng</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="MK" data-seller-id="2" data-name="Minh Khôi Stone" data-rating="4.8" data-verified="true" data-address="Tuy Hòa, Phú Yên" data-phone="0977 888 999" data-products="24">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">MK</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Minh Khôi Stone</span>
+            <span class="block text-[11px] text-muted">★ 4.8 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card4_price">890.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="kinh">
+      <div class="aspect-[4/3] tex-kinh-1 relative">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_kinh">Kính</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card5_title">Kính cường lực trong suốt</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card5_spec">Dày 10mm · An toàn, chịu lực cao</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="DL" data-seller-id="6" data-name="Kính An Toàn Diệu Linh" data-rating="4.7" data-verified="false" data-address="TP. Thủ Đức, TP.HCM" data-phone="0988 222 111" data-products="19">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">DL</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Kính An Toàn Diệu Linh</span>
+            <span class="block text-[11px] text-muted">★ 4.7 · <span data-i18n="common.unverified">Chưa xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card5_price">620.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="go">
+      <div class="aspect-[4/3] tex-go-1 relative">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_go">Gỗ tự nhiên</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card6_title">Gỗ sồi tự nhiên nguyên tấm</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card6_spec">Dày 25mm · Đã sấy tẩm chống mối</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="QH" data-seller-id="7" data-name="Xưởng Gỗ Tự Nhiên Quang Huy" data-rating="4.9" data-verified="true" data-address="Trảng Bom, Đồng Nai" data-phone="0966 777 888" data-products="15">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">QH</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Xưởng Gỗ Tự Nhiên Quang Huy</span>
+            <span class="block text-[11px] text-muted">★ 4.9 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card6_price">3.200.000đ/m³</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="van">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/melamine/thumbs/004_MFC-MS_LUX522_MTQ_MOCHA_RIFT_OAK.jpg" alt="Ván ép Plywood phủ Phenolic" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_van">Ván công nghiệp</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card7_title">Ván ép Plywood phủ Phenolic</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card7_spec">Dày 12mm · Chống nước</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="VH" data-seller-id="4" data-name="Xưởng Ván Công Nghiệp Văn Hải" data-rating="4.7" data-verified="true" data-address="KCN Tân Bình, TP.HCM" data-phone="0908 111 222" data-products="36">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">VH</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Xưởng Ván Công Nghiệp Văn Hải</span>
+            <span class="block text-[11px] text-muted">★ 4.7 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card7_price">380.000đ/tấm</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="da">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/013_PIETRA_2.0_NEO_IVORY.png" alt="Đá marble trắng vân mây" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_da">Đá</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card8_title">Đá marble trắng vân mây</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card8_spec">Dày 18mm · Nhập khẩu</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="MK" data-seller-id="2" data-name="Minh Khôi Stone" data-rating="4.8" data-verified="true" data-address="Tuy Hòa, Phú Yên" data-phone="0977 888 999" data-products="24">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">MK</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Minh Khôi Stone</span>
+            <span class="block text-[11px] text-muted">★ 4.8 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card8_price">1.450.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="van">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/melamine/thumbs/117_MFC-MS_518_MM_KILKENNY_OAK.jpg" alt="Ván MFC phủ Melamine vân sồi Kilkenny" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_van">Ván công nghiệp</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card9_title">Ván MFC phủ Melamine vân sồi Kilkenny</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card9_spec">Dày 18mm · Kích thước 1220x2440mm</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="TP" data-seller-id="8" data-name="Nội Thất Thành Phát" data-rating="4.4" data-verified="true" data-address="Lũy Bán Bích, Tân Phú, TP.HCM" data-phone="0903 777 888" data-products="28">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">TP</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Nội Thất Thành Phát</span>
+            <span class="block text-[11px] text-muted">★ 4.4 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card9_price">340.000đ/tấm</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="van">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/melamine/thumbs/128_MFC-MS_388_EV_SANTANA_OAK.jpg" alt="Ván MDF phủ Melamine vân sồi Santana" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_van">Ván công nghiệp</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card10_title">Ván MDF phủ Melamine vân sồi Santana</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card10_spec">Dày 17mm · Kích thước 1220x2440mm</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="VH" data-seller-id="4" data-name="Xưởng Ván Công Nghiệp Văn Hải" data-rating="4.7" data-verified="true" data-address="KCN Tân Bình, TP.HCM" data-phone="0908 111 222" data-products="36">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">VH</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Xưởng Ván Công Nghiệp Văn Hải</span>
+            <span class="block text-[11px] text-muted">★ 4.7 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card10_price">420.000đ/tấm</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="van">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/melamine/thumbs/305_MFC-MS_LUX430_MTL_DARK_LOFT.jpg" alt="Ván MFC phủ Melamine bề mặt loft công nghiệp" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_van">Ván công nghiệp</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card11_title">Ván MFC phủ Melamine bề mặt loft công nghiệp</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card11_spec">Dày 18mm · Chống trầy xước</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="TP" data-seller-id="8" data-name="Nội Thất Thành Phát" data-rating="4.4" data-verified="true" data-address="Lũy Bán Bích, Tân Phú, TP.HCM" data-phone="0903 777 888" data-products="28">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">TP</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Nội Thất Thành Phát</span>
+            <span class="block text-[11px] text-muted">★ 4.4 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card11_price">395.000đ/tấm</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="son">
+      <div class="aspect-[4/3] tex-son-2 relative">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_son">Sơn</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card12_title">Sơn nội thất tông xanh dương khói</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card12_spec">18L · Phủ 40-45m²/lít</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="BN" data-seller-id="3" data-name="Đại Lý Sơn Bích Ngọc" data-rating="4.9" data-verified="true" data-address="Q. Bình Thạnh, TP.HCM" data-phone="0912 333 444" data-products="52">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">BN</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Sơn Bích Ngọc</span>
+            <span class="block text-[11px] text-muted">★ 4.9 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card12_price">1.290.000đ/thùng</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="son">
+      <div class="aspect-[4/3] tex-son-3 relative">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_son">Sơn</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card13_title">Sơn nội thất tông đất nung ấm</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card13_spec">18L · Phủ 40-45m²/lít</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="BN" data-seller-id="3" data-name="Đại Lý Sơn Bích Ngọc" data-rating="4.9" data-verified="true" data-address="Q. Bình Thạnh, TP.HCM" data-phone="0912 333 444" data-products="52">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">BN</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Sơn Bích Ngọc</span>
+            <span class="block text-[11px] text-muted">★ 4.9 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card13_price">1.180.000đ/thùng</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="son">
+      <div class="aspect-[4/3] tex-son-4 relative">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_son">Sơn</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card14_title">Sơn nội thất tông kem trung tính</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card14_spec">5L · Phủ 40-45m²/lít</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="BN" data-seller-id="3" data-name="Đại Lý Sơn Bích Ngọc" data-rating="4.9" data-verified="true" data-address="Q. Bình Thạnh, TP.HCM" data-phone="0912 333 444" data-products="52">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">BN</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Sơn Bích Ngọc</span>
+            <span class="block text-[11px] text-muted">★ 4.9 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card14_price">450.000đ/thùng</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="gach">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/006_METIS_GRAY.png" alt="Gạch ốp lát bê tông xám" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_gach">Gạch</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card15_title">Gạch ốp lát bê tông xám</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card15_spec">600x600mm · Bề mặt mờ</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="HP" data-seller-id="5" data-name="Đại Lý Gạch Hoàng Phúc" data-rating="4.6" data-verified="true" data-address="Q. 12, TP.HCM" data-phone="0933 555 666" data-products="78">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">HP</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Gạch Hoàng Phúc</span>
+            <span class="block text-[11px] text-muted">★ 4.6 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card15_price">165.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="gach">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/008_OSLO_IVORY.png" alt="Gạch vân đá trắng ngà cao cấp" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_gach">Gạch</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card16_title">Gạch vân đá trắng ngà cao cấp</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card16_spec">800x800mm · Bề mặt bóng gương</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="HP" data-seller-id="5" data-name="Đại Lý Gạch Hoàng Phúc" data-rating="4.6" data-verified="true" data-address="Q. 12, TP.HCM" data-phone="0933 555 666" data-products="78">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">HP</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Gạch Hoàng Phúc</span>
+            <span class="block text-[11px] text-muted">★ 4.6 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card16_price">245.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="gach">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/020_SANDALAS_NEO_SAFARI_BISQUE.png" alt="Gạch vân đá hồng phấn nhạt" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_gach">Gạch</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card17_title">Gạch vân đá hồng phấn nhạt</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card17_spec">600x1200mm · Bề mặt mờ</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="HP" data-seller-id="5" data-name="Đại Lý Gạch Hoàng Phúc" data-rating="4.6" data-verified="true" data-address="Q. 12, TP.HCM" data-phone="0933 555 666" data-products="78">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-secondary-50 flex items-center justify-center text-[10px] font-bold text-secondary">HP</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Đại Lý Gạch Hoàng Phúc</span>
+            <span class="block text-[11px] text-muted">★ 4.6 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card17_price">210.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="da">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/017_SANDALAS_NEO_OLIVER_DARK.png" alt="Đá tự nhiên đen nhám cao cấp" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_da">Đá</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card18_title">Đá tự nhiên đen nhám cao cấp</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card18_spec">Dày 20mm · Bề mặt nhám chống trơn</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="MK" data-seller-id="2" data-name="Minh Khôi Stone" data-rating="4.8" data-verified="true" data-address="Tuy Hòa, Phú Yên" data-phone="0977 888 999" data-products="24">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">MK</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Minh Khôi Stone</span>
+            <span class="block text-[11px] text-muted">★ 4.8 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card18_price">950.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="da">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/009_OSLO_GREIGE.png" alt="Đá marble xám vân mây đậm" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_da">Đá</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card19_title">Đá marble xám vân mây đậm</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card19_spec">Dày 20mm · Nhập khẩu</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="MK" data-seller-id="2" data-name="Minh Khôi Stone" data-rating="4.8" data-verified="true" data-address="Tuy Hòa, Phú Yên" data-phone="0977 888 999" data-products="24">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">MK</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Minh Khôi Stone</span>
+            <span class="block text-[11px] text-muted">★ 4.8 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card19_price">1.680.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="mat-card reveal bg-white rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-cat="da">
+      <div class="aspect-[4/3] relative bg-secondary-50">
+        <img src="images/gach-da/015_PIETRA_2.0_NEO_GREY.png" alt="Đá marble xám nhạt vân tự nhiên" class="w-full h-full object-cover">
+        <span class="absolute top-3 left-3 bg-white/90 text-xs font-semibold px-3 py-1 rounded-full" data-i18n="common.cat_da">Đá</span>
+      </div>
+      <div class="p-5">
+        <h3 class="font-semibold mb-1" data-i18n="materials.card20_title">Đá marble xám nhạt vân tự nhiên</h3>
+        <p class="text-xs text-muted mb-3" data-i18n="materials.card20_spec">Dày 18mm · Bề mặt mài bóng</p>
+        <button type="button" class="seller-trigger w-full flex items-center gap-2 mb-3 pt-3 border-t border-secondary-50 text-left" data-initials="MK" data-seller-id="2" data-name="Minh Khôi Stone" data-rating="4.8" data-verified="true" data-address="Tuy Hòa, Phú Yên" data-phone="0977 888 999" data-products="24">
+          <span class="w-7 h-7 shrink-0 rounded-full bg-accent-50 flex items-center justify-center text-[10px] font-bold text-accent-600">MK</span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-xs font-semibold truncate">Minh Khôi Stone</span>
+            <span class="block text-[11px] text-muted">★ 4.8 · <span data-i18n="common.verified">Đã xác thực</span></span>
+          </span>
+        </button>
+        <div class="flex items-center justify-between">
+          <span class="font-heading font-bold text-accent-600" data-i18n="materials.card20_price">1.120.000đ/m²</span>
+          <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
+        </div>
+      </div>
+    </article>
+    <!-- /Card mẫu -->
+
+  </div>
+
+  <div class="text-center mt-12">
+    <button class="border border-secondary text-secondary font-semibold px-8 py-3 rounded-full hover:bg-secondary hover:text-white transition-colors" data-i18n="materials.load_more">Xem thêm vật liệu</button>
+  </div>
+</section>
+
+<!-- SELLER INFO MODAL -->
+<div id="sellerModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center px-6">
+  <div id="sellerModalBackdrop" class="absolute inset-0 bg-ink/50 backdrop-blur-sm"></div>
+  <div class="relative glass w-full max-w-md rounded-3xl p-8 shadow-soft">
+    <button id="sellerModalClose" type="button" class="absolute top-5 right-5 text-muted hover:text-ink text-lg leading-none">✕</button>
+    <div class="flex items-center gap-4 mb-6">
+      <div id="sellerAvatar" class="w-16 h-16 rounded-full bg-secondary-50 flex items-center justify-center font-bold text-secondary text-xl"></div>
+      <div>
+        <p id="sellerName" class="font-heading font-bold text-lg"></p>
+        <p id="sellerRating" class="text-sm text-accent-600 font-semibold"></p>
+      </div>
+    </div>
+    <ul class="space-y-3 text-sm mb-6">
+      <li class="flex items-start gap-3"><span>📍</span><span id="sellerAddress"></span></li>
+      <li class="flex items-start gap-3"><span>☎</span><span id="sellerPhone"></span></li>
+      <li class="flex items-start gap-3"><span>📦</span><span id="sellerProducts"></span></li>
+    </ul>
+    <div class="flex gap-3">
+      <button id="sellerModalChat" type="button" class="flex-1 text-center bg-accent text-ink font-semibold py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="materials.modal_contact">Liên hệ ngay</button>
+      <a href="#" class="flex-1 text-center border border-secondary text-secondary font-semibold py-3 rounded-full hover:bg-secondary hover:text-white transition-colors" data-i18n="materials.modal_view_products">Xem sản phẩm</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-ink text-white/80 px-6 py-8">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
+    <div><div class="bg-white rounded-lg inline-block p-1.5 mb-3"><img src="images/LOGO.png" alt="MateriAI" class="h-12 w-auto"></div><p class="text-sm" data-i18n="footer.tagline">Nền tảng tìm kiếm và kết nối vật liệu nội thất bằng AI.</p><div class="flex gap-2 mt-4"><a href="#" aria-label="Facebook" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M14 8.5h2.5V5.7c-.4-.1-1.9-.2-2.7-.2-2.7 0-4.3 1.6-4.3 4.5v2.3H6.8V15h2.7v9h3.4v-9h2.6l.4-3.2h-3v-2c0-.8.3-1.3 1.1-1.3z"/></svg></a><a href="#" aria-label="TikTok" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M16.6 5.8c-.9-.9-1.4-2.1-1.4-3.4h-3.1v13.8c0 1.5-1.2 2.7-2.7 2.7s-2.7-1.2-2.7-2.7 1.2-2.7 2.7-2.7c.3 0 .5 0 .8.1V10.5c-.3 0-.5-.1-.8-.1-3.2 0-5.8 2.6-5.8 5.8S6.2 22 9.4 22s5.8-2.6 5.8-5.8V9.1c1.2.9 2.7 1.4 4.3 1.4V7.4c-1 0-2-.4-2.9-1.2z"/></svg></a><a href="#" aria-label="Twitter" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.6.8-2.5 1-.7-.8-1.7-1.2-2.9-1.2-2.2 0-3.9 1.8-3.9 3.9 0 .3 0 .6.1.9-3.3-.2-6.2-1.7-8.1-4.1-.3.6-.5 1.3-.5 2 0 1.4.7 2.6 1.8 3.3-.6 0-1.3-.2-1.8-.5v.1c0 1.9 1.4 3.5 3.2 3.9-.3.1-.7.1-1.1.1-.3 0-.5 0-.8-.1.5 1.6 2 2.7 3.7 2.8-1.4 1.1-3.1 1.7-5 1.7-.3 0-.6 0-1-.1 1.8 1.2 4 1.8 6.2 1.8 7.5 0 11.6-6.2 11.6-11.6v-.5c.8-.6 1.5-1.3 2-2.1z"/></svg></a><a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M6.9 8.4H3.6V20h3.3V8.4zM5.3 3.3c-1.1 0-1.9.8-1.9 1.9 0 1 .8 1.9 1.9 1.9 1.1 0 1.9-.8 1.9-1.9-.1-1.1-.9-1.9-1.9-1.9zM20.4 13.4c0-3.1-1.6-4.5-3.8-4.5-1.7 0-2.5 1-2.9 1.6V8.4h-3.3c0 .1 0 11 0 11.6h3.3v-6.5c0-.3 0-.7.1-.9.3-.7.9-1.4 2-1.4 1.4 0 2 1.1 2 2.7v6.1h3.3v-6.6z"/></svg></a><a href="#" aria-label="YouTube" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-accent-600 flex items-center justify-center transition-colors"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M21.6 7.2c-.3-1-1-1.8-2-2C17.9 4.7 12 4.7 12 4.7s-5.9 0-7.6.5c-1 .3-1.8 1-2 2C2 8.9 2 12 2 12s0 3.1.5 4.8c.3 1 1 1.8 2 2 1.7.5 7.6.5 7.6.5s5.9 0 7.6-.5c1-.3 1.8-1 2-2C22 15.1 22 12 22 12s0-3.1-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z"/></svg></a></div></div>
+    <div><p class="font-semibold text-white mb-3" data-i18n="footer.nav_title">Điều hướng</p><ul class="space-y-2 text-sm"><li><a href="index.html" class="hover:text-accent" data-i18n="nav.home">Trang chủ</a></li><li><a href="materials.html" class="hover:text-accent" data-i18n="nav.materials">Vật liệu</a></li><li><a href="sellers.html" class="hover:text-accent" data-i18n="nav.sellers">Nhà bán hàng</a></li><li><a href="faq.html" class="hover:text-accent" data-i18n="nav.faq">Hỏi đáp</a></li><li><a href="contact.html" class="hover:text-accent" data-i18n="nav.contact">Liên hệ</a></li></ul></div>
+    <div><p class="font-semibold text-white mb-3" data-i18n="footer.contact_title">Liên hệ</p><ul class="space-y-2 text-sm"><li>hotro@materialai.vn</li><li>+84 909 000 000</li></ul></div>
+    
+  </div>
+  <p class="text-center text-xs text-white/40 mt-10" data-i18n="footer.copyright">© 2026 Material AI. All rights reserved.</p>
+</footer>
+
+<script>
+  document.getElementById('menuBtn')?.addEventListener('click',()=>document.getElementById('mobileMenu')?.classList.toggle('hidden'));
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  document.querySelectorAll('.cat-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      document.querySelectorAll('.mat-card').forEach(card=>{
+        card.classList.toggle('filtered-out', cat!=='all' && card.dataset.cat!==cat);
+      });
+    });
+  });
+
+  // Seller info modal
+  const sellerModal = document.getElementById('sellerModal');
+  let activeSellerBtn = null;
+  function renderSellerModal(btn){
+    document.getElementById('sellerAvatar').textContent = btn.dataset.initials;
+    document.getElementById('sellerName').textContent = btn.dataset.name;
+    document.getElementById('sellerRating').textContent = '★ ' + btn.dataset.rating + ' · ' + I18N.t(btn.dataset.verified === 'true' ? 'common.verified' : 'common.unverified');
+    document.getElementById('sellerAddress').textContent = btn.dataset.address;
+    document.getElementById('sellerPhone').textContent = btn.dataset.phone;
+    document.getElementById('sellerProducts').textContent = btn.dataset.products + ' ' + I18N.t('materials.products_selling');
+  }
+  document.querySelectorAll('.seller-trigger').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      activeSellerBtn = btn;
+      renderSellerModal(btn);
+      sellerModal.classList.remove('hidden');
+    });
+  });
+  document.addEventListener('i18n:change', ()=>{ if(activeSellerBtn) renderSellerModal(activeSellerBtn); });
+  document.getElementById('sellerModalClose').addEventListener('click', ()=>sellerModal.classList.add('hidden'));
+  document.getElementById('sellerModalBackdrop').addEventListener('click', ()=>sellerModal.classList.add('hidden'));
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') sellerModal.classList.add('hidden'); });
+  document.getElementById('sellerModalChat').addEventListener('click', ()=>{
+    if (!activeSellerBtn) return;
+    sellerModal.classList.add('hidden');
+    window.ChatWidget.openWithSeller(Number(activeSellerBtn.dataset.sellerId));
+  });
+</script>
+<script src="chat-widget.js"></script>
+</body>
+</html>
