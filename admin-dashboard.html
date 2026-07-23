@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-i18n-doc-title="admin.doc_title">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var l=localStorage.getItem('materialai_lang')==='en'?'en':'vi';document.documentElement.lang=l;if(l==='en')document.documentElement.style.visibility='hidden';})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bảng điều khiển quản trị – Material AI</title>
 <link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
@@ -10,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="i18n.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
     colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
@@ -24,6 +26,9 @@
   .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
   .hidden{display:none}
   .tab-btn.active{background:#3A3632;color:#fff}
+  .lang-btn.active,
+  html[lang="vi"] .lang-btn[data-lang="vi"],
+  html[lang="en"] .lang-btn[data-lang="en"]{background:#3A3632;color:#fff}
   .badge-pending{background:#F1F2F0;color:#7D8688}
   .badge-approved{background:#EAF3EA;color:#3E7A45}
   .badge-blocked{background:#FBE9E7;color:#B3261E}
@@ -35,10 +40,14 @@
 <header class="fixed top-3 md:top-5 inset-x-3 md:inset-x-6 z-50">
   <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-5 py-2 glass rounded-full shadow-soft">
     <a href="index.html" class="flex items-center shrink-0"><img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto"></a>
-    <div class="hidden sm:block text-sm font-semibold text-secondary">Bảng điều khiển quản trị</div>
+    <div class="hidden sm:block text-sm font-semibold text-secondary" data-i18n="admin.navbar_title">Bảng điều khiển quản trị</div>
     <div class="flex items-center gap-3">
       <span id="userGreeting" class="hidden sm:inline text-sm text-muted"></span>
-      <button id="logoutBtn" class="border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors">Đăng xuất</button>
+      <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+      </div>
+      <button id="logoutBtn" class="border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors" data-i18n="common.logout">Đăng xuất</button>
     </div>
   </nav>
 </header>
@@ -47,34 +56,34 @@
   <div class="max-w-6xl mx-auto">
 
     <div class="mb-8">
-      <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-1">Quản trị hệ thống</h1>
-      <p class="font-script text-2xl text-accent-600">toàn cảnh Material AI</p>
+      <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-1" data-i18n="admin.h1">Quản trị hệ thống</h1>
+      <p class="font-script text-2xl text-accent-600" data-i18n="admin.tagline">toàn cảnh Material AI</p>
     </div>
 
     <!-- STATS -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
       <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
         <p class="font-script text-4xl text-accent-600" id="statTotalSellers">0</p>
-        <p class="text-xs text-muted mt-1">Tổng nhà bán hàng</p>
+        <p class="text-xs text-muted mt-1" data-i18n="admin.stat_total_sellers">Tổng nhà bán hàng</p>
       </div>
       <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
         <p class="font-script text-4xl text-secondary" id="statPending">0</p>
-        <p class="text-xs text-muted mt-1">Chờ duyệt</p>
+        <p class="text-xs text-muted mt-1" data-i18n="status.pending">Chờ duyệt</p>
       </div>
       <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
         <p class="font-script text-4xl text-secondary" id="statApproved">0</p>
-        <p class="text-xs text-muted mt-1">Đã duyệt</p>
+        <p class="text-xs text-muted mt-1" data-i18n="status.approved">Đã duyệt</p>
       </div>
       <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
         <p class="font-script text-4xl text-accent-600" id="statMaterials">0</p>
-        <p class="text-xs text-muted mt-1">Tổng vật liệu</p>
+        <p class="text-xs text-muted mt-1" data-i18n="admin.stat_materials">Tổng vật liệu</p>
       </div>
     </div>
 
     <!-- TABS -->
     <div class="flex gap-3 mb-6">
-      <button class="tab-btn active px-5 py-2 rounded-full font-semibold text-sm border border-secondary-100" data-tab="sellers">Nhà bán hàng</button>
-      <button class="tab-btn px-5 py-2 rounded-full font-semibold text-sm border border-secondary-100" data-tab="materials">Vật liệu</button>
+      <button class="tab-btn active px-5 py-2 rounded-full font-semibold text-sm border border-secondary-100" data-tab="sellers" data-i18n="nav.sellers">Nhà bán hàng</button>
+      <button class="tab-btn px-5 py-2 rounded-full font-semibold text-sm border border-secondary-100" data-tab="materials" data-i18n="nav.materials">Vật liệu</button>
     </div>
 
     <!-- SELLERS TAB -->
@@ -82,11 +91,11 @@
       <table class="w-full text-sm min-w-[720px]">
         <thead>
           <tr class="text-left text-muted border-b border-secondary-50">
-            <th class="pb-3 font-semibold">Nhà bán hàng</th>
-            <th class="pb-3 font-semibold">Ngành hàng</th>
-            <th class="pb-3 font-semibold">Vật liệu</th>
-            <th class="pb-3 font-semibold">Trạng thái</th>
-            <th class="pb-3 font-semibold text-right">Hành động</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_name">Nhà bán hàng</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_category">Ngành hàng</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_materials">Vật liệu</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_status">Trạng thái</th>
+            <th class="pb-3 font-semibold text-right" data-i18n="admin.th_action">Hành động</th>
           </tr>
         </thead>
         <tbody id="sellersTableBody"></tbody>
@@ -98,11 +107,11 @@
       <table class="w-full text-sm min-w-[720px]">
         <thead>
           <tr class="text-left text-muted border-b border-secondary-50">
-            <th class="pb-3 font-semibold">Vật liệu</th>
-            <th class="pb-3 font-semibold">Nhà bán hàng</th>
-            <th class="pb-3 font-semibold">Danh mục</th>
-            <th class="pb-3 font-semibold">Giá</th>
-            <th class="pb-3 font-semibold text-right">Hành động</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.materials_th_name">Vật liệu</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.materials_th_seller">Nhà bán hàng</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.materials_th_category">Danh mục</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.materials_th_price">Giá</th>
+            <th class="pb-3 font-semibold text-right" data-i18n="admin.th_action">Hành động</th>
           </tr>
         </thead>
         <tbody id="materialsTableBody"></tbody>
@@ -125,8 +134,12 @@
     return data;
   }
 
-  const CAT_LABELS = { van: 'Ván công nghiệp', son: 'Sơn', gach: 'Gạch', da: 'Đá', kinh: 'Kính', go: 'Gỗ tự nhiên' };
-  const STATUS_LABELS = { pending: 'Chờ duyệt', approved: 'Đã duyệt', blocked: 'Bị khóa' };
+  function catLabel(cat) {
+    return window.I18N ? window.I18N.t('common.cat_' + cat) : cat;
+  }
+  function statusLabel(status) {
+    return window.I18N ? window.I18N.t('status.' + status) : status;
+  }
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -153,13 +166,13 @@
         <p class="font-semibold">${s.business_name}</p>
         <p class="text-xs text-muted">${s.email}</p>
       </td>
-      <td class="py-3 pr-3">${CAT_LABELS[s.category] || s.category}</td>
+      <td class="py-3 pr-3">${catLabel(s.category)}</td>
       <td class="py-3 pr-3">${s.materials_count}</td>
-      <td class="py-3 pr-3"><span class="text-xs font-semibold px-3 py-1 rounded-full badge-${s.status}">${STATUS_LABELS[s.status]}</span></td>
+      <td class="py-3 pr-3"><span class="text-xs font-semibold px-3 py-1 rounded-full badge-${s.status}">${statusLabel(s.status)}</span></td>
       <td class="py-3 text-right whitespace-nowrap">
-        ${s.status !== 'approved' ? `<button data-id="${s.id}" data-status="approved" class="set-status text-xs font-semibold text-secondary hover:underline mr-3">Duyệt</button>` : ''}
-        ${s.status !== 'blocked' ? `<button data-id="${s.id}" data-status="blocked" class="set-status text-xs font-semibold text-red-600 hover:underline mr-3">Khóa</button>` : `<button data-id="${s.id}" data-status="approved" class="set-status text-xs font-semibold text-secondary hover:underline mr-3">Mở khóa</button>`}
-        <button data-id="${s.id}" class="delete-seller text-xs font-semibold text-muted hover:underline">Xóa</button>
+        ${s.status !== 'approved' ? `<button data-id="${s.id}" data-status="approved" class="set-status text-xs font-semibold text-secondary hover:underline mr-3">${window.I18N.t('admin.action_approve')}</button>` : ''}
+        ${s.status !== 'blocked' ? `<button data-id="${s.id}" data-status="blocked" class="set-status text-xs font-semibold text-red-600 hover:underline mr-3">${window.I18N.t('admin.action_block')}</button>` : `<button data-id="${s.id}" data-status="approved" class="set-status text-xs font-semibold text-secondary hover:underline mr-3">${window.I18N.t('admin.action_unblock')}</button>`}
+        <button data-id="${s.id}" class="delete-seller text-xs font-semibold text-muted hover:underline">${window.I18N.t('common.delete')}</button>
       </td>`;
     return tr;
   }
@@ -179,7 +192,7 @@
     });
     body.querySelectorAll('.delete-seller').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Xóa nhà bán hàng này? Toàn bộ vật liệu của họ cũng sẽ bị xóa.')) return;
+        if (!confirm(window.I18N.t('admin.confirm_delete_seller'))) return;
         await api('/api/admin/sellers/' + btn.dataset.id, { method: 'DELETE' });
         loadSellers();
         loadStats();
@@ -197,9 +210,9 @@
         <p class="text-xs text-muted">${m.spec || ''}</p>
       </td>
       <td class="py-3 pr-3">${m.seller_name}</td>
-      <td class="py-3 pr-3">${CAT_LABELS[m.category] || m.category}</td>
+      <td class="py-3 pr-3">${catLabel(m.category)}</td>
       <td class="py-3 pr-3 font-heading font-bold text-accent-600">${m.price || ''}</td>
-      <td class="py-3 text-right"><button data-id="${m.id}" class="delete-material text-xs font-semibold text-red-600 hover:underline">Xóa</button></td>`;
+      <td class="py-3 text-right"><button data-id="${m.id}" class="delete-material text-xs font-semibold text-red-600 hover:underline">${window.I18N.t('common.delete')}</button></td>`;
     return tr;
   }
 
@@ -210,7 +223,7 @@
     materials.forEach(m => body.appendChild(materialRow(m)));
     body.querySelectorAll('.delete-material').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Xóa vật liệu này?')) return;
+        if (!confirm(window.I18N.t('common.confirm_delete_material'))) return;
         await api('/api/admin/materials/' + btn.dataset.id, { method: 'DELETE' });
         loadMaterials();
         loadStats();
@@ -223,10 +236,15 @@
     window.location.href = 'login.html';
   });
 
+  document.addEventListener('i18n:change', () => {
+    loadSellers();
+    loadMaterials();
+  });
+
   (async function init() {
     try {
       const { user } = await api('/api/auth/me');
-      if (user.role !== 'admin') { window.location.href = 'seller-dashboard.html'; return; }
+      if (user.role !== 'admin') { window.location.href = user.role === 'seller' ? 'seller-dashboard.html' : 'index.html'; return; }
       document.getElementById('userGreeting').textContent = user.email;
       await Promise.all([loadStats(), loadSellers(), loadMaterials()]);
     } catch (err) {

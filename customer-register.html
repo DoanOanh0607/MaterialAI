@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi" data-i18n-doc-title="register.doc_title">
+<html lang="vi" data-i18n-doc-title="customer_register.doc_title">
 <head>
 <meta charset="UTF-8">
 <script>(function(){var l=localStorage.getItem('materialai_lang')==='en'?'en':'vi';document.documentElement.lang=l;if(l==='en')document.documentElement.style.visibility='hidden';})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Đăng ký nhà bán hàng – Material AI</title>
+<title>Đăng ký khách hàng – Material AI</title>
 <link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
 <link rel="icon" type="image/png" href="images/favicon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="images/favicon-180.png">
@@ -12,7 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="i18n.js"></script>
-<script src="custom-select.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
     colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
@@ -47,7 +46,7 @@
       <a href="contact.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.contact">Liên hệ</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
-      <a href="login.html" class="nav-active px-4 py-2 rounded-full text-sm font-medium" data-i18n="nav.login">Đăng nhập</a>
+      <a href="login.html" class="px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
       <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
@@ -67,83 +66,42 @@
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
     </div>
-    <a href="login.html" class="nav-active px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+    <a href="login.html" class="px-4 py-2.5" data-i18n="nav.login">Đăng nhập</a>
   </div>
 </header>
 
 <!-- REGISTER FORM -->
 <section class="relative pt-28 pb-16 px-6">
-  <div class="max-w-xl mx-auto w-full">
+  <div class="max-w-md mx-auto w-full">
     <div class="text-center mb-8">
-      <span class="inline-block bg-accent-50 text-secondary font-semibold text-sm px-4 py-1.5 rounded-full mb-4" data-i18n="register.badge">Dành cho nhà bán hàng</span>
-      <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-2" data-i18n="register.h1">Đăng ký bán vật liệu</h1>
-      <p class="font-script text-2xl text-accent-600" data-i18n="register.tagline">bắt đầu tiếp cận khách hàng mới</p>
+      <span class="inline-block bg-accent-50 text-secondary font-semibold text-sm px-4 py-1.5 rounded-full mb-4" data-i18n="customer_register.badge">Dành cho khách hàng</span>
+      <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-2" data-i18n="customer_register.h1">Tạo tài khoản khách hàng</h1>
+      <p class="font-script text-2xl text-accent-600" data-i18n="customer_register.tagline">lưu giỏ hàng, mua sắm mọi lúc</p>
     </div>
 
     <form id="registerForm" class="glass rounded-3xl p-8 shadow-soft space-y-4">
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="register.email_label">Email đăng nhập</label>
-          <input id="email" required type="email" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="ban@email.com">
-        </div>
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="register.password_label">Mật khẩu</label>
-          <input id="password" required type="password" minlength="8" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="Tối thiểu 8 ký tự" data-i18n-placeholder="register.password_placeholder">
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="register.business_name_label">Tên nhà bán hàng</label>
-          <input id="businessName" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="Xưởng Ván ABC" data-i18n-placeholder="register.business_name_placeholder">
-        </div>
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="register.category_label">Ngành hàng</label>
-          <div id="category" class="custom-select">
-            <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
-              <span class="custom-select-label"></span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="register.phone_label">Số điện thoại</label>
-          <input id="phone" type="tel" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="09xx xxx xxx">
-        </div>
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="register.website_label">Website (không bắt buộc)</label>
-          <input id="website" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="tenmien.vn" data-i18n-placeholder="register.website_placeholder">
-        </div>
+      <div>
+        <label class="text-sm font-semibold block mb-1.5" data-i18n="customer_register.name_label">Họ và tên</label>
+        <input id="name" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="Nguyễn Văn A" data-i18n-placeholder="contact.field_name_placeholder">
       </div>
       <div>
-        <label class="text-sm font-semibold block mb-1.5" data-i18n="register.address_label">Địa chỉ</label>
-        <input id="address" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành" data-i18n-placeholder="register.address_placeholder">
+        <label class="text-sm font-semibold block mb-1.5" data-i18n="register.email_label">Email đăng nhập</label>
+        <input id="email" required type="email" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="ban@email.com">
       </div>
       <div>
-        <label class="text-sm font-semibold block mb-1.5" data-i18n="register.description_label">Giới thiệu ngắn</label>
-        <textarea id="description" rows="3" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="Vài dòng về sản phẩm và thế mạnh của bạn..." data-i18n-placeholder="register.description_placeholder"></textarea>
+        <label class="text-sm font-semibold block mb-1.5" data-i18n="register.password_label">Mật khẩu</label>
+        <input id="password" required type="password" minlength="8" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="Tối thiểu 8 ký tự" data-i18n-placeholder="register.password_placeholder">
       </div>
       <p id="registerError" class="form-error text-sm text-red-600 font-medium"></p>
       <button type="submit" class="w-full bg-accent text-ink font-semibold py-3.5 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="register.submit">Đăng ký</button>
-      <p class="text-sm text-muted text-center pt-1" data-i18n-html="register.login_hint">Đã có tài khoản? <a href="login.html" class="text-secondary font-semibold hover:underline">Đăng nhập</a></p>
-      <p class="text-xs text-muted text-center" data-i18n-html="register.customer_hint">Bạn là khách hàng? <a href="customer-register.html" class="text-secondary font-semibold hover:underline">Đăng ký tại đây</a></p>
+      <p class="text-sm text-muted text-center pt-1" data-i18n-html="customer_register.login_hint">Đã có tài khoản? <a href="login.html" class="text-secondary font-semibold hover:underline">Đăng nhập</a></p>
+      <p class="text-xs text-muted text-center" data-i18n-html="customer_register.seller_hint">Bạn là nhà bán hàng? <a href="register.html" class="text-secondary font-semibold hover:underline">Đăng ký tại đây</a></p>
     </form>
-    <p class="text-xs text-muted text-center mt-4" data-i18n="register.approval_note">Sau khi đăng ký, tài khoản của bạn cần được admin duyệt trước khi đăng bán vật liệu.</p>
   </div>
 </section>
 
 <script>
   document.getElementById('menuBtn')?.addEventListener('click',()=>document.getElementById('mobileMenu')?.classList.toggle('hidden'));
-
-  const categorySelect = CustomSelect.init(document.getElementById('category'), [
-    { value: 'van', labelKey: 'common.cat_van' },
-    { value: 'son', labelKey: 'common.cat_son' },
-    { value: 'gach', labelKey: 'common.cat_gach' },
-    { value: 'da', labelKey: 'common.cat_da' },
-    { value: 'kinh', labelKey: 'common.cat_kinh' },
-    { value: 'go', labelKey: 'common.cat_go' }
-  ], 'van');
 
   async function api(url, options = {}) {
     const res = await fetch(url, {
@@ -157,9 +115,15 @@
     return data;
   }
 
+  function safeNext() {
+    const next = new URLSearchParams(window.location.search).get('next');
+    return (next && /^[a-zA-Z0-9_-]+\.html$/.test(next)) ? next : 'index.html';
+  }
+
   api('/api/auth/me').then(d => {
     if (d.user.role === 'admin') window.location.href = 'admin-dashboard.html';
     else if (d.user.role === 'seller') window.location.href = 'seller-dashboard.html';
+    else window.location.href = safeNext();
   }).catch(() => {});
 
   const errorEl = document.getElementById('registerError');
@@ -167,20 +131,16 @@
     e.preventDefault();
     errorEl.classList.remove('show');
     try {
-      await api('/api/auth/register', {
+      await api('/api/auth/customer/register', {
         method: 'POST',
         body: {
+          name: document.getElementById('name').value.trim(),
           email: document.getElementById('email').value.trim(),
-          password: document.getElementById('password').value,
-          businessName: document.getElementById('businessName').value.trim(),
-          category: categorySelect.getValue(),
-          phone: document.getElementById('phone').value.trim(),
-          website: document.getElementById('website').value.trim(),
-          address: document.getElementById('address').value.trim(),
-          description: document.getElementById('description').value.trim()
+          password: document.getElementById('password').value
         }
       });
-      window.location.href = 'seller-dashboard.html';
+      // Registration doesn't start a session — send them to log in explicitly.
+      window.location.href = 'login.html?registered=1&next=' + encodeURIComponent(safeNext());
     } catch (err) {
       errorEl.textContent = err.message;
       errorEl.classList.add('show');

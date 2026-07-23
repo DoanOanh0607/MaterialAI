@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="i18n.js"></script>
+<script src="custom-select.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
     colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
@@ -51,7 +52,11 @@
       <a href="contact.html" class="nav-active px-4 py-2 rounded-full transition-colors" data-i18n="nav.contact">Liên hệ</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
-      <a href="login.html" class="border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <a href="login.html" class="nav-login-link border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <button type="button" class="nav-customer-btn hidden items-center gap-2 border border-secondary-100 pl-1.5 pr-4 py-1.5 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors">
+        <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
+        <span class="nav-customer-name truncate max-w-[120px]"></span>
+      </button>
       <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
@@ -67,9 +72,14 @@
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
     </div>
-    <a href="login.html" class="border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+    <a href="login.html" class="nav-login-link border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+    <button type="button" class="nav-customer-btn hidden items-center gap-2 border border-secondary-100 px-2 py-2 rounded-full w-fit">
+      <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
+      <span class="nav-customer-name truncate max-w-[140px]"></span>
+    </button>
   </div>
 </header>
+<script>(function(){var h;try{h=JSON.parse(localStorage.getItem("materialai_customer_hint"));}catch(e){h=null;}if(!h)return;function ini(n){var p=String(n||"").trim().split(/\s+/).filter(Boolean);if(!p.length)return"?";return(p.length>=2?p[0][0]+p[1][0]:p[0].slice(0,2)).toUpperCase();}document.querySelectorAll(".nav-login-link").forEach(function(a){a.classList.add("hidden");});document.querySelectorAll(".nav-customer-btn").forEach(function(b){b.classList.remove("hidden");b.classList.add("flex");var av=b.querySelector(".nav-customer-avatar");if(av)av.textContent=ini(h.name||h.email);var nm=b.querySelector(".nav-customer-name");if(nm)nm.textContent=h.name||h.email;});})();</script>
 
 <!-- HERO -->
 <section class="relative pt-[85px] pb-8 md:pt-[107px] md:pb-10 px-6">
@@ -134,12 +144,12 @@
       </div>
       <div>
         <label class="text-sm font-semibold block mb-1.5" data-i18n="contact.field_subject">Chủ đề</label>
-        <select class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white">
-          <option data-i18n="contact.subject1">Hỗ trợ tìm kiếm vật liệu</option>
-          <option data-i18n="contact.subject2">Đăng bán / hợp tác nhà bán hàng</option>
-          <option data-i18n="contact.subject3">Báo lỗi hệ thống</option>
-          <option data-i18n="contact.subject4">Khác</option>
-        </select>
+        <div id="contactSubject" class="custom-select">
+          <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
+            <span class="custom-select-label"></span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </div>
       </div>
       <div>
         <label class="text-sm font-semibold block mb-1.5" data-i18n="contact.field_message">Lời nhắn</label>
@@ -172,6 +182,15 @@
     document.getElementById('contactFormMsg').classList.add('show');
     e.target.reset();
   });
+
+  CustomSelect.init(document.getElementById('contactSubject'), [
+    { value: 'search', labelKey: 'contact.subject1' },
+    { value: 'seller', labelKey: 'contact.subject2' },
+    { value: 'bug', labelKey: 'contact.subject3' },
+    { value: 'other', labelKey: 'contact.subject4' }
+  ], 'search');
 </script>
+<script src="chat-widget.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>

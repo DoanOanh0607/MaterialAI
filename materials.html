@@ -71,7 +71,11 @@
       <a href="contact.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.contact">Liên hệ</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
-      <a href="login.html" class="border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <a href="login.html" class="nav-login-link border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <button type="button" class="nav-customer-btn hidden items-center gap-2 border border-secondary-100 pl-1.5 pr-4 py-1.5 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors">
+        <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
+        <span class="nav-customer-name truncate max-w-[120px]"></span>
+      </button>
       <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
@@ -87,9 +91,14 @@
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
     </div>
-    <a href="login.html" class="border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+    <a href="login.html" class="nav-login-link border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+    <button type="button" class="nav-customer-btn hidden items-center gap-2 border border-secondary-100 px-2 py-2 rounded-full w-fit">
+      <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
+      <span class="nav-customer-name truncate max-w-[140px]"></span>
+    </button>
   </div>
 </header>
+<script>(function(){var h;try{h=JSON.parse(localStorage.getItem("materialai_customer_hint"));}catch(e){h=null;}if(!h)return;function ini(n){var p=String(n||"").trim().split(/\s+/).filter(Boolean);if(!p.length)return"?";return(p.length>=2?p[0][0]+p[1][0]:p[0].slice(0,2)).toUpperCase();}document.querySelectorAll(".nav-login-link").forEach(function(a){a.classList.add("hidden");});document.querySelectorAll(".nav-customer-btn").forEach(function(b){b.classList.remove("hidden");b.classList.add("flex");var av=b.querySelector(".nav-customer-avatar");if(av)av.textContent=ini(h.name||h.email);var nm=b.querySelector(".nav-customer-name");if(nm)nm.textContent=h.name||h.email;});})();</script>
 
 <!-- HEADER + SEARCH -->
 <section id="upload" class="pt-[85px] pb-6 md:pt-[107px] px-6 bg-secondary-50/30">
@@ -104,8 +113,13 @@
         <span data-i18n="materials.upload_label">Upload ảnh tìm kiếm</span>
         <input type="file" accept="image/*" class="hidden">
       </label>
-      <input type="text" data-i18n-placeholder="materials.search_placeholder" placeholder="Tìm theo tên vật liệu, mã sản phẩm..." class="flex-1 rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary">
-      <button class="bg-accent text-ink font-semibold text-sm px-6 py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="materials.search_button">Tìm kiếm</button>
+      <div class="relative flex-1">
+        <input id="materialsSearch" type="text" data-i18n-placeholder="materials.search_placeholder" placeholder="Tìm theo tên vật liệu, mã sản phẩm..." class="w-full rounded-xl border border-secondary-100 pl-4 pr-10 py-3 text-sm outline-none focus:border-secondary">
+        <button id="materialsSearchClear" type="button" aria-label="Xóa tìm kiếm" data-i18n-aria-label="common.clear_search" class="hidden absolute inset-y-0 right-0 flex items-center px-3 text-muted hover:text-ink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <button id="materialsSearchBtn" type="button" class="bg-accent text-ink font-semibold text-sm px-6 py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="materials.search_button">Tìm kiếm</button>
     </div>
 
     <!-- CATEGORY TABS -->
@@ -145,6 +159,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card1_price">450.000đ/tấm</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -166,6 +184,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card2_price">1.250.000đ/thùng</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -188,6 +210,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card3_price">185.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -210,6 +236,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card4_price">890.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -231,6 +261,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card5_price">620.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -252,6 +286,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card6_price">3.200.000đ/m³</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -274,6 +312,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card7_price">380.000đ/tấm</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -296,6 +338,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card8_price">1.450.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -318,6 +364,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card9_price">340.000đ/tấm</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -340,6 +390,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card10_price">420.000đ/tấm</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -362,6 +416,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card11_price">395.000đ/tấm</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -383,6 +441,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card12_price">1.290.000đ/thùng</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -404,6 +466,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card13_price">1.180.000đ/thùng</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -425,6 +491,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card14_price">450.000đ/thùng</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -447,6 +517,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card15_price">165.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -469,6 +543,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card16_price">245.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -491,6 +569,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card17_price">210.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -513,6 +595,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card18_price">950.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -535,6 +621,10 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card19_price">1.680.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
 
@@ -557,13 +647,19 @@
           <span class="font-heading font-bold text-accent-600" data-i18n="materials.card20_price">1.120.000đ/m²</span>
           <button class="text-xs font-semibold text-secondary hover:underline" data-i18n="materials.find_similar">Tìm tương tự</button>
         </div>
+        <button type="button" class="cart-add-btn mt-3 w-full flex items-center justify-center gap-2 border border-secondary-100 rounded-full py-2.5 text-xs font-semibold text-secondary hover:bg-secondary hover:text-white transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="materials.add_to_cart">Thêm vào giỏ hàng</span>
+        </button>
       </div>
     </article>
     <!-- /Card mẫu -->
 
   </div>
 
-  <div class="text-center mt-12">
+  <p id="materialsEmpty" class="hidden text-center text-sm text-muted py-10" data-i18n="materials.empty">Không tìm thấy vật liệu phù hợp. Hãy thử từ khoá hoặc danh mục khác.</p>
+
+  <div id="loadMoreWrap" class="text-center mt-12">
     <button class="border border-secondary text-secondary font-semibold px-8 py-3 rounded-full hover:bg-secondary hover:text-white transition-colors" data-i18n="materials.load_more">Xem thêm vật liệu</button>
   </div>
 </section>
@@ -608,16 +704,49 @@
   const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.1});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
+  // Category filter + text search (combined)
+  const matCards = document.querySelectorAll('.mat-card');
+  const materialsSearchInput = document.getElementById('materialsSearch');
+  const materialsSearchClear = document.getElementById('materialsSearchClear');
+  const materialsEmptyMsg = document.getElementById('materialsEmpty');
+  const loadMoreWrap = document.getElementById('loadMoreWrap');
+  let activeMatCat = 'all';
+
+  function applyMaterialFilters() {
+    const q = materialsSearchInput.value.trim().toLowerCase();
+    materialsSearchClear.classList.toggle('hidden', !q);
+    let visibleCount = 0;
+    matCards.forEach(card => {
+      const matchesCat = activeMatCat === 'all' || card.dataset.cat === activeMatCat;
+      const titleEl = card.querySelector('h3');
+      const specEl = titleEl ? titleEl.nextElementSibling : null;
+      const text = ((titleEl ? titleEl.textContent : '') + ' ' + (specEl ? specEl.textContent : '')).toLowerCase();
+      const matchesSearch = !q || text.includes(q);
+      const show = matchesCat && matchesSearch;
+      card.classList.toggle('filtered-out', !show);
+      if (show) visibleCount++;
+    });
+    materialsEmptyMsg.classList.toggle('hidden', visibleCount > 0);
+    loadMoreWrap.classList.toggle('hidden', visibleCount === 0);
+  }
+
   document.querySelectorAll('.cat-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      const cat = btn.dataset.cat;
-      document.querySelectorAll('.mat-card').forEach(card=>{
-        card.classList.toggle('filtered-out', cat!=='all' && card.dataset.cat!==cat);
-      });
+      activeMatCat = btn.dataset.cat;
+      applyMaterialFilters();
     });
   });
+  materialsSearchInput.addEventListener('input', applyMaterialFilters);
+  document.getElementById('materialsSearchBtn').addEventListener('click', applyMaterialFilters);
+  materialsSearchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyMaterialFilters(); } });
+  materialsSearchClear.addEventListener('click', () => {
+    materialsSearchInput.value = '';
+    applyMaterialFilters();
+    materialsSearchInput.focus();
+  });
+  document.addEventListener('i18n:change', applyMaterialFilters);
 
   // Seller info modal
   const sellerModal = document.getElementById('sellerModal');
@@ -646,7 +775,41 @@
     sellerModal.classList.add('hidden');
     window.ChatWidget.openWithSeller(Number(activeSellerBtn.dataset.sellerId));
   });
+
+  // Add-to-cart — reads item info straight from the card's own DOM/data (no extra data-* to keep in sync)
+  document.querySelectorAll('.cart-add-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const card = btn.closest('.mat-card');
+      const sellerBtn = card.querySelector('.seller-trigger');
+      const titleEl = card.querySelector('h3');
+      const specEl = titleEl.nextElementSibling;
+      const priceEl = card.querySelector('.font-heading.font-bold.text-accent-600');
+      const imgEl = card.querySelector('img');
+      const texEl = card.querySelector('[class*="tex-"]');
+      const texMatch = texEl ? texEl.className.match(/tex-\S+/) : null;
+      const title = titleEl.textContent.trim();
+      btn.disabled = true;
+      const added = await window.Cart.addItem({
+        id: 'm_' + sellerBtn.dataset.sellerId + '_' + title.toLowerCase().replace(/[^a-z0-9]+/g,'-'),
+        title,
+        spec: specEl ? specEl.textContent.trim() : '',
+        priceText: priceEl ? priceEl.textContent.trim() : '',
+        image: imgEl ? imgEl.getAttribute('src') : '',
+        texClass: texMatch ? texMatch[0] : null,
+        cat: card.dataset.cat,
+        sellerId: sellerBtn.dataset.sellerId,
+        sellerName: sellerBtn.dataset.name,
+        sellerInitials: sellerBtn.dataset.initials
+      });
+      if (!added) { btn.disabled = false; return; }
+      const label = btn.querySelector('span');
+      const original = label.textContent;
+      label.textContent = I18N.t('materials.added_to_cart');
+      setTimeout(()=>{ label.textContent = original; btn.disabled = false; }, 1200);
+    });
+  });
 </script>
 <script src="chat-widget.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>

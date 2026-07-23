@@ -100,9 +100,19 @@
     'footer.follow_title': 'Theo dõi',
     'footer.copyright': '© 2026 Material AI. All rights reserved.',
     'common.close': 'Đóng',
+    'common.clear_search': 'Xóa tìm kiếm',
     'common.verified': 'Đã xác thực',
     'common.unverified': 'Chưa xác thực',
-    'common.office_address': 'Tầng 5, Toà nhà ABC, Quận 1, TP. Hồ Chí Minh'
+    'common.office_address': 'Tầng 5, Toà nhà ABC, Quận 1, TP. Hồ Chí Minh',
+    'common.logout': 'Đăng xuất',
+    'common.back': 'Quay lại',
+    'common.send': 'Gửi',
+    'common.delete': 'Xóa',
+    'common.website_label': 'Website',
+    'common.confirm_delete_material': 'Xóa vật liệu này?',
+    'status.pending': 'Chờ duyệt',
+    'status.approved': 'Đã duyệt',
+    'status.blocked': 'Bị khóa'
   });
 
   /* ===== index.html (home) ===== */
@@ -343,10 +353,61 @@
     'materials.card20_spec': 'Dày 18mm · Bề mặt mài bóng',
     'materials.card20_price': '1.120.000đ/m²',
     'materials.find_similar': 'Tìm tương tự',
+    'materials.empty': 'Không tìm thấy vật liệu phù hợp. Hãy thử từ khoá hoặc danh mục khác.',
     'materials.load_more': 'Xem thêm vật liệu',
     'materials.modal_contact': 'Liên hệ ngay',
     'materials.modal_view_products': 'Xem sản phẩm',
-    'materials.products_selling': 'sản phẩm đang bán'
+    'materials.products_selling': 'sản phẩm đang bán',
+    'materials.add_to_cart': 'Thêm vào giỏ hàng',
+    'materials.added_to_cart': '✓ Đã thêm'
+  });
+
+  /* ===== cart widget (materials.html, sellers.html) ===== */
+  Object.assign(VI, {
+    'cart.title': 'Giỏ hàng của bạn',
+    'cart.empty': 'Giỏ hàng đang trống. Bấm "Thêm vào giỏ hàng" trên vật liệu bạn quan tâm.',
+    'cart.subtotal': 'Tạm tính',
+    'cart.grand_total': 'Tổng cộng',
+    'cart.checkout': 'Đặt hàng',
+    'cart.note': 'Bấm "Đặt hàng" cho từng nhà bán hàng để hoàn tất đơn — thanh toán khi nhận hàng hoặc chuyển khoản trực tiếp.',
+    'cart.clear': 'Xóa giỏ hàng',
+    'cart.clear_confirm': 'Xóa toàn bộ giỏ hàng?'
+  });
+
+  /* ===== checkout modal (materials.html, sellers.html, ...) ===== */
+  Object.assign(VI, {
+    'checkout.total': 'Tổng thanh toán',
+    'checkout.discount': 'Giảm giá',
+    'checkout.voucher_label': 'Mã giảm giá (nếu có)',
+    'checkout.voucher_apply': 'Áp dụng',
+    'checkout.voucher_invalid': 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
+    'checkout.voucher_applied': 'Đã áp dụng mã giảm giá.',
+    'checkout.name_label': 'Họ tên người nhận',
+    'checkout.phone_label': 'Số điện thoại',
+    'checkout.address_label': 'Địa chỉ giao hàng',
+    'checkout.payment_label': 'Phương thức thanh toán',
+    'checkout.payment_cod': 'Thanh toán khi nhận hàng (COD)',
+    'checkout.payment_bank': 'Chuyển khoản ngân hàng',
+    'checkout.submit': 'Xác nhận đặt hàng',
+    'checkout.missing_fields': 'Vui lòng điền đầy đủ thông tin giao hàng.',
+    'checkout.success_title': 'Đặt hàng thành công!',
+    'checkout.success_sub': 'Nhà bán hàng sẽ liên hệ xác nhận với bạn.'
+  });
+
+  /* ===== order status (customer order history + seller order management) ===== */
+  Object.assign(VI, {
+    'order_status.pending': 'Chờ xác nhận',
+    'order_status.confirmed': 'Đã xác nhận',
+    'order_status.shipping': 'Đang giao',
+    'order_status.completed': 'Hoàn tất',
+    'order_status.cancelled': 'Đã huỷ'
+  });
+
+  /* ===== customer nav dropdown (materials.html, sellers.html, index.html, faq.html, contact.html) ===== */
+  Object.assign(VI, {
+    'nav_menu.order_history': 'Lịch sử đặt hàng',
+    'orders.loading': 'Đang tải...',
+    'orders.empty': 'Bạn chưa đặt đơn hàng nào.'
   });
 
   /* ===== sellers.html ===== */
@@ -371,6 +432,136 @@
     'sellers.years_active': 'năm hoạt động'
   });
 
+  /* ===== login.html ===== */
+  Object.assign(VI, {
+    'login.doc_title': 'Đăng nhập – Material AI',
+    'login.h1': 'Đăng nhập',
+    'login.tagline': 'chào mừng bạn quay lại',
+    'login.email_label': 'Email',
+    'login.password_label': 'Mật khẩu',
+    'login.show_password': 'Hiện mật khẩu',
+    'login.hide_password': 'Ẩn mật khẩu',
+    'login.submit': 'Đăng nhập',
+    'login.register_hint': 'Chưa có tài khoản? <a href="register-choice.html" class="text-secondary font-semibold hover:underline">Đăng ký ngay</a>',
+    'login.registered_notice': 'Đăng ký thành công! Vui lòng đăng nhập.',
+    'login.demo_title': 'Tài khoản demo để dùng thử:',
+    'login.demo_seller_label': 'Nhà bán hàng'
+  });
+
+  /* ===== register-choice.html ===== */
+  Object.assign(VI, {
+    'register_choice.doc_title': 'Đăng ký tài khoản – Material AI',
+    'register_choice.badge': 'Tạo tài khoản mới',
+    'register_choice.h1': 'Bạn muốn đăng ký với vai trò nào?',
+    'register_choice.tagline': 'chọn loại tài khoản phù hợp',
+    'register_choice.customer_title': 'Khách hàng',
+    'register_choice.customer_desc': 'Lưu giỏ hàng, gửi yêu cầu mua vật liệu tới nhà bán hàng.',
+    'register_choice.customer_cta': 'Đăng ký khách hàng',
+    'register_choice.seller_title': 'Nhà bán hàng',
+    'register_choice.seller_desc': 'Đăng bán vật liệu, quản lý gian hàng và trò chuyện với khách hàng.',
+    'register_choice.seller_cta': 'Đăng ký nhà bán hàng'
+  });
+
+  /* ===== register.html ===== */
+  Object.assign(VI, {
+    'register.doc_title': 'Đăng ký nhà bán hàng – Material AI',
+    'register.badge': 'Dành cho nhà bán hàng',
+    'register.h1': 'Đăng ký bán vật liệu',
+    'register.tagline': 'bắt đầu tiếp cận khách hàng mới',
+    'register.email_label': 'Email đăng nhập',
+    'register.password_label': 'Mật khẩu',
+    'register.password_placeholder': 'Tối thiểu 8 ký tự',
+    'register.business_name_label': 'Tên nhà bán hàng',
+    'register.business_name_placeholder': 'Xưởng Ván ABC',
+    'register.category_label': 'Ngành hàng',
+    'register.phone_label': 'Số điện thoại',
+    'register.website_label': 'Website (không bắt buộc)',
+    'register.website_placeholder': 'tenmien.vn',
+    'register.address_label': 'Địa chỉ',
+    'register.address_placeholder': 'Số nhà, đường, quận/huyện, tỉnh/thành',
+    'register.description_label': 'Giới thiệu ngắn',
+    'register.description_placeholder': 'Vài dòng về sản phẩm và thế mạnh của bạn...',
+    'register.submit': 'Đăng ký',
+    'register.login_hint': 'Đã có tài khoản? <a href="login.html" class="text-secondary font-semibold hover:underline">Đăng nhập</a>',
+    'register.customer_hint': 'Bạn là khách hàng? <a href="customer-register.html" class="text-secondary font-semibold hover:underline">Đăng ký tại đây</a>',
+    'register.approval_note': 'Sau khi đăng ký, tài khoản của bạn cần được admin duyệt trước khi đăng bán vật liệu.'
+  });
+
+  /* ===== customer-register.html ===== */
+  Object.assign(VI, {
+    'customer_register.doc_title': 'Đăng ký khách hàng – Material AI',
+    'customer_register.badge': 'Dành cho khách hàng',
+    'customer_register.h1': 'Tạo tài khoản khách hàng',
+    'customer_register.tagline': 'lưu giỏ hàng, mua sắm mọi lúc',
+    'customer_register.name_label': 'Họ và tên',
+    'customer_register.login_hint': 'Đã có tài khoản? <a href="login.html" class="text-secondary font-semibold hover:underline">Đăng nhập</a>',
+    'customer_register.seller_hint': 'Bạn là nhà bán hàng? <a href="register.html" class="text-secondary font-semibold hover:underline">Đăng ký tại đây</a>'
+  });
+
+  /* ===== admin-dashboard.html ===== */
+  Object.assign(VI, {
+    'admin.doc_title': 'Bảng điều khiển quản trị – Material AI',
+    'admin.navbar_title': 'Bảng điều khiển quản trị',
+    'admin.h1': 'Quản trị hệ thống',
+    'admin.tagline': 'toàn cảnh Material AI',
+    'admin.stat_total_sellers': 'Tổng nhà bán hàng',
+    'admin.stat_materials': 'Tổng vật liệu',
+    'admin.sellers_th_name': 'Nhà bán hàng',
+    'admin.sellers_th_category': 'Ngành hàng',
+    'admin.sellers_th_materials': 'Vật liệu',
+    'admin.sellers_th_status': 'Trạng thái',
+    'admin.th_action': 'Hành động',
+    'admin.materials_th_name': 'Vật liệu',
+    'admin.materials_th_seller': 'Nhà bán hàng',
+    'admin.materials_th_category': 'Danh mục',
+    'admin.materials_th_price': 'Giá',
+    'admin.action_approve': 'Duyệt',
+    'admin.action_block': 'Khóa',
+    'admin.action_unblock': 'Mở khóa',
+    'admin.confirm_delete_seller': 'Xóa nhà bán hàng này? Toàn bộ vật liệu của họ cũng sẽ bị xóa.'
+  });
+
+  /* ===== seller-dashboard.html ===== */
+  Object.assign(VI, {
+    'seller.doc_title': 'Bảng điều khiển nhà bán hàng – Material AI',
+    'seller.navbar_title': 'Bảng điều khiển nhà bán hàng',
+    'seller.greeting': 'Xin chào,',
+    'seller.tagline': 'quản lý gian hàng của bạn',
+    'seller.pending_notice': 'Tài khoản của bạn đang <strong>chờ admin duyệt</strong>. Bạn có thể cập nhật hồ sơ ngay bây giờ, nhưng cần được duyệt trước khi đăng vật liệu lên hệ thống.',
+    'seller.blocked_notice': 'Tài khoản của bạn đã <strong>bị khóa</strong>. Vui lòng liên hệ quản trị viên nếu có thắc mắc.',
+    'seller.messages_title': 'Tin nhắn khách hàng',
+    'seller.chat_empty': 'Chưa có khách hàng nào nhắn tin.',
+    'seller.chat_input_placeholder': 'Nhập tin nhắn...',
+    'seller.profile_title': 'Hồ sơ nhà bán hàng',
+    'seller.description_label': 'Giới thiệu',
+    'seller.save_profile': 'Lưu hồ sơ',
+    'seller.profile_saved': 'Đã lưu hồ sơ.',
+    'seller.add_material_title': 'Đăng vật liệu mới',
+    'seller.material_category_label': 'Danh mục',
+    'seller.material_title_label': 'Tên vật liệu',
+    'seller.material_title_placeholder': 'VD: Ván MDF phủ Melamine vân sồi',
+    'seller.material_spec_label': 'Thông số',
+    'seller.material_spec_placeholder': 'VD: Dày 18mm · Kích thước 1220x2440mm',
+    'seller.material_price_label': 'Giá',
+    'seller.material_price_placeholder': 'VD: 450.000đ/tấm',
+    'seller.submit_material': 'Đăng vật liệu',
+    'seller.material_added': 'Đã đăng vật liệu.',
+    'seller.materials_list_title': 'Vật liệu đang bán',
+    'seller.materials_empty': 'Bạn chưa đăng vật liệu nào.',
+    'seller.orders_title': 'Đơn hàng',
+    'seller.orders_empty': 'Chưa có đơn hàng nào.',
+    'seller.vouchers_title': 'Mã giảm giá',
+    'seller.voucher_code_placeholder': 'VD: SALE10',
+    'seller.voucher_type_percent': 'Giảm theo %',
+    'seller.voucher_type_fixed': 'Giảm số tiền',
+    'seller.voucher_value_placeholder': 'VD: 10',
+    'seller.voucher_add': 'Thêm mã giảm giá',
+    'seller.voucher_added': 'Đã thêm mã giảm giá.',
+    'seller.voucher_active': 'Đang áp dụng',
+    'seller.vouchers_empty': 'Bạn chưa tạo mã giảm giá nào.',
+    'seller.confirm_delete_voucher': 'Xóa mã giảm giá này?'
+  });
+
   Object.assign(EN, {
     'nav.home': 'Home',
     'nav.about': 'About',
@@ -387,9 +578,19 @@
     'footer.follow_title': 'Follow us',
     'footer.copyright': '© 2026 Material AI. All rights reserved.',
     'common.close': 'Close',
+    'common.clear_search': 'Clear search',
     'common.verified': 'Verified',
     'common.unverified': 'Unverified',
-    'common.office_address': '5th Floor, ABC Building, District 1, Ho Chi Minh City'
+    'common.office_address': '5th Floor, ABC Building, District 1, Ho Chi Minh City',
+    'common.logout': 'Log out',
+    'common.back': 'Back',
+    'common.send': 'Send',
+    'common.delete': 'Delete',
+    'common.website_label': 'Website',
+    'common.confirm_delete_material': 'Delete this material?',
+    'status.pending': 'Pending',
+    'status.approved': 'Approved',
+    'status.blocked': 'Blocked'
   });
 
   /* ===== index.html (home) ===== */
@@ -630,10 +831,61 @@
     'materials.card20_spec': '18mm thick · Polished finish',
     'materials.card20_price': '1,120,000₫/m²',
     'materials.find_similar': 'Find similar',
+    'materials.empty': 'No matching materials found. Try a different keyword or category.',
     'materials.load_more': 'Show more materials',
     'materials.modal_contact': 'Contact now',
     'materials.modal_view_products': 'View products',
-    'materials.products_selling': 'products for sale'
+    'materials.products_selling': 'products for sale',
+    'materials.add_to_cart': 'Add to cart',
+    'materials.added_to_cart': '✓ Added'
+  });
+
+  /* ===== cart widget (materials.html, sellers.html) ===== */
+  Object.assign(EN, {
+    'cart.title': 'Your cart',
+    'cart.empty': 'Your cart is empty. Tap "Add to cart" on a material you like.',
+    'cart.subtotal': 'Subtotal',
+    'cart.grand_total': 'Total',
+    'cart.checkout': 'Place order',
+    'cart.note': 'Tap "Place order" for each seller to complete checkout — pay on delivery or by direct bank transfer.',
+    'cart.clear': 'Clear cart',
+    'cart.clear_confirm': 'Clear the entire cart?'
+  });
+
+  /* ===== checkout modal (materials.html, sellers.html, ...) ===== */
+  Object.assign(EN, {
+    'checkout.total': 'Total to pay',
+    'checkout.discount': 'Discount',
+    'checkout.voucher_label': 'Voucher code (optional)',
+    'checkout.voucher_apply': 'Apply',
+    'checkout.voucher_invalid': 'Invalid or expired voucher code.',
+    'checkout.voucher_applied': 'Voucher applied.',
+    'checkout.name_label': "Recipient's name",
+    'checkout.phone_label': 'Phone number',
+    'checkout.address_label': 'Delivery address',
+    'checkout.payment_label': 'Payment method',
+    'checkout.payment_cod': 'Cash on delivery (COD)',
+    'checkout.payment_bank': 'Bank transfer',
+    'checkout.submit': 'Confirm order',
+    'checkout.missing_fields': 'Please fill in all delivery details.',
+    'checkout.success_title': 'Order placed successfully!',
+    'checkout.success_sub': 'The seller will contact you to confirm.'
+  });
+
+  /* ===== order status (customer order history + seller order management) ===== */
+  Object.assign(EN, {
+    'order_status.pending': 'Pending',
+    'order_status.confirmed': 'Confirmed',
+    'order_status.shipping': 'Shipping',
+    'order_status.completed': 'Completed',
+    'order_status.cancelled': 'Cancelled'
+  });
+
+  /* ===== customer nav dropdown (materials.html, sellers.html, index.html, faq.html, contact.html) ===== */
+  Object.assign(EN, {
+    'nav_menu.order_history': 'Order history',
+    'orders.loading': 'Loading...',
+    'orders.empty': "You haven't placed any orders yet."
   });
 
   /* ===== sellers.html ===== */
@@ -656,5 +908,135 @@
     'sellers.established': 'Est.',
     'sellers.reviews_label': 'reviews',
     'sellers.years_active': 'years in business'
+  });
+
+  /* ===== login.html ===== */
+  Object.assign(EN, {
+    'login.doc_title': 'Log in – Material AI',
+    'login.h1': 'Log in',
+    'login.tagline': 'welcome back',
+    'login.email_label': 'Email',
+    'login.password_label': 'Password',
+    'login.show_password': 'Show password',
+    'login.hide_password': 'Hide password',
+    'login.submit': 'Log in',
+    'login.register_hint': "Don't have an account? <a href=\"register-choice.html\" class=\"text-secondary font-semibold hover:underline\">Register now</a>",
+    'login.registered_notice': 'Registration successful! Please log in.',
+    'login.demo_title': 'Demo accounts to try:',
+    'login.demo_seller_label': 'Seller'
+  });
+
+  /* ===== register-choice.html ===== */
+  Object.assign(EN, {
+    'register_choice.doc_title': 'Create an account – Material AI',
+    'register_choice.badge': 'Create an account',
+    'register_choice.h1': 'Which type of account do you want to create?',
+    'register_choice.tagline': 'pick the account that fits you',
+    'register_choice.customer_title': 'Customer',
+    'register_choice.customer_desc': 'Save your cart and send purchase requests to sellers.',
+    'register_choice.customer_cta': 'Register as a customer',
+    'register_choice.seller_title': 'Seller',
+    'register_choice.seller_desc': 'List materials, manage your storefront, and chat with customers.',
+    'register_choice.seller_cta': 'Register as a seller'
+  });
+
+  /* ===== register.html ===== */
+  Object.assign(EN, {
+    'register.doc_title': 'Seller Registration – Material AI',
+    'register.badge': 'For sellers',
+    'register.h1': 'Register to sell materials',
+    'register.tagline': 'start reaching new customers',
+    'register.email_label': 'Login email',
+    'register.password_label': 'Password',
+    'register.password_placeholder': 'At least 8 characters',
+    'register.business_name_label': 'Business name',
+    'register.business_name_placeholder': 'ABC Wood Workshop',
+    'register.category_label': 'Category',
+    'register.phone_label': 'Phone number',
+    'register.website_label': 'Website (optional)',
+    'register.website_placeholder': 'yourdomain.com',
+    'register.address_label': 'Address',
+    'register.address_placeholder': 'Street address, district, city/province',
+    'register.description_label': 'Short description',
+    'register.description_placeholder': 'A few lines about your products and strengths...',
+    'register.submit': 'Register',
+    'register.login_hint': 'Already have an account? <a href="login.html" class="text-secondary font-semibold hover:underline">Log in</a>',
+    'register.customer_hint': 'Are you a customer? <a href="customer-register.html" class="text-secondary font-semibold hover:underline">Register here</a>',
+    'register.approval_note': 'After registering, your account must be approved by an admin before you can list materials.'
+  });
+
+  /* ===== customer-register.html ===== */
+  Object.assign(EN, {
+    'customer_register.doc_title': 'Customer Registration – Material AI',
+    'customer_register.badge': 'For customers',
+    'customer_register.h1': 'Create a customer account',
+    'customer_register.tagline': 'save your cart, shop anytime',
+    'customer_register.name_label': 'Full name',
+    'customer_register.login_hint': 'Already have an account? <a href="login.html" class="text-secondary font-semibold hover:underline">Log in</a>',
+    'customer_register.seller_hint': 'Are you a seller? <a href="register.html" class="text-secondary font-semibold hover:underline">Register here</a>'
+  });
+
+  /* ===== admin-dashboard.html ===== */
+  Object.assign(EN, {
+    'admin.doc_title': 'Admin Dashboard – Material AI',
+    'admin.navbar_title': 'Admin dashboard',
+    'admin.h1': 'System administration',
+    'admin.tagline': 'the full picture of Material AI',
+    'admin.stat_total_sellers': 'Total sellers',
+    'admin.stat_materials': 'Total materials',
+    'admin.sellers_th_name': 'Seller',
+    'admin.sellers_th_category': 'Category',
+    'admin.sellers_th_materials': 'Materials',
+    'admin.sellers_th_status': 'Status',
+    'admin.th_action': 'Action',
+    'admin.materials_th_name': 'Material',
+    'admin.materials_th_seller': 'Seller',
+    'admin.materials_th_category': 'Category',
+    'admin.materials_th_price': 'Price',
+    'admin.action_approve': 'Approve',
+    'admin.action_block': 'Block',
+    'admin.action_unblock': 'Unblock',
+    'admin.confirm_delete_seller': 'Delete this seller? All of their materials will also be deleted.'
+  });
+
+  /* ===== seller-dashboard.html ===== */
+  Object.assign(EN, {
+    'seller.doc_title': 'Seller Dashboard – Material AI',
+    'seller.navbar_title': 'Seller dashboard',
+    'seller.greeting': 'Hello,',
+    'seller.tagline': 'manage your storefront',
+    'seller.pending_notice': 'Your account is <strong>pending admin approval</strong>. You can update your profile now, but it must be approved before you can list materials.',
+    'seller.blocked_notice': 'Your account has been <strong>blocked</strong>. Please contact an administrator if you have questions.',
+    'seller.messages_title': 'Customer messages',
+    'seller.chat_empty': 'No customer messages yet.',
+    'seller.chat_input_placeholder': 'Type a message...',
+    'seller.profile_title': 'Seller profile',
+    'seller.description_label': 'Description',
+    'seller.save_profile': 'Save profile',
+    'seller.profile_saved': 'Profile saved.',
+    'seller.add_material_title': 'List a new material',
+    'seller.material_category_label': 'Category',
+    'seller.material_title_label': 'Material name',
+    'seller.material_title_placeholder': 'e.g. Oak-grain Melamine MDF board',
+    'seller.material_spec_label': 'Specifications',
+    'seller.material_spec_placeholder': 'e.g. 18mm thick · 1220x2440mm',
+    'seller.material_price_label': 'Price',
+    'seller.material_price_placeholder': 'e.g. 450,000₫/sheet',
+    'seller.submit_material': 'List material',
+    'seller.material_added': 'Material listed.',
+    'seller.materials_list_title': 'Materials for sale',
+    'seller.materials_empty': "You haven't listed any materials yet.",
+    'seller.orders_title': 'Orders',
+    'seller.orders_empty': 'No orders yet.',
+    'seller.vouchers_title': 'Vouchers',
+    'seller.voucher_code_placeholder': 'e.g. SALE10',
+    'seller.voucher_type_percent': 'Percentage discount',
+    'seller.voucher_type_fixed': 'Fixed amount discount',
+    'seller.voucher_value_placeholder': 'e.g. 10',
+    'seller.voucher_add': 'Add voucher',
+    'seller.voucher_added': 'Voucher added.',
+    'seller.voucher_active': 'Active',
+    'seller.vouchers_empty': "You haven't created any vouchers yet.",
+    'seller.confirm_delete_voucher': 'Delete this voucher?'
   });
 })();

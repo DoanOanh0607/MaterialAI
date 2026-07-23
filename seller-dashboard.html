@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-i18n-doc-title="seller.doc_title">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var l=localStorage.getItem('materialai_lang')==='en'?'en':'vi';document.documentElement.lang=l;if(l==='en')document.documentElement.style.visibility='hidden';})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bảng điều khiển nhà bán hàng – Material AI</title>
 <link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
@@ -10,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="i18n.js"></script>
+<script src="custom-select.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
     colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
@@ -23,6 +26,9 @@
   .font-script{font-family:'Inter',sans-serif;font-style:italic;font-weight:700}
   .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
   .hidden{display:none}
+  .lang-btn.active,
+  html[lang="vi"] .lang-btn[data-lang="vi"],
+  html[lang="en"] .lang-btn[data-lang="en"]{background:#3A3632;color:#fff}
   .badge-pending{background:#F1F2F0;color:#7D8688}
   .badge-approved{background:#EAF3EA;color:#3E7A45}
   .badge-blocked{background:#FBE9E7;color:#B3261E}
@@ -34,10 +40,14 @@
 <header class="fixed top-3 md:top-5 inset-x-3 md:inset-x-6 z-50">
   <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-5 py-2 glass rounded-full shadow-soft">
     <a href="index.html" class="flex items-center shrink-0"><img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto"></a>
-    <div class="hidden sm:block text-sm font-semibold text-secondary">Bảng điều khiển nhà bán hàng</div>
+    <div class="hidden sm:block text-sm font-semibold text-secondary" data-i18n="seller.navbar_title">Bảng điều khiển nhà bán hàng</div>
     <div class="flex items-center gap-3">
       <span id="userGreeting" class="hidden sm:inline text-sm text-muted"></span>
-      <button id="logoutBtn" class="border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors">Đăng xuất</button>
+      <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
+        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+      </div>
+      <button id="logoutBtn" class="border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors" data-i18n="common.logout">Đăng xuất</button>
     </div>
   </nav>
 </header>
@@ -47,123 +57,145 @@
 
     <div class="flex flex-wrap items-center justify-between gap-3 mb-8">
       <div>
-        <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-1">Xin chào, <span id="businessNameHeading">...</span></h1>
-        <p class="font-script text-2xl text-accent-600">quản lý gian hàng của bạn</p>
+        <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-1"><span data-i18n="seller.greeting">Xin chào,</span> <span id="businessNameHeading">...</span></h1>
+        <p class="font-script text-2xl text-accent-600" data-i18n="seller.tagline">quản lý gian hàng của bạn</p>
       </div>
       <span id="statusBadge" class="text-sm font-semibold px-4 py-1.5 rounded-full"></span>
     </div>
 
-    <div id="pendingNotice" class="hidden bg-accent-50 border border-accent/30 rounded-2xl p-5 mb-8 text-sm">
+    <div id="pendingNotice" class="hidden bg-accent-50 border border-accent/30 rounded-2xl p-5 mb-8 text-sm" data-i18n-html="seller.pending_notice">
       Tài khoản của bạn đang <strong>chờ admin duyệt</strong>. Bạn có thể cập nhật hồ sơ ngay bây giờ, nhưng cần được duyệt trước khi đăng vật liệu lên hệ thống.
     </div>
-    <div id="blockedNotice" class="hidden bg-red-50 border border-red-200 rounded-2xl p-5 mb-8 text-sm text-red-700">
+    <div id="blockedNotice" class="hidden bg-red-50 border border-red-200 rounded-2xl p-5 mb-8 text-sm text-red-700" data-i18n-html="seller.blocked_notice">
       Tài khoản của bạn đã <strong>bị khóa</strong>. Vui lòng liên hệ quản trị viên nếu có thắc mắc.
     </div>
 
     <!-- MESSAGES -->
     <div class="bg-white rounded-3xl shadow-soft mb-8 overflow-hidden">
       <div class="flex items-center justify-between px-6 md:px-8 pt-6 md:pt-8 pb-5">
-        <h2 class="font-bold text-xl">Tin nhắn khách hàng</h2>
+        <h2 class="font-bold text-xl" data-i18n="seller.messages_title">Tin nhắn khách hàng</h2>
         <span id="chatUnreadTotal" class="hidden bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"></span>
       </div>
       <div id="chatListView">
         <div id="chatConvList" class="border-t border-secondary-50"></div>
-        <p id="chatConvEmpty" class="hidden text-sm text-muted text-center py-10">Chưa có khách hàng nào nhắn tin.</p>
+        <p id="chatConvEmpty" class="hidden text-sm text-muted text-center py-10" data-i18n="seller.chat_empty">Chưa có khách hàng nào nhắn tin.</p>
       </div>
       <div id="chatThreadView" class="hidden border-t border-secondary-50">
         <div class="flex items-center gap-3 px-6 md:px-8 py-4 border-b border-secondary-50 bg-secondary-50/40">
-          <button id="chatThreadBack" type="button" class="text-secondary shrink-0" aria-label="Quay lại"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="#211E1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button id="chatThreadBack" type="button" class="text-secondary shrink-0" aria-label="Quay lại" data-i18n-aria-label="common.back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="#211E1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <span id="chatThreadCustomerName" class="font-semibold text-sm"></span>
         </div>
         <div id="chatThreadMessages" class="px-2 py-3 overflow-y-auto" style="height:340px"></div>
         <form id="chatThreadForm" class="flex items-center gap-2 px-6 md:px-8 py-4 border-t border-secondary-50">
-          <input id="chatThreadInput" type="text" placeholder="Nhập tin nhắn..." class="flex-1 rounded-full border border-secondary-100 px-4 py-2.5 text-sm outline-none focus:border-secondary" autocomplete="off">
-          <button type="submit" class="bg-accent text-ink font-semibold px-5 py-2.5 rounded-full text-sm shrink-0">Gửi</button>
+          <input id="chatThreadInput" type="text" placeholder="Nhập tin nhắn..." class="flex-1 rounded-full border border-secondary-100 px-4 py-2.5 text-sm outline-none focus:border-secondary" autocomplete="off" data-i18n-placeholder="seller.chat_input_placeholder">
+          <button type="submit" class="bg-accent text-ink font-semibold px-5 py-2.5 rounded-full text-sm shrink-0" data-i18n="common.send">Gửi</button>
         </form>
       </div>
     </div>
 
+    <!-- ORDERS -->
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+      <h2 class="font-bold text-xl mb-5" data-i18n="seller.orders_title">Đơn hàng</h2>
+      <div id="ordersList" class="space-y-3"></div>
+      <p id="ordersEmpty" class="hidden text-sm text-muted text-center py-8" data-i18n="seller.orders_empty">Chưa có đơn hàng nào.</p>
+    </div>
+
     <!-- PROFILE -->
     <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
-      <h2 class="font-bold text-xl mb-5">Hồ sơ nhà bán hàng</h2>
+      <h2 class="font-bold text-xl mb-5" data-i18n="seller.profile_title">Hồ sơ nhà bán hàng</h2>
       <form id="profileForm" class="space-y-4">
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-semibold block mb-1.5">Tên nhà bán hàng</label>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="register.business_name_label">Tên nhà bán hàng</label>
             <input id="pBusinessName" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
           </div>
           <div>
-            <label class="text-sm font-semibold block mb-1.5">Ngành hàng</label>
-            <select id="pCategory" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white">
-              <option value="van">Ván công nghiệp</option>
-              <option value="son">Sơn</option>
-              <option value="gach">Gạch</option>
-              <option value="da">Đá</option>
-              <option value="kinh">Kính</option>
-              <option value="go">Gỗ tự nhiên</option>
-            </select>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="register.category_label">Ngành hàng</label>
+            <div id="pCategory" class="custom-select">
+              <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
+                <span class="custom-select-label"></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
           </div>
         </div>
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-semibold block mb-1.5">Số điện thoại</label>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="register.phone_label">Số điện thoại</label>
             <input id="pPhone" type="tel" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
           </div>
           <div>
-            <label class="text-sm font-semibold block mb-1.5">Website</label>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="common.website_label">Website</label>
             <input id="pWebsite" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
           </div>
         </div>
         <div>
-          <label class="text-sm font-semibold block mb-1.5">Địa chỉ</label>
+          <label class="text-sm font-semibold block mb-1.5" data-i18n="register.address_label">Địa chỉ</label>
           <input id="pAddress" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary">
         </div>
         <div>
-          <label class="text-sm font-semibold block mb-1.5">Giới thiệu</label>
+          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.description_label">Giới thiệu</label>
           <textarea id="pDescription" rows="3" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary"></textarea>
         </div>
         <p id="profileMsg" class="hidden text-sm text-secondary font-medium"></p>
-        <button type="submit" class="bg-secondary text-white font-semibold px-6 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all">Lưu hồ sơ</button>
+        <button type="submit" class="bg-secondary text-white font-semibold px-6 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="seller.save_profile">Lưu hồ sơ</button>
       </form>
     </div>
 
     <!-- ADD MATERIAL -->
     <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
-      <h2 class="font-bold text-xl mb-5">Đăng vật liệu mới</h2>
+      <h2 class="font-bold text-xl mb-5" data-i18n="seller.add_material_title">Đăng vật liệu mới</h2>
       <form id="materialForm" class="grid sm:grid-cols-2 gap-4">
         <div>
-          <label class="text-sm font-semibold block mb-1.5">Danh mục</label>
-          <select id="mCategory" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white">
-            <option value="van">Ván công nghiệp</option>
-            <option value="son">Sơn</option>
-            <option value="gach">Gạch</option>
-            <option value="da">Đá</option>
-            <option value="kinh">Kính</option>
-            <option value="go">Gỗ tự nhiên</option>
-          </select>
+          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_category_label">Danh mục</label>
+          <div id="mCategory" class="custom-select">
+            <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
+              <span class="custom-select-label"></span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
         </div>
         <div>
-          <label class="text-sm font-semibold block mb-1.5">Tên vật liệu</label>
-          <input id="mTitle" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Ván MDF phủ Melamine vân sồi">
+          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_title_label">Tên vật liệu</label>
+          <input id="mTitle" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Ván MDF phủ Melamine vân sồi" data-i18n-placeholder="seller.material_title_placeholder">
         </div>
         <div>
-          <label class="text-sm font-semibold block mb-1.5">Thông số</label>
-          <input id="mSpec" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Dày 18mm · Kích thước 1220x2440mm">
+          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_spec_label">Thông số</label>
+          <input id="mSpec" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Dày 18mm · Kích thước 1220x2440mm" data-i18n-placeholder="seller.material_spec_placeholder">
         </div>
         <div>
-          <label class="text-sm font-semibold block mb-1.5">Giá</label>
-          <input id="mPrice" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: 450.000đ/tấm">
+          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_price_label">Giá</label>
+          <input id="mPrice" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: 450.000đ/tấm" data-i18n-placeholder="seller.material_price_placeholder">
         </div>
         <p id="materialMsg" class="hidden sm:col-span-2 text-sm font-medium"></p>
-        <button id="materialSubmitBtn" type="submit" class="sm:col-span-2 bg-accent text-ink font-semibold px-6 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all">Đăng vật liệu</button>
+        <button id="materialSubmitBtn" type="submit" class="sm:col-span-2 bg-accent text-ink font-semibold px-6 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="seller.submit_material">Đăng vật liệu</button>
       </form>
     </div>
 
     <!-- MATERIALS LIST -->
-    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
-      <h2 class="font-bold text-xl mb-5">Vật liệu đang bán (<span id="materialsCount">0</span>)</h2>
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+      <h2 class="font-bold text-xl mb-5"><span data-i18n="seller.materials_list_title">Vật liệu đang bán</span> (<span id="materialsCount">0</span>)</h2>
       <div id="materialsList" class="space-y-3"></div>
-      <p id="materialsEmpty" class="hidden text-sm text-muted text-center py-8">Bạn chưa đăng vật liệu nào.</p>
+      <p id="materialsEmpty" class="hidden text-sm text-muted text-center py-8" data-i18n="seller.materials_empty">Bạn chưa đăng vật liệu nào.</p>
+    </div>
+
+    <!-- VOUCHERS -->
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
+      <h2 class="font-bold text-xl mb-5" data-i18n="seller.vouchers_title">Mã giảm giá</h2>
+      <form id="voucherForm" class="grid sm:grid-cols-4 gap-3 mb-5">
+        <input id="vCode" required type="text" class="sm:col-span-2 rounded-xl border border-secondary-100 px-3 py-2.5 text-sm outline-none focus:border-secondary" placeholder="VD: SALE10" data-i18n-placeholder="seller.voucher_code_placeholder">
+        <div id="vType" class="custom-select">
+          <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-3 py-2.5 text-sm outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
+            <span class="custom-select-label"></span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </div>
+        <input id="vValue" required type="number" min="1" class="rounded-xl border border-secondary-100 px-3 py-2.5 text-sm outline-none focus:border-secondary" placeholder="VD: 10" data-i18n-placeholder="seller.voucher_value_placeholder">
+        <p id="voucherMsg" class="hidden sm:col-span-4 text-xs font-medium"></p>
+        <button type="submit" class="sm:col-span-4 bg-secondary text-white font-semibold py-2.5 rounded-full text-sm" data-i18n="seller.voucher_add">Thêm mã giảm giá</button>
+      </form>
+      <div id="vouchersList" class="space-y-2"></div>
+      <p id="vouchersEmpty" class="hidden text-sm text-muted text-center py-6" data-i18n="seller.vouchers_empty">Bạn chưa tạo mã giảm giá nào.</p>
     </div>
 
   </div>
@@ -182,15 +214,35 @@
     return data;
   }
 
-  const CAT_LABELS = { van: 'Ván công nghiệp', son: 'Sơn', gach: 'Gạch', da: 'Đá', kinh: 'Kính', go: 'Gỗ tự nhiên' };
-  const STATUS_LABELS = { pending: 'Chờ duyệt', approved: 'Đã duyệt', blocked: 'Bị khóa' };
+  function catLabel(cat) {
+    return window.I18N ? window.I18N.t('common.cat_' + cat) : cat;
+  }
+
+  const CAT_OPTIONS = [
+    { value: 'van', labelKey: 'common.cat_van' },
+    { value: 'son', labelKey: 'common.cat_son' },
+    { value: 'gach', labelKey: 'common.cat_gach' },
+    { value: 'da', labelKey: 'common.cat_da' },
+    { value: 'kinh', labelKey: 'common.cat_kinh' },
+    { value: 'go', labelKey: 'common.cat_go' }
+  ];
+  const pCategorySelect = CustomSelect.init(document.getElementById('pCategory'), CAT_OPTIONS, 'van');
+  const mCategorySelect = CustomSelect.init(document.getElementById('mCategory'), CAT_OPTIONS, 'van');
+  const vTypeSelect = CustomSelect.init(document.getElementById('vType'), [
+    { value: 'percent', labelKey: 'seller.voucher_type_percent' },
+    { value: 'fixed', labelKey: 'seller.voucher_type_fixed' }
+  ], 'percent');
+  function statusLabel(status) {
+    return window.I18N ? window.I18N.t('status.' + status) : status;
+  }
+  function formatVND(n) { return Number(n || 0).toLocaleString('vi-VN') + 'đ'; }
 
   let currentStatus = 'pending';
 
   function applyStatusUI(status) {
     currentStatus = status;
     const badge = document.getElementById('statusBadge');
-    badge.textContent = STATUS_LABELS[status];
+    badge.textContent = statusLabel(status);
     badge.className = 'text-sm font-semibold px-4 py-1.5 rounded-full badge-' + status;
     document.getElementById('pendingNotice').classList.toggle('hidden', status !== 'pending');
     document.getElementById('blockedNotice').classList.toggle('hidden', status !== 'blocked');
@@ -205,7 +257,7 @@
     document.getElementById('businessNameHeading').textContent = profile.business_name;
     document.getElementById('userGreeting').textContent = profile.email;
     document.getElementById('pBusinessName').value = profile.business_name;
-    document.getElementById('pCategory').value = profile.category;
+    pCategorySelect.setValue(profile.category);
     document.getElementById('pPhone').value = profile.phone || '';
     document.getElementById('pWebsite').value = profile.website || '';
     document.getElementById('pAddress').value = profile.address || '';
@@ -219,11 +271,11 @@
     div.innerHTML = `
       <div class="min-w-0">
         <p class="font-semibold text-sm truncate">${m.title}</p>
-        <p class="text-xs text-muted">${CAT_LABELS[m.category] || m.category}${m.spec ? ' · ' + m.spec : ''}</p>
+        <p class="text-xs text-muted">${catLabel(m.category)}${m.spec ? ' · ' + m.spec : ''}</p>
       </div>
       <div class="flex items-center gap-4 shrink-0">
         <span class="font-heading font-bold text-accent-600 text-sm">${m.price || ''}</span>
-        <button data-id="${m.id}" class="delete-material text-xs font-semibold text-red-600 hover:underline">Xóa</button>
+        <button data-id="${m.id}" class="delete-material text-xs font-semibold text-red-600 hover:underline">${window.I18N.t('common.delete')}</button>
       </div>`;
     return div;
   }
@@ -237,12 +289,179 @@
     materials.forEach(m => list.appendChild(materialRow(m)));
     list.querySelectorAll('.delete-material').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Xóa vật liệu này?')) return;
+        if (!confirm(window.I18N.t('common.confirm_delete_material'))) return;
         await api('/api/seller/materials/' + btn.dataset.id, { method: 'DELETE' });
         loadMaterials();
       });
     });
   }
+
+  // ===== Đơn hàng =====
+  const ORDER_STATUSES = ['pending', 'confirmed', 'shipping', 'completed', 'cancelled'];
+  const ORDER_STATUS_BADGE = {
+    pending: 'bg-accent-50 text-accent-600',
+    confirmed: 'bg-secondary-50 text-secondary',
+    shipping: 'bg-secondary-50 text-secondary',
+    completed: 'bg-green-50 text-green-700',
+    cancelled: 'bg-red-50 text-red-600'
+  };
+
+  function orderRow(o) {
+    const div = document.createElement('div');
+    div.className = 'border border-secondary-50 rounded-xl p-4';
+    const linesHtml = o.items.map(i => `<div class="flex items-center justify-between text-xs gap-2"><span class="truncate">${escapeHtml(i.title)} × ${i.qty}</span><span class="text-muted shrink-0">${escapeHtml(i.priceText || '')}</span></div>`).join('');
+    const discountHtml = o.discount > 0
+      ? `<div class="flex items-center justify-between text-xs text-green-700 mb-1"><span>${window.I18N.t('checkout.discount')}${o.voucherCode ? ' (' + escapeHtml(o.voucherCode) + ')' : ''}</span><span>−${formatVND(o.discount)}</span></div>`
+      : '';
+    div.innerHTML = `
+      <div class="flex items-center justify-between gap-3 mb-2">
+        <div class="min-w-0">
+          <p class="font-semibold text-sm truncate">${escapeHtml(o.customerName)}</p>
+          <p class="text-xs text-muted truncate">${escapeHtml(o.customerPhone)} · ${escapeHtml(o.customerAddress)}</p>
+        </div>
+        <p class="text-[11px] text-muted shrink-0">${fmtTime(o.createdAt)}</p>
+      </div>
+      <div class="space-y-1 mb-2">${linesHtml}</div>
+      ${discountHtml}
+      <div class="flex items-center justify-between text-sm font-semibold pt-2 border-t border-secondary-50 mb-3">
+        <span>${window.I18N.t('cart.grand_total')}</span><span class="text-accent-600">${formatVND(o.total)}</span>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-xs text-muted">${window.I18N.t(o.paymentMethod === 'bank_transfer' ? 'checkout.payment_bank' : 'checkout.payment_cod')}</span>
+        <button type="button" class="order-status-btn text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 ${ORDER_STATUS_BADGE[o.status] || 'bg-secondary-50 text-secondary'}" data-id="${o.id}" data-status="${o.status}">
+          <span class="order-status-btn-label">${window.I18N.t('order_status.' + o.status)}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>`;
+    return div;
+  }
+
+  async function loadOrders() {
+    const { orders } = await api('/api/seller/orders');
+    const list = document.getElementById('ordersList');
+    list.innerHTML = '';
+    document.getElementById('ordersEmpty').classList.toggle('hidden', orders.length > 0);
+    orders.forEach(o => list.appendChild(orderRow(o)));
+    list.querySelectorAll('.order-status-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => { e.stopPropagation(); openOrderStatusMenu(btn); });
+    });
+  }
+
+  // Custom dropdown for order status — a native <select>'s popup can't be
+  // styled/positioned and ends up overlapping the row's own content.
+  let orderStatusMenuEl = null;
+  let activeOrderStatusBtn = null;
+
+  function ensureOrderStatusMenu() {
+    if (orderStatusMenuEl) return orderStatusMenuEl;
+    orderStatusMenuEl = document.createElement('div');
+    orderStatusMenuEl.id = 'orderStatusMenu';
+    orderStatusMenuEl.className = 'hidden fixed z-[80] w-44 bg-white rounded-2xl shadow-soft border border-secondary-50 py-2 text-sm';
+    orderStatusMenuEl.innerHTML = ORDER_STATUSES.map(s =>
+      `<button type="button" class="order-status-option w-full text-left px-4 py-2 hover:bg-secondary-50/60" data-status="${s}"></button>`
+    ).join('');
+    document.body.appendChild(orderStatusMenuEl);
+    orderStatusMenuEl.querySelectorAll('.order-status-option').forEach(opt => {
+      opt.addEventListener('click', async () => {
+        const id = activeOrderStatusBtn && activeOrderStatusBtn.dataset.id;
+        closeOrderStatusMenu();
+        if (!id) return;
+        await api('/api/seller/orders/' + id + '/status', { method: 'PUT', body: { status: opt.dataset.status } });
+        loadOrders();
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!orderStatusMenuEl.classList.contains('hidden') && !orderStatusMenuEl.contains(e.target) && !e.target.closest('.order-status-btn')) {
+        closeOrderStatusMenu();
+      }
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOrderStatusMenu(); });
+    return orderStatusMenuEl;
+  }
+
+  function openOrderStatusMenu(btn) {
+    const menu = ensureOrderStatusMenu();
+    menu.querySelectorAll('.order-status-option').forEach(opt => {
+      opt.textContent = window.I18N.t('order_status.' + opt.dataset.status);
+      opt.classList.toggle('font-semibold', opt.dataset.status === btn.dataset.status);
+    });
+    activeOrderStatusBtn = btn;
+    const rect = btn.getBoundingClientRect();
+    const menuWidth = menu.offsetWidth || 176;
+    let left = Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8);
+    left = Math.max(8, left);
+    menu.style.left = left + 'px';
+    menu.style.top = (rect.bottom + 6) + 'px';
+    menu.classList.remove('hidden');
+  }
+  function closeOrderStatusMenu() {
+    if (orderStatusMenuEl) orderStatusMenuEl.classList.add('hidden');
+    activeOrderStatusBtn = null;
+  }
+
+  // ===== Mã giảm giá =====
+  function voucherRow(v) {
+    const div = document.createElement('div');
+    div.className = 'flex items-center justify-between gap-3 border border-secondary-50 rounded-xl px-4 py-3';
+    const valueLabel = v.discountType === 'percent' ? `${v.discountValue}%` : formatVND(v.discountValue);
+    div.innerHTML = `
+      <div class="min-w-0">
+        <p class="font-mono font-semibold text-sm">${escapeHtml(v.code)}</p>
+        <p class="text-xs text-muted">${valueLabel}</p>
+      </div>
+      <div class="flex items-center gap-3 shrink-0">
+        <label class="flex items-center gap-1.5 text-xs text-muted">
+          <input type="checkbox" class="voucher-active-toggle" data-id="${v.id}" ${v.active ? 'checked' : ''}>
+          <span>${window.I18N.t('seller.voucher_active')}</span>
+        </label>
+        <button data-id="${v.id}" class="delete-voucher text-xs font-semibold text-red-600 hover:underline">${window.I18N.t('common.delete')}</button>
+      </div>`;
+    return div;
+  }
+
+  async function loadVouchers() {
+    const { vouchers } = await api('/api/seller/vouchers');
+    const list = document.getElementById('vouchersList');
+    list.innerHTML = '';
+    document.getElementById('vouchersEmpty').classList.toggle('hidden', vouchers.length > 0);
+    vouchers.forEach(v => list.appendChild(voucherRow(v)));
+    list.querySelectorAll('.voucher-active-toggle').forEach(cb => {
+      cb.addEventListener('change', async () => {
+        await api('/api/seller/vouchers/' + cb.dataset.id, { method: 'PUT', body: { active: cb.checked } });
+      });
+    });
+    list.querySelectorAll('.delete-voucher').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm(window.I18N.t('seller.confirm_delete_voucher'))) return;
+        await api('/api/seller/vouchers/' + btn.dataset.id, { method: 'DELETE' });
+        loadVouchers();
+      });
+    });
+  }
+
+  document.getElementById('voucherForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('voucherMsg');
+    try {
+      await api('/api/seller/vouchers', {
+        method: 'POST',
+        body: {
+          code: document.getElementById('vCode').value.trim(),
+          discountType: vTypeSelect.getValue(),
+          discountValue: document.getElementById('vValue').value
+        }
+      });
+      document.getElementById('voucherForm').reset();
+      msg.textContent = window.I18N.t('seller.voucher_added');
+      msg.className = 'sm:col-span-4 text-xs text-secondary font-medium';
+      msg.classList.remove('hidden');
+      loadVouchers();
+    } catch (err) {
+      msg.textContent = err.message;
+      msg.className = 'sm:col-span-4 text-xs text-red-600 font-medium';
+      msg.classList.remove('hidden');
+    }
+  });
 
   document.getElementById('profileForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -252,14 +471,14 @@
         method: 'PUT',
         body: {
           businessName: document.getElementById('pBusinessName').value.trim(),
-          category: document.getElementById('pCategory').value,
+          category: pCategorySelect.getValue(),
           phone: document.getElementById('pPhone').value.trim(),
           website: document.getElementById('pWebsite').value.trim(),
           address: document.getElementById('pAddress').value.trim(),
           description: document.getElementById('pDescription').value.trim()
         }
       });
-      msg.textContent = 'Đã lưu hồ sơ.';
+      msg.textContent = window.I18N.t('seller.profile_saved');
       msg.className = 'text-sm text-secondary font-medium';
       msg.classList.remove('hidden');
       loadProfile();
@@ -278,14 +497,14 @@
       await api('/api/seller/materials', {
         method: 'POST',
         body: {
-          category: document.getElementById('mCategory').value,
+          category: mCategorySelect.getValue(),
           title: document.getElementById('mTitle').value.trim(),
           spec: document.getElementById('mSpec').value.trim(),
           price: document.getElementById('mPrice').value.trim()
         }
       });
       document.getElementById('materialForm').reset();
-      msg.textContent = 'Đã đăng vật liệu.';
+      msg.textContent = window.I18N.t('seller.material_added');
       msg.className = 'sm:col-span-2 text-sm text-secondary font-medium';
       msg.classList.remove('hidden');
       loadMaterials();
@@ -301,6 +520,14 @@
     window.location.href = 'login.html';
   });
 
+  document.addEventListener('i18n:change', () => {
+    applyStatusUI(currentStatus);
+    loadMaterials();
+    loadConvList();
+    loadOrders();
+    loadVouchers();
+  });
+
   // ===== Tin nhắn khách hàng =====
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -308,7 +535,8 @@
   function fmtTime(iso) {
     if (!iso) return '';
     const d = new Date(iso.replace(' ', 'T') + 'Z');
-    return d.toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+    const locale = window.I18N && window.I18N.getLang() === 'en' ? 'en-US' : 'vi-VN';
+    return d.toLocaleString(locale, { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
   }
 
   let chatListTimer = null, chatThreadTimer = null, activeConvId = null;
@@ -398,9 +626,11 @@
   (async function init() {
     try {
       const { user } = await api('/api/auth/me');
-      if (user.role !== 'seller') { window.location.href = 'admin-dashboard.html'; return; }
+      if (user.role !== 'seller') { window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'index.html'; return; }
       await loadProfile();
       await loadMaterials();
+      await loadOrders();
+      await loadVouchers();
       await loadConvList();
       chatListTimer = setInterval(loadConvList, 5000);
     } catch (err) {

@@ -52,7 +52,11 @@
       <a href="contact.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.contact">Liên hệ</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
-      <a href="login.html" class="border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <a href="login.html" class="nav-login-link border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <button type="button" class="nav-customer-btn hidden items-center gap-2 border border-secondary-100 pl-1.5 pr-4 py-1.5 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors">
+        <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
+        <span class="nav-customer-name truncate max-w-[120px]"></span>
+      </button>
       <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
@@ -68,9 +72,14 @@
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
       <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
     </div>
-    <a href="login.html" class="border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+    <a href="login.html" class="nav-login-link border border-secondary-100 px-4 py-2.5 rounded-full w-fit" data-i18n="nav.login">Đăng nhập</a>
+    <button type="button" class="nav-customer-btn hidden items-center gap-2 border border-secondary-100 px-2 py-2 rounded-full w-fit">
+      <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
+      <span class="nav-customer-name truncate max-w-[140px]"></span>
+    </button>
   </div>
 </header>
+<script>(function(){var h;try{h=JSON.parse(localStorage.getItem("materialai_customer_hint"));}catch(e){h=null;}if(!h)return;function ini(n){var p=String(n||"").trim().split(/\s+/).filter(Boolean);if(!p.length)return"?";return(p.length>=2?p[0][0]+p[1][0]:p[0].slice(0,2)).toUpperCase();}document.querySelectorAll(".nav-login-link").forEach(function(a){a.classList.add("hidden");});document.querySelectorAll(".nav-customer-btn").forEach(function(b){b.classList.remove("hidden");b.classList.add("flex");var av=b.querySelector(".nav-customer-avatar");if(av)av.textContent=ini(h.name||h.email);var nm=b.querySelector(".nav-customer-name");if(nm)nm.textContent=h.name||h.email;});})();</script>
 
 <!-- HEADER + SEARCH -->
 <section class="pt-[85px] pb-6 md:pt-[107px] px-6 bg-secondary-50/30">
@@ -80,7 +89,12 @@
     <p class="text-muted mb-8" data-i18n="sellers.subtitle">Khám phá hồ sơ các nhà bán vật liệu nội thất trên Material AI — bấm vào một nhà bán hàng để xem đầy đủ thông tin.</p>
 
     <div class="glass rounded-2xl p-4 md:p-5 shadow-soft flex flex-col md:flex-row gap-4">
-      <input id="sellerSearch" type="text" data-i18n-placeholder="sellers.search_placeholder" placeholder="Tìm theo tên nhà bán hàng, khu vực..." class="flex-1 rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary">
+      <div class="relative flex-1">
+        <input id="sellerSearch" type="text" data-i18n-placeholder="sellers.search_placeholder" placeholder="Tìm theo tên nhà bán hàng, khu vực..." class="w-full rounded-xl border border-secondary-100 pl-4 pr-10 py-3 text-sm outline-none focus:border-secondary">
+        <button id="sellerSearchClear" type="button" aria-label="Xóa tìm kiếm" data-i18n-aria-label="common.clear_search" class="hidden absolute inset-y-0 right-0 flex items-center px-3 text-muted hover:text-ink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
       <button class="bg-accent text-ink font-semibold text-sm px-6 py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="materials.search_button">Tìm kiếm</button>
     </div>
 
@@ -381,6 +395,7 @@
   function applySellerFilters() {
     const cat = document.querySelector('.cat-btn.active')?.dataset.cat || 'all';
     const q = sellerSearchInput.value.trim().toLowerCase();
+    sellerSearchClear.classList.toggle('hidden', !q);
     document.querySelectorAll('.seller-card').forEach(card => {
       const id = Number(card.dataset.id);
       const seller = SELLERS.find(s => s.id === id);
@@ -401,7 +416,13 @@
 
   // ===== Tìm kiếm theo tên/khu vực =====
   const sellerSearchInput = document.getElementById('sellerSearch');
+  const sellerSearchClear = document.getElementById('sellerSearchClear');
   sellerSearchInput.addEventListener('input', applySellerFilters);
+  sellerSearchClear.addEventListener('click', () => {
+    sellerSearchInput.value = '';
+    applySellerFilters();
+    sellerSearchInput.focus();
+  });
 
   document.addEventListener('i18n:change', applySellerFilters);
 
@@ -411,5 +432,6 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 <script src="chat-widget.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>

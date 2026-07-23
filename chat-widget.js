@@ -94,7 +94,8 @@
       var val = document.getElementById('chatNameInput').value.trim();
       if (!val) return;
       setCustomerName(val);
-      if (afterSellerId) openSellerChat(afterSellerId); else renderList();
+      if (afterSellerId) openSellerChat(afterSellerId, state.pendingPrefill); else renderList();
+      state.pendingPrefill = null;
     });
   }
 
@@ -172,7 +173,7 @@
     refreshBadge();
   }
 
-  function openThread(convId, sellerName, sellerInitials) {
+  function openThread(convId, sellerName, sellerInitials, prefillMessage) {
     stopPolling();
     state.view = 'thread';
     state.activeConvId = convId;
@@ -192,6 +193,7 @@
         '</form>' +
       '</div>';
     document.getElementById('chatBody').style.display = 'flex';
+    if (prefillMessage) document.getElementById('chatMsgInput').value = prefillMessage;
     document.getElementById('chatSendForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       var input = document.getElementById('chatMsgInput');
@@ -207,25 +209,25 @@
     state.pollTimer = setInterval(function () { loadThreadMessages(convId); }, POLL_MS);
   }
 
-  async function openSellerChat(sellerId) {
-    if (!getCustomerName()) { renderNamePrompt(sellerId); return; }
+  async function openSellerChat(sellerId, prefillMessage) {
+    if (!getCustomerName()) { state.pendingPrefill = prefillMessage || null; renderNamePrompt(sellerId); return; }
     document.getElementById('chatPanel').classList.remove('hidden');
     var body = document.getElementById('chatBody');
     body.style.display = 'block';
     body.innerHTML = '<div class="p-5 text-sm text-muted">Đang kết nối...</div>';
     try {
       var data = await api('/api/chat/start', { method: 'POST', body: { sellerId: sellerId, customerKey: getCustomerKey(), customerName: getCustomerName() } });
-      openThread(data.conversation.id, data.conversation.sellerName, data.conversation.sellerInitials);
+      openThread(data.conversation.id, data.conversation.sellerName, data.conversation.sellerInitials, prefillMessage);
     } catch (e) {
       body.innerHTML = '<div class="p-5 text-sm text-red-600">' + escapeHtml(e.message) + '</div>';
     }
   }
 
   window.ChatWidget = {
-    openWithSeller: function (sellerId) {
+    openWithSeller: function (sellerId, prefillMessage) {
       var panel = document.getElementById('chatPanel');
       panel.classList.remove('hidden');
-      openSellerChat(sellerId);
+      openSellerChat(sellerId, prefillMessage);
     }
   };
 

@@ -28,7 +28,7 @@ function initials(name) {
 }
 
 function publicUser(row) {
-  return { id: row.id, email: row.email, role: row.role, status: row.status };
+  return { id: row.id, email: row.email, role: row.role, status: row.status, name: row.name || '' };
 }
 
 /* ===================== AUTH ===================== */
@@ -60,6 +60,29 @@ app.post('/api/auth/register', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
 
   req.session.user = publicUser(user);
+  res.status(201).json({ user: publicUser(user) });
+});
+
+app.post('/api/auth/customer/register', (req, res) => {
+  const { email, password, name } = req.body || {};
+  if (!email || !password || !name) {
+    return res.status(400).json({ error: 'Vui lòng điền đầy đủ email, mật khẩu và họ tên.' });
+  }
+  if (String(password).length < 8) {
+    return res.status(400).json({ error: 'Mật khẩu cần tối thiểu 8 ký tự.' });
+  }
+  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+  if (existing) {
+    return res.status(409).json({ error: 'Email này đã được đăng ký.' });
+  }
+
+  const hash = bcrypt.hashSync(String(password), 10);
+  const info = db.prepare('INSERT INTO users (email, password_hash, role, status, name) VALUES (?, ?, ?, ?, ?)')
+    .run(email, hash, 'customer', 'approved', name.trim());
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(info.lastInsertRowid);
+
+  // Unlike seller registration, don't auto-login — send the customer to the
+  // login page so they sign in explicitly with their new credentials.
   res.status(201).json({ user: publicUser(user) });
 });
 
@@ -198,6 +221,216 @@ app.get('/api/admin/stats', requireAuth, requireRole('admin'), (req, res) => {
   const blockedSellers = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role='seller' AND status='blocked'").get().n;
   const totalMaterials = db.prepare('SELECT COUNT(*) AS n FROM materials').get().n;
   res.json({ totalSellers, pendingSellers, approvedSellers, blockedSellers, totalMaterials });
+});
+
+/* ===================== CART (customer, authenticated) ===================== */
+
+function cartItemOut(row) {
+  return {
+    itemKey: row.item_key,
+    sellerId: row.seller_id,
+    sellerName: row.seller_name,
+    title: row.title,
+    spec: row.spec,
+    priceText: row.price_text,
+    image: row.image,
+    texClass: row.tex_class,
+    qty: row.qty
+  };
+}
+
+app.get('/api/cart', requireAuth, requireRole('customer'), (req, res) => {
+  const rows = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? ORDER BY id ASC').all(req.session.user.id);
+  res.json({ items: rows.map(cartItemOut) });
+});
+
+app.post('/api/cart', requireAuth, requireRole('customer'), (req, res) => {
+  const { itemKey, sellerId, sellerName, title, spec, priceText, image, texClass, qty } = req.body || {};
+  if (!itemKey || !sellerId || !sellerName || !title) {
+    return res.status(400).json({ error: 'Thiếu thông tin vật liệu.' });
+  }
+  const addQty = Number(qty) > 0 ? Number(qty) : 1;
+  const existing = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? AND item_key = ?').get(req.session.user.id, itemKey);
+  if (existing) {
+    db.prepare('UPDATE cart_items SET qty = qty + ? WHERE id = ?').run(addQty, existing.id);
+  } else {
+    db.prepare(`INSERT INTO cart_items (customer_id, item_key, seller_id, seller_name, title, spec, price_text, image, tex_class, qty)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .run(req.session.user.id, itemKey, sellerId, sellerName, title, spec || '', priceText || '', image || '', texClass || '', addQty);
+  }
+  const rows = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? ORDER BY id ASC').all(req.session.user.id);
+  res.status(201).json({ items: rows.map(cartItemOut) });
+});
+
+app.put('/api/cart/:itemKey', requireAuth, requireRole('customer'), (req, res) => {
+  const { qty } = req.body || {};
+  const existing = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? AND item_key = ?').get(req.session.user.id, req.params.itemKey);
+  if (!existing) return res.status(404).json({ error: 'Không tìm thấy vật liệu trong giỏ hàng.' });
+  if (Number(qty) > 0) {
+    db.prepare('UPDATE cart_items SET qty = ? WHERE id = ?').run(Number(qty), existing.id);
+  } else {
+    db.prepare('DELETE FROM cart_items WHERE id = ?').run(existing.id);
+  }
+  const rows = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? ORDER BY id ASC').all(req.session.user.id);
+  res.json({ items: rows.map(cartItemOut) });
+});
+
+app.delete('/api/cart/:itemKey', requireAuth, requireRole('customer'), (req, res) => {
+  db.prepare('DELETE FROM cart_items WHERE customer_id = ? AND item_key = ?').run(req.session.user.id, req.params.itemKey);
+  const rows = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? ORDER BY id ASC').all(req.session.user.id);
+  res.json({ items: rows.map(cartItemOut) });
+});
+
+app.delete('/api/cart', requireAuth, requireRole('customer'), (req, res) => {
+  db.prepare('DELETE FROM cart_items WHERE customer_id = ?').run(req.session.user.id);
+  res.json({ items: [] });
+});
+
+/* ===================== ORDERS / CHECKOUT (customer, authenticated) =====================
+   Real order placement with COD or manual bank transfer — no online payment
+   gateway is integrated, the seller and customer settle payment directly. */
+
+function orderOut(row) {
+  return {
+    id: row.id,
+    sellerId: row.seller_id,
+    sellerName: row.seller_name,
+    items: JSON.parse(row.items_json),
+    subtotal: row.subtotal,
+    discount: row.discount,
+    total: row.total,
+    voucherCode: row.voucher_code,
+    customerName: row.customer_name,
+    customerPhone: row.customer_phone,
+    customerAddress: row.customer_address,
+    paymentMethod: row.payment_method,
+    status: row.status,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+
+function parsePriceServer(text) {
+  const m = String(text || '').match(/([\d.,]+)/);
+  return m ? parseInt(m[1].replace(/[^\d]/g, ''), 10) || 0 : 0;
+}
+
+const ORDER_STATUSES = ['pending', 'confirmed', 'shipping', 'completed', 'cancelled'];
+
+app.post('/api/vouchers/check', requireAuth, requireRole('customer'), (req, res) => {
+  const { sellerId, code } = req.body || {};
+  if (!sellerId || !code) return res.status(400).json({ error: 'Thiếu thông tin.' });
+  const voucher = db.prepare('SELECT * FROM vouchers WHERE seller_id = ? AND code = ? AND active = 1')
+    .get(sellerId, String(code).trim().toUpperCase());
+  if (!voucher) return res.status(404).json({ error: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.' });
+  res.json({ voucher: { code: voucher.code, discountType: voucher.discount_type, discountValue: voucher.discount_value } });
+});
+
+app.post('/api/orders', requireAuth, requireRole('customer'), (req, res) => {
+  const { sellerId, customerName, customerPhone, customerAddress, paymentMethod, voucherCode } = req.body || {};
+  if (!sellerId) return res.status(400).json({ error: 'Thiếu thông tin nhà bán hàng.' });
+  if (!customerName || !customerPhone || !customerAddress) {
+    return res.status(400).json({ error: 'Vui lòng điền đầy đủ họ tên, số điện thoại và địa chỉ giao hàng.' });
+  }
+  const method = paymentMethod === 'bank_transfer' ? 'bank_transfer' : 'cod';
+  const items = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? AND seller_id = ?').all(req.session.user.id, sellerId);
+  if (!items.length) return res.status(400).json({ error: 'Giỏ hàng của nhà bán hàng này đang trống.' });
+
+  const sellerName = items[0].seller_name;
+  const itemsSnapshot = items.map(i => ({ title: i.title, spec: i.spec, priceText: i.price_text, qty: i.qty }));
+  const subtotal = itemsSnapshot.reduce((s, i) => s + parsePriceServer(i.priceText) * i.qty, 0);
+
+  let discount = 0;
+  let appliedCode = '';
+  if (voucherCode && String(voucherCode).trim()) {
+    const voucher = db.prepare('SELECT * FROM vouchers WHERE seller_id = ? AND code = ? AND active = 1')
+      .get(sellerId, String(voucherCode).trim().toUpperCase());
+    if (!voucher) return res.status(400).json({ error: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.' });
+    discount = voucher.discount_type === 'percent'
+      ? Math.round(subtotal * voucher.discount_value / 100)
+      : voucher.discount_value;
+    discount = Math.min(discount, subtotal);
+    appliedCode = voucher.code;
+  }
+  const total = subtotal - discount;
+
+  const tx = db.transaction(() => {
+    const info = db.prepare(`
+      INSERT INTO orders (customer_id, seller_id, seller_name, items_json, subtotal, discount, total, voucher_code, customer_name, customer_phone, customer_address, payment_method, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+    `).run(req.session.user.id, sellerId, sellerName, JSON.stringify(itemsSnapshot), subtotal, discount, total, appliedCode,
+      String(customerName).trim(), String(customerPhone).trim(), String(customerAddress).trim(), method);
+    db.prepare('DELETE FROM cart_items WHERE customer_id = ? AND seller_id = ?').run(req.session.user.id, sellerId);
+    return info.lastInsertRowid;
+  });
+  const orderId = tx();
+  const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(orderId);
+  const remaining = db.prepare('SELECT * FROM cart_items WHERE customer_id = ? ORDER BY id ASC').all(req.session.user.id);
+  res.status(201).json({ order: orderOut(order), items: remaining.map(cartItemOut) });
+});
+
+app.get('/api/orders', requireAuth, requireRole('customer'), (req, res) => {
+  const rows = db.prepare('SELECT * FROM orders WHERE customer_id = ? ORDER BY id DESC').all(req.session.user.id);
+  res.json({ orders: rows.map(orderOut) });
+});
+
+/* ===================== SELLER ORDERS ===================== */
+
+app.get('/api/seller/orders', requireAuth, requireRole('seller'), (req, res) => {
+  const rows = db.prepare('SELECT * FROM orders WHERE seller_id = ? ORDER BY id DESC').all(req.session.user.id);
+  res.json({ orders: rows.map(orderOut) });
+});
+
+app.put('/api/seller/orders/:id/status', requireAuth, requireRole('seller'), (req, res) => {
+  const { status } = req.body || {};
+  if (!ORDER_STATUSES.includes(status)) return res.status(400).json({ error: 'Trạng thái không hợp lệ.' });
+  const existing = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
+  if (!existing || existing.seller_id !== req.session.user.id) return res.status(404).json({ error: 'Không tìm thấy đơn hàng.' });
+  db.prepare("UPDATE orders SET status = ?, updated_at = datetime('now') WHERE id = ?").run(status, req.params.id);
+  res.json({ order: orderOut(db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id)) });
+});
+
+/* ===================== SELLER VOUCHERS ===================== */
+
+function voucherOut(row) {
+  return { id: row.id, code: row.code, discountType: row.discount_type, discountValue: row.discount_value, active: !!row.active, createdAt: row.created_at };
+}
+
+app.get('/api/seller/vouchers', requireAuth, requireRole('seller'), (req, res) => {
+  const rows = db.prepare('SELECT * FROM vouchers WHERE seller_id = ? ORDER BY id DESC').all(req.session.user.id);
+  res.json({ vouchers: rows.map(voucherOut) });
+});
+
+app.post('/api/seller/vouchers', requireAuth, requireRole('seller'), (req, res) => {
+  const { code, discountType, discountValue } = req.body || {};
+  if (!code || !['percent', 'fixed'].includes(discountType) || !discountValue) {
+    return res.status(400).json({ error: 'Vui lòng điền đầy đủ mã, loại và giá trị giảm giá.' });
+  }
+  const value = Number(discountValue);
+  if (!value || value <= 0 || (discountType === 'percent' && value > 100)) {
+    return res.status(400).json({ error: 'Giá trị giảm giá không hợp lệ.' });
+  }
+  const normalizedCode = String(code).trim().toUpperCase();
+  const existing = db.prepare('SELECT id FROM vouchers WHERE seller_id = ? AND code = ?').get(req.session.user.id, normalizedCode);
+  if (existing) return res.status(409).json({ error: 'Mã giảm giá này đã tồn tại.' });
+  const info = db.prepare('INSERT INTO vouchers (seller_id, code, discount_type, discount_value) VALUES (?, ?, ?, ?)')
+    .run(req.session.user.id, normalizedCode, discountType, value);
+  res.status(201).json({ voucher: voucherOut(db.prepare('SELECT * FROM vouchers WHERE id = ?').get(info.lastInsertRowid)) });
+});
+
+app.put('/api/seller/vouchers/:id', requireAuth, requireRole('seller'), (req, res) => {
+  const existing = db.prepare('SELECT * FROM vouchers WHERE id = ?').get(req.params.id);
+  if (!existing || existing.seller_id !== req.session.user.id) return res.status(404).json({ error: 'Không tìm thấy mã giảm giá.' });
+  const { active } = req.body || {};
+  db.prepare('UPDATE vouchers SET active = ? WHERE id = ?').run(active ? 1 : 0, req.params.id);
+  res.json({ voucher: voucherOut(db.prepare('SELECT * FROM vouchers WHERE id = ?').get(req.params.id)) });
+});
+
+app.delete('/api/seller/vouchers/:id', requireAuth, requireRole('seller'), (req, res) => {
+  const existing = db.prepare('SELECT * FROM vouchers WHERE id = ?').get(req.params.id);
+  if (!existing || existing.seller_id !== req.session.user.id) return res.status(404).json({ error: 'Không tìm thấy mã giảm giá.' });
+  db.prepare('DELETE FROM vouchers WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
 });
 
 /* ===================== CHAT (customer side — anonymous by customerKey) ===================== */
