@@ -16,7 +16,8 @@
   var HINT_KEY = 'materialai_customer_hint';
 
   var cartCache = [];
-  var authUser = null;      // logged-in customer, or null
+  var authUser = null;      // logged-in customer, or null (drives cart/checkout functionality)
+  var navUser = null;       // logged-in user of ANY role, or null (drives header identity display)
   var authChecked = false;
 
   function readHint() {
@@ -24,7 +25,7 @@
   }
   function writeHint(user) {
     try {
-      if (user) localStorage.setItem(HINT_KEY, JSON.stringify({ name: user.name, email: user.email }));
+      if (user) localStorage.setItem(HINT_KEY, JSON.stringify({ name: user.name, email: user.email, role: user.role }));
       else localStorage.removeItem(HINT_KEY);
     } catch (e) { /* localStorage unavailable — safe to ignore, just no optimistic render next load */ }
   }
@@ -63,10 +64,14 @@
     return letters.join('').toUpperCase();
   }
 
+  var DASHBOARD_HREF = { seller: 'seller-dashboard.html', admin: 'admin-dashboard.html' };
+
   function renderNavIdentity() {
     var loginLinks = document.querySelectorAll('.nav-login-link');
     var customerBtns = document.querySelectorAll('.nav-customer-btn');
-    if (authUser) {
+    var dashboardLinks = document.querySelectorAll('.nav-dashboard-link');
+    var dashboardHref = navUser && DASHBOARD_HREF[navUser.role];
+    if (navUser) {
       loginLinks.forEach(function (a) { a.classList.add('hidden'); });
       customerBtns.forEach(function (btn) {
         btn.classList.remove('hidden');
@@ -74,18 +79,33 @@
         btn.title = t('common.logout', 'Đăng xuất');
         var avatar = btn.querySelector('.nav-customer-avatar');
         var name = btn.querySelector('.nav-customer-name');
-        if (avatar) avatar.textContent = initialsOf(authUser.name || authUser.email);
-        if (name) name.textContent = authUser.name || authUser.email;
+        if (avatar) avatar.textContent = initialsOf(navUser.name || navUser.email);
+        if (name) name.textContent = navUser.name || navUser.email;
       });
     } else {
       loginLinks.forEach(function (a) { a.classList.remove('hidden'); });
       customerBtns.forEach(function (btn) { btn.classList.add('hidden'); btn.classList.remove('flex'); });
     }
+    dashboardLinks.forEach(function (a) {
+      if (dashboardHref) {
+        a.href = dashboardHref;
+        a.classList.remove('hidden');
+        a.classList.add('inline-flex');
+      } else {
+        a.classList.add('hidden');
+        a.classList.remove('inline-flex');
+      }
+    });
+    // Order history only applies to shopping (customer) accounts.
+    var ordersBtn = document.getElementById('customerMenuOrders');
+    var ordersDivider = document.getElementById('customerMenuOrdersDivider');
+    if (ordersBtn) ordersBtn.classList.toggle('hidden', !authUser);
+    if (ordersDivider) ordersDivider.classList.toggle('hidden', !authUser);
   }
 
   async function logoutCustomer() {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
-    authUser = null; authChecked = true; cartCache = [];
+    authUser = null; navUser = null; authChecked = true; cartCache = [];
     writeHint(null);
     updateBadge();
     renderNavIdentity();
@@ -101,8 +121,11 @@
     var menu = document.getElementById('customerMenu');
     if (!menu) return;
     var rect = btn.getBoundingClientRect();
-    var menuWidth = menu.offsetWidth || 224;
-    var left = Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8);
+    // Match the menu's width exactly to the avatar button above it, so the
+    // dropdown sits flush under it instead of floating off to one side.
+    var menuWidth = Math.max(rect.width, 160);
+    menu.style.width = menuWidth + 'px';
+    var left = Math.min(rect.left, window.innerWidth - menuWidth - 8);
     left = Math.max(8, left);
     menu.style.left = left + 'px';
     menu.style.top = (rect.bottom + 8) + 'px';
@@ -193,18 +216,22 @@
       var res = await fetch('/api/auth/me', { credentials: 'same-origin' });
       if (res.ok) {
         var data = await res.json();
-        authUser = data.user.role === 'customer' ? data.user : null;
+        navUser = data.user || null;
+        authUser = navUser && navUser.role === 'customer' ? navUser : null;
       } else {
+        navUser = null;
         authUser = null;
       }
-      writeHint(authUser);
+      writeHint(navUser);
     } catch (e) {
       // Network error, or the request was aborted because the page is
       // navigating away — we don't actually know the real auth state here,
       // so fall back to whatever hint is cached instead of confidently
       // overwriting it with "logged out" (that previously wiped a good
       // cached identity right before the next page load could use it).
-      authUser = readHint();
+      var hint = readHint();
+      navUser = hint;
+      authUser = hint && hint.role === 'customer' ? hint : null;
     }
     authChecked = true;
     return authUser;
@@ -214,7 +241,7 @@
     // Render last-known state immediately (no flash of the wrong nav item
     // while the real /api/auth/me round-trip is in flight), then confirm.
     var hint = readHint();
-    if (hint) { authUser = hint; renderNavIdentity(); }
+    if (hint) { navUser = hint; authUser = hint.role === 'customer' ? hint : null; renderNavIdentity(); }
     var user = await ensureCustomerAuth();
     renderNavIdentity();
     if (!user) { cartCache = []; updateBadge(); return; }
@@ -438,9 +465,12 @@
       return;
     }
     try {
+      var items = checkoutItemsForSeller(checkoutSellerId).map(function (i) {
+        return { title: i.title, priceText: i.priceText, qty: i.qty };
+      });
       var res = await fetch('/api/vouchers/check', {
         method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sellerId: checkoutSellerId, code: code })
+        body: JSON.stringify({ sellerId: checkoutSellerId, code: code, items: items })
       });
       var data = await res.json().catch(function () { return {}; });
       if (!res.ok) {
@@ -448,11 +478,7 @@
         msgEl.textContent = data.error || t('checkout.voucher_invalid', 'Mã giảm giá không hợp lệ.');
         msgEl.className = 'text-xs mt-1.5 text-red-600';
       } else {
-        var subtotal = checkoutSubtotal(checkoutSellerId);
-        checkoutDiscount = data.voucher.discountType === 'percent'
-          ? Math.round(subtotal * data.voucher.discountValue / 100)
-          : data.voucher.discountValue;
-        checkoutDiscount = Math.min(checkoutDiscount, subtotal);
+        checkoutDiscount = data.voucher.discount;
         checkoutVoucherCode = data.voucher.code;
         msgEl.textContent = t('checkout.voucher_applied', 'Đã áp dụng mã giảm giá.');
         msgEl.className = 'text-xs mt-1.5 text-green-700';
@@ -542,10 +568,10 @@
     document.getElementById('cartCloseBtn').addEventListener('click', closeDrawer);
 
     var customerMenu = el(
-      '<div id="customerMenu" class="hidden fixed z-[80] w-56 bg-white rounded-2xl shadow-soft border border-secondary-50 py-2 text-sm">' +
-        '<button type="button" id="customerMenuOrders" class="w-full text-left px-4 py-2.5 hover:bg-secondary-50/60"></button>' +
-        '<div class="border-t border-secondary-50 my-1"></div>' +
-        '<button type="button" id="customerMenuLogout" class="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600"></button>' +
+      '<div id="customerMenu" class="hidden fixed z-[80] bg-white rounded-2xl shadow-soft border border-secondary-50 py-2 text-sm">' +
+        '<button type="button" id="customerMenuOrders" class="w-full text-center px-4 py-2.5 hover:bg-secondary-50/60"></button>' +
+        '<div id="customerMenuOrdersDivider" class="border-t border-secondary-50 my-1"></div>' +
+        '<button type="button" id="customerMenuLogout" class="w-full text-center px-4 py-2.5 hover:bg-red-50 text-red-600"></button>' +
       '</div>'
     );
     document.body.appendChild(customerMenu);

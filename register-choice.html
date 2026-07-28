@@ -14,7 +14,7 @@
 <script src="i18n.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
-    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, warm:{DEFAULT:'#8A6844',50:'#F5EEE5',600:'#6E5236'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
     fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
     boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)' },
   }}}
@@ -73,7 +73,7 @@
     <div class="text-center mb-10">
       <span class="inline-block bg-accent-50 text-secondary font-semibold text-sm px-4 py-1.5 rounded-full mb-4" data-i18n="register_choice.badge">Tạo tài khoản mới</span>
       <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-2" data-i18n="register_choice.h1">Bạn muốn đăng ký với vai trò nào?</h1>
-      <p class="font-script text-2xl text-accent-600" data-i18n="register_choice.tagline">chọn loại tài khoản phù hợp</p>
+      <p class="font-script text-2xl text-warm-600" data-i18n="register_choice.tagline">chọn loại tài khoản phù hợp</p>
     </div>
 
     <div class="grid sm:grid-cols-2 gap-6">
@@ -83,7 +83,7 @@
         </div>
         <h2 class="font-bold text-xl mb-2" data-i18n="register_choice.customer_title">Khách hàng</h2>
         <p class="text-sm text-muted mb-6" data-i18n="register_choice.customer_desc">Lưu giỏ hàng, gửi yêu cầu mua vật liệu tới nhà bán hàng.</p>
-        <span class="mt-auto w-full bg-accent text-ink font-semibold py-3 rounded-full hover:shadow-lg transition-all" data-i18n="register_choice.customer_cta">Đăng ký khách hàng</span>
+        <span class="mt-auto w-full bg-ink text-white font-semibold py-3 rounded-full hover:shadow-lg transition-all" data-i18n="register_choice.customer_cta">Đăng ký khách hàng</span>
       </a>
       <a href="register.html" class="glass rounded-3xl p-8 shadow-soft hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col items-center text-center">
         <div class="w-16 h-16 rounded-full bg-accent-50 text-accent-600 flex items-center justify-center mb-5">

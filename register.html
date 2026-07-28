@@ -15,7 +15,7 @@
 <script src="custom-select.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
-    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, warm:{DEFAULT:'#8A6844',50:'#F5EEE5',600:'#6E5236'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
     fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
     boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)' },
   }}}
@@ -77,7 +77,7 @@
     <div class="text-center mb-8">
       <span class="inline-block bg-accent-50 text-secondary font-semibold text-sm px-4 py-1.5 rounded-full mb-4" data-i18n="register.badge">Dành cho nhà bán hàng</span>
       <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-2" data-i18n="register.h1">Đăng ký bán vật liệu</h1>
-      <p class="font-script text-2xl text-accent-600" data-i18n="register.tagline">bắt đầu tiếp cận khách hàng mới</p>
+      <p class="font-script text-2xl text-warm-600" data-i18n="register.tagline">bắt đầu tiếp cận khách hàng mới</p>
     </div>
 
     <form id="registerForm" class="glass rounded-3xl p-8 shadow-soft space-y-4">
@@ -125,7 +125,7 @@
         <textarea id="description" rows="3" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white" placeholder="Vài dòng về sản phẩm và thế mạnh của bạn..." data-i18n-placeholder="register.description_placeholder"></textarea>
       </div>
       <p id="registerError" class="form-error text-sm text-red-600 font-medium"></p>
-      <button type="submit" class="w-full bg-accent text-ink font-semibold py-3.5 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="register.submit">Đăng ký</button>
+      <button type="submit" class="w-full bg-ink text-white font-semibold py-3.5 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="register.submit">Đăng ký</button>
       <p class="text-sm text-muted text-center pt-1" data-i18n-html="register.login_hint">Đã có tài khoản? <a href="login.html" class="text-secondary font-semibold hover:underline">Đăng nhập</a></p>
       <p class="text-xs text-muted text-center" data-i18n-html="register.customer_hint">Bạn là khách hàng? <a href="customer-register.html" class="text-secondary font-semibold hover:underline">Đăng ký tại đây</a></p>
     </form>

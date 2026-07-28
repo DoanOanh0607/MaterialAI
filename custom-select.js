@@ -25,8 +25,19 @@
     return menuEl;
   }
 
+  // Every trigger button's chevron should point down while closed and flip to point
+  // up while its menu is open — resetArrows() clears the flipped state on all of them
+  // so switching directly from one open select to another doesn't leave a stale arrow.
+  function resetArrows() {
+    instances.forEach(function (inst) {
+      var svg = inst.root.querySelector('.custom-select-btn svg');
+      if (svg) svg.classList.remove('rotate-180');
+    });
+  }
+
   function closeMenu() {
     if (menuEl) menuEl.classList.add('hidden');
+    resetArrows();
     activeRoot = null;
   }
 
@@ -41,6 +52,7 @@
       el.textContent = t(options[i].labelKey);
       el.addEventListener('click', function () { closeMenu(); onPick(options[i].value); });
     });
+    resetArrows();
     activeRoot = root;
     var rect = btn.getBoundingClientRect();
     var menuWidth = Math.max(rect.width, 160);
@@ -48,8 +60,21 @@
     var left = Math.min(rect.left, window.innerWidth - menuWidth - 8);
     left = Math.max(8, left);
     menu.style.left = left + 'px';
+    // Render below first (so we can measure its real height), then flip above the
+    // button instead whenever there isn't enough room below but there is above —
+    // e.g. a select near the bottom of the viewport.
     menu.style.top = (rect.bottom + 6) + 'px';
     menu.classList.remove('hidden');
+    var menuHeight = menu.offsetHeight;
+    var spaceBelow = window.innerHeight - rect.bottom - 6;
+    var spaceAbove = rect.top - 6;
+    if (menuHeight > spaceBelow && spaceAbove > spaceBelow) {
+      menu.style.top = Math.max(8, rect.top - menuHeight - 6) + 'px';
+    }
+    // Arrow signals open/closed state (standard disclosure-arrow convention), regardless
+    // of which direction the menu actually rendered.
+    var svg = btn.querySelector('svg');
+    if (svg) svg.classList.add('rotate-180');
   }
 
   function init(root, options, initialValue, onChange) {
@@ -65,6 +90,12 @@
 
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
+      // Clicking the trigger again while its own menu is open should close it
+      // (toggle) instead of just re-opening the same menu in place.
+      if (activeRoot === root && menuEl && !menuEl.classList.contains('hidden')) {
+        closeMenu();
+        return;
+      }
       openMenu(root, options, root.dataset.value, function (value) {
         setValue(value);
         if (onChange) onChange(value);
@@ -72,7 +103,18 @@
     });
 
     setValue(initialValue || root.dataset.value || options[0].value);
-    var instance = { root: root, options: options, getValue: function () { return root.dataset.value; }, setValue: setValue };
+    var instance = {
+      root: root, options: options,
+      getValue: function () { return root.dataset.value; },
+      setValue: setValue,
+      // Replace the option list in place (e.g. once seller materials finish loading), keeping the same
+      // DOM/listeners — re-calling init() on the same root would stack duplicate click handlers.
+      setOptions: function (newOptions, newValue) {
+        options.length = 0;
+        newOptions.forEach(function (o) { options.push(o); });
+        setValue(newValue !== undefined ? newValue : (options[0] ? options[0].value : ''));
+      }
+    };
     instances.push(instance);
     return instance;
   }

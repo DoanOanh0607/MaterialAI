@@ -15,7 +15,7 @@
 <script src="custom-select.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
-    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, warm:{DEFAULT:'#8A6844',50:'#F5EEE5',600:'#6E5236'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
     fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
     boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)' },
   }}}
@@ -26,6 +26,11 @@
   .font-script{font-family:'Inter',sans-serif;font-style:italic;font-weight:700}
   .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
   .hidden{display:none}
+  .side-btn{display:flex;align-items:center;gap:.65rem;width:100%;text-align:left;padding:.6rem .8rem;border-radius:.75rem;font-size:.875rem;font-weight:500;color:#3A3632;transition:background .15s}
+  .side-btn:hover{background:#F2F0EE}
+  .side-btn.active{background:#3A3632;color:#fff}
+  .side-btn.active svg{stroke:#fff}
+  .side-btn svg{stroke:#6B6259;flex-shrink:0}
   .lang-btn.active,
   html[lang="vi"] .lang-btn[data-lang="vi"],
   html[lang="en"] .lang-btn[data-lang="en"]{background:#3A3632;color:#fff}
@@ -36,32 +41,75 @@
 </head>
 <body class="bg-cream text-ink overflow-x-hidden min-h-screen">
 
-<!-- NAVBAR -->
-<header class="fixed top-3 md:top-5 inset-x-3 md:inset-x-6 z-50">
-  <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-5 py-2 glass rounded-full shadow-soft">
-    <a href="index.html" class="flex items-center shrink-0"><img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto"></a>
-    <div class="hidden sm:block text-sm font-semibold text-secondary" data-i18n="seller.navbar_title">Bảng điều khiển nhà bán hàng</div>
-    <div class="flex items-center gap-3">
-      <span id="userGreeting" class="hidden sm:inline text-sm text-muted"></span>
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-secondary-100 flex flex-col -translate-x-full md:translate-x-0 transition-transform duration-200">
+  <a href="index.html" class="flex items-center gap-2 px-5 h-[72px] border-b border-secondary-50 shrink-0">
+    <img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto">
+  </a>
+  <nav class="flex-1 overflow-y-auto px-3 py-5 space-y-6">
+    <div>
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-muted mb-2" data-i18n="seller.menu_group_store">Gian hàng</p>
+      <div class="space-y-1">
+        <button class="side-btn active" data-tab="messages">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span data-i18n="seller.menu_messages">Tin nhắn</span>
+          <span id="sideChatBadge" class="hidden ml-auto bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 items-center justify-center"></span>
+        </button>
+        <button class="side-btn" data-tab="orders">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+          <span data-i18n="seller.orders_title">Đơn hàng</span>
+        </button>
+        <button class="side-btn" data-tab="materials">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4zm0 5l9 4 9-4M3 17l9 4 9-4"/></svg>
+          <span data-i18n="seller.menu_materials">Quản lý vật liệu</span>
+        </button>
+        <button class="side-btn" data-tab="vouchers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8a2 2 0 00-2-2H6a2 2 0 00-2 2v4a2 2 0 010 4v4h16v-4a2 2 0 010-4z" transform="rotate(0)"/><path d="M13 5v2m0 4v2m0 4v2"/></svg>
+          <span data-i18n="seller.vouchers_title">Mã giảm giá</span>
+        </button>
+      </div>
+    </div>
+    <div>
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-muted mb-2" data-i18n="seller.menu_group_account">Tài khoản</p>
+      <div class="space-y-1">
+        <button class="side-btn" data-tab="profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span data-i18n="seller.menu_profile">Hồ sơ</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <div class="border-t border-secondary-50 px-5 py-4 shrink-0">
+    <p id="userGreeting" class="text-xs text-muted truncate mb-3"></p>
+    <button id="logoutBtn" class="w-full border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors" data-i18n="common.logout">Đăng xuất</button>
+  </div>
+</aside>
+<div id="sidebarOverlay" class="hidden fixed inset-0 z-40 bg-ink/40 md:hidden"></div>
+
+<!-- MAIN -->
+<main class="flex-1 md:ml-64 min-w-0">
+  <div class="sticky top-0 z-30 bg-cream/90 backdrop-blur border-b border-secondary-50 px-6 h-[72px] flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <button id="sidebarToggle" class="md:hidden text-secondary" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="min-w-0">
+        <h1 class="font-extrabold text-lg leading-tight truncate"><span data-i18n="seller.greeting">Xin chào,</span> <span id="businessNameHeading">...</span></h1>
+        <p class="text-xs text-muted" data-i18n="seller.tagline">Quản lý gian hàng của bạn</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <span id="statusBadge" class="text-sm font-semibold px-4 py-1.5 rounded-full"></span>
       <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
       </div>
-      <button id="logoutBtn" class="border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors" data-i18n="common.logout">Đăng xuất</button>
     </div>
-  </nav>
-</header>
+  </div>
 
-<section class="relative pt-28 pb-16 px-6">
-  <div class="max-w-5xl mx-auto">
-
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-8">
-      <div>
-        <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-1"><span data-i18n="seller.greeting">Xin chào,</span> <span id="businessNameHeading">...</span></h1>
-        <p class="font-script text-2xl text-accent-600" data-i18n="seller.tagline">quản lý gian hàng của bạn</p>
-      </div>
-      <span id="statusBadge" class="text-sm font-semibold px-4 py-1.5 rounded-full"></span>
-    </div>
+  <div class="px-6 lg:px-10 py-6">
 
     <div id="pendingNotice" class="hidden bg-accent-50 border border-accent/30 rounded-2xl p-5 mb-8 text-sm" data-i18n-html="seller.pending_notice">
       Tài khoản của bạn đang <strong>chờ admin duyệt</strong>. Bạn có thể cập nhật hồ sơ ngay bây giờ, nhưng cần được duyệt trước khi đăng vật liệu lên hệ thống.
@@ -71,7 +119,7 @@
     </div>
 
     <!-- MESSAGES -->
-    <div class="bg-white rounded-3xl shadow-soft mb-8 overflow-hidden">
+    <div id="tab-messages" class="tab-panel bg-white rounded-3xl shadow-soft overflow-hidden">
       <div class="flex items-center justify-between px-6 md:px-8 pt-6 md:pt-8 pb-5">
         <h2 class="font-bold text-xl" data-i18n="seller.messages_title">Tin nhắn khách hàng</h2>
         <span id="chatUnreadTotal" class="hidden bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"></span>
@@ -88,20 +136,39 @@
         <div id="chatThreadMessages" class="px-2 py-3 overflow-y-auto" style="height:340px"></div>
         <form id="chatThreadForm" class="flex items-center gap-2 px-6 md:px-8 py-4 border-t border-secondary-50">
           <input id="chatThreadInput" type="text" placeholder="Nhập tin nhắn..." class="flex-1 rounded-full border border-secondary-100 px-4 py-2.5 text-sm outline-none focus:border-secondary" autocomplete="off" data-i18n-placeholder="seller.chat_input_placeholder">
-          <button type="submit" class="bg-accent text-ink font-semibold px-5 py-2.5 rounded-full text-sm shrink-0" data-i18n="common.send">Gửi</button>
+          <button type="submit" class="bg-ink text-white font-semibold px-5 py-2.5 rounded-full text-sm shrink-0" data-i18n="common.send">Gửi</button>
         </form>
       </div>
     </div>
 
     <!-- ORDERS -->
-    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+    <div id="tab-orders" class="tab-panel hidden bg-white rounded-3xl shadow-soft p-6 md:p-8">
       <h2 class="font-bold text-xl mb-5" data-i18n="seller.orders_title">Đơn hàng</h2>
-      <div id="ordersList" class="space-y-3"></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[1180px]">
+          <thead>
+            <tr class="text-left text-muted border-b border-secondary-50">
+              <th class="pb-3 pr-3 font-semibold w-12 text-center" data-i18n="admin.th_stt">STT</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.material_code_label">Mã vật liệu</th>
+              <th class="pb-3 pr-3 font-semibold" data-i18n="seller.orders_th_material">Vật liệu</th>
+              <th class="pb-3 pr-3 font-semibold" data-i18n="seller.orders_th_customer">Thông tin khách hàng</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.orders_th_time">Thời gian đặt</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.orders_th_price">Giá tiền</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="admin.materials_th_unit">Đơn vị tính</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.orders_th_qty">Số lượng</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.orders_th_discount">Giảm giá</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.orders_th_total">Thành tiền</th>
+              <th class="pb-3 font-semibold text-center" data-i18n="seller.orders_th_status">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody id="ordersList"></tbody>
+        </table>
+      </div>
       <p id="ordersEmpty" class="hidden text-sm text-muted text-center py-8" data-i18n="seller.orders_empty">Chưa có đơn hàng nào.</p>
     </div>
 
     <!-- PROFILE -->
-    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+    <div id="tab-profile" class="tab-panel hidden bg-white rounded-3xl shadow-soft p-6 md:p-8">
       <h2 class="font-bold text-xl mb-5" data-i18n="seller.profile_title">Hồ sơ nhà bán hàng</h2>
       <form id="profileForm" class="space-y-4">
         <div class="grid sm:grid-cols-2 gap-4">
@@ -142,64 +209,211 @@
       </form>
     </div>
 
-    <!-- ADD MATERIAL -->
-    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+    <!-- MATERIALS (đăng mới + danh sách) -->
+    <div id="tab-materials" class="tab-panel hidden space-y-6">
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
       <h2 class="font-bold text-xl mb-5" data-i18n="seller.add_material_title">Đăng vật liệu mới</h2>
-      <form id="materialForm" class="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_category_label">Danh mục</label>
-          <div id="mCategory" class="custom-select">
-            <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
-              <span class="custom-select-label"></span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
+      <form id="materialForm" class="space-y-5">
+        <div class="grid md:grid-cols-[1fr_200px] gap-6">
+          <!-- Thông tin cơ bản -->
+          <div class="grid sm:grid-cols-2 gap-4 content-start">
+            <div>
+              <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_category_label">Danh mục</label>
+              <div id="mCategory" class="custom-select">
+                <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
+                  <span class="custom-select-label"></span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_code_label">Mã vật liệu</label>
+              <input id="mCode" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: VAN-MDF-01" data-i18n-placeholder="seller.material_code_placeholder">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_title_label">Tên vật liệu</label>
+              <input id="mTitle" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Ván MDF phủ Melamine vân sồi" data-i18n-placeholder="seller.material_title_placeholder">
+            </div>
+            <div>
+              <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_price_label">Giá</label>
+              <input id="mPrice" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: 450.000đ" data-i18n-placeholder="seller.material_price_placeholder">
+            </div>
+            <div>
+              <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_unit_label">Đơn vị tính</label>
+              <input id="mUnit" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: tấm, m², thùng" data-i18n-placeholder="seller.material_unit_placeholder">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_spec_label">Thông số</label>
+              <input id="mSpec" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Dày 18mm · Kích thước 1220x2440mm" data-i18n-placeholder="seller.material_spec_placeholder">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_desc_label">Mô tả</label>
+              <textarea id="mDescription" required rows="3" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Bề mặt chống trầy, phù hợp tủ bếp, vân gỗ tự nhiên..." data-i18n-placeholder="seller.material_desc_placeholder"></textarea>
+            </div>
+          </div>
+
+          <!-- Ảnh vật liệu + hành động -->
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_image_label">Hình ảnh</label>
+            <div id="mImageDropzone" class="relative aspect-square rounded-2xl border-2 border-dashed border-secondary-100 bg-secondary-50/60 hover:border-secondary-300 transition-colors cursor-pointer overflow-hidden flex items-center justify-center">
+              <img id="mImagePreview" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
+              <div id="mImagePlaceholder" class="flex flex-col items-center gap-2 px-3 text-center text-muted pointer-events-none">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <span class="text-xs font-semibold" data-i18n="seller.material_image_hint">Chọn hoặc kéo thả ảnh</span>
+                <span class="text-[11px]" data-i18n="seller.material_image_hint_sub">JPG, PNG tối đa 5MB</span>
+              </div>
+              <button id="mImageRemove" type="button" class="hidden absolute top-2 right-2 w-7 h-7 rounded-full bg-ink/70 text-white items-center justify-center hover:bg-ink transition-colors z-10">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <input id="mImageInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
+            <button id="materialSubmitBtn" type="submit" disabled class="mt-3 md:mt-auto w-full bg-ink text-white font-semibold py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" data-i18n="seller.submit_material">Đăng vật liệu</button>
+            <button id="materialCancelEdit" type="button" class="hidden mt-2 w-full border border-secondary-100 text-secondary font-semibold py-3 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="common.cancel">Hủy</button>
           </div>
         </div>
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_title_label">Tên vật liệu</label>
-          <input id="mTitle" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Ván MDF phủ Melamine vân sồi" data-i18n-placeholder="seller.material_title_placeholder">
-        </div>
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_spec_label">Thông số</label>
-          <input id="mSpec" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: Dày 18mm · Kích thước 1220x2440mm" data-i18n-placeholder="seller.material_spec_placeholder">
-        </div>
-        <div>
-          <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.material_price_label">Giá</label>
-          <input id="mPrice" type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 outline-none focus:border-secondary" placeholder="VD: 450.000đ/tấm" data-i18n-placeholder="seller.material_price_placeholder">
-        </div>
-        <p id="materialMsg" class="hidden sm:col-span-2 text-sm font-medium"></p>
-        <button id="materialSubmitBtn" type="submit" class="sm:col-span-2 bg-accent text-ink font-semibold px-6 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all" data-i18n="seller.submit_material">Đăng vật liệu</button>
+        <p id="materialMsg" class="hidden text-sm font-medium"></p>
       </form>
     </div>
 
-    <!-- MATERIALS LIST -->
-    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8 mb-8">
+    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
       <h2 class="font-bold text-xl mb-5"><span data-i18n="seller.materials_list_title">Vật liệu đang bán</span> (<span id="materialsCount">0</span>)</h2>
-      <div id="materialsList" class="space-y-3"></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[1140px]">
+          <thead>
+            <tr class="text-left text-muted border-b border-secondary-50">
+              <th class="pb-3 pr-3 font-semibold w-12 text-center" data-i18n="admin.th_stt">STT</th>
+              <th class="pb-3 pr-3 font-semibold w-24 text-center whitespace-nowrap" data-i18n="seller.material_image_label">Hình ảnh</th>
+              <th class="pb-3 pr-3 font-semibold text-center whitespace-nowrap" data-i18n="seller.material_code_label">Mã vật liệu</th>
+              <th class="pb-3 pr-3 font-semibold" data-i18n="seller.material_title_label">Tên vật liệu</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.material_category_label">Danh mục</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.material_price_label">Giá</th>
+              <th class="pb-3 pr-3 font-semibold text-center" data-i18n="admin.materials_th_unit">Đơn vị tính</th>
+              <th class="pb-3 pr-3 font-semibold" data-i18n="seller.material_spec_label">Thông số</th>
+              <th class="pb-3 pr-3 font-semibold" data-i18n="seller.material_desc_label">Mô tả</th>
+              <th class="pb-3 font-semibold text-center" data-i18n="admin.th_action">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="materialsList"></tbody>
+        </table>
+      </div>
       <p id="materialsEmpty" class="hidden text-sm text-muted text-center py-8" data-i18n="seller.materials_empty">Bạn chưa đăng vật liệu nào.</p>
+    </div>
     </div>
 
     <!-- VOUCHERS -->
-    <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
-      <h2 class="font-bold text-xl mb-5" data-i18n="seller.vouchers_title">Mã giảm giá</h2>
-      <form id="voucherForm" class="grid sm:grid-cols-4 gap-3 mb-5">
-        <input id="vCode" required type="text" class="sm:col-span-2 rounded-xl border border-secondary-100 px-3 py-2.5 text-sm outline-none focus:border-secondary" placeholder="VD: SALE10" data-i18n-placeholder="seller.voucher_code_placeholder">
-        <div id="vType" class="custom-select">
-          <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-3 py-2.5 text-sm outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
-            <span class="custom-select-label"></span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
+    <div id="tab-vouchers" class="tab-panel hidden space-y-6">
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl" id="voucherStatTotal">0</p>
+          <p class="text-xs text-muted" data-i18n="seller.voucher_stat_total">Tổng số mã</p>
         </div>
-        <input id="vValue" required type="number" min="1" class="rounded-xl border border-secondary-100 px-3 py-2.5 text-sm outline-none focus:border-secondary" placeholder="VD: 10" data-i18n-placeholder="seller.voucher_value_placeholder">
-        <p id="voucherMsg" class="hidden sm:col-span-4 text-xs font-medium"></p>
-        <button type="submit" class="sm:col-span-4 bg-secondary text-white font-semibold py-2.5 rounded-full text-sm" data-i18n="seller.voucher_add">Thêm mã giảm giá</button>
-      </form>
-      <div id="vouchersList" class="space-y-2"></div>
-      <p id="vouchersEmpty" class="hidden text-sm text-muted text-center py-6" data-i18n="seller.vouchers_empty">Bạn chưa tạo mã giảm giá nào.</p>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl" id="voucherStatActive">0</p>
+          <p class="text-xs text-muted" data-i18n="seller.voucher_stat_active">Đang hoạt động</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl" id="voucherStatUsed">0</p>
+          <p class="text-xs text-muted" data-i18n="seller.voucher_stat_used">Tổng lượt đã dùng</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
+        <h2 class="font-bold text-xl mb-5" data-i18n="seller.vouchers_title">Mã giảm giá</h2>
+        <form id="voucherForm" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_code_label">Mã giảm giá</label>
+            <input id="vCode" required type="text" class="w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary" placeholder="VD: SALE10" data-i18n-placeholder="seller.voucher_code_placeholder">
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_type_label">Loại giảm giá</label>
+            <div id="vType" class="custom-select">
+              <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
+                <span class="custom-select-label"></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_value_label">Giá trị</label>
+            <input id="vValue" required type="number" min="1" class="w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary" placeholder="VD: 10" data-i18n-placeholder="seller.voucher_value_placeholder">
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_material_label">Áp dụng cho vật liệu</label>
+            <div id="vMaterial" class="custom-select">
+              <button type="button" class="custom-select-btn w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary bg-white flex items-center justify-between text-left">
+                <span class="custom-select-label"></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted shrink-0"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_min_order_label">Đơn tối thiểu</label>
+            <input id="vMinOrder" required type="number" min="0" class="w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary" placeholder="VD: 500000" data-i18n-placeholder="seller.voucher_min_order_placeholder">
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_max_discount_label">Giảm tối đa</label>
+            <input id="vMaxDiscount" required type="number" min="0" class="w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary" placeholder="VD: 100000" data-i18n-placeholder="seller.voucher_max_discount_placeholder">
+            <p class="text-[11px] text-muted mt-1" data-i18n="seller.voucher_max_discount_hint">Chỉ áp dụng khi giảm theo %</p>
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_usage_limit_label">Giới hạn lượt dùng</label>
+            <input id="vUsageLimit" required type="number" min="0" class="w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary" placeholder="VD: 50" data-i18n-placeholder="seller.voucher_usage_limit_placeholder">
+          </div>
+          <div>
+            <label class="text-sm font-semibold block mb-1.5" data-i18n="seller.voucher_expires_label">Hạn sử dụng</label>
+            <input id="vExpiresAt" required type="date" class="w-full rounded-xl border border-secondary-100 px-4 py-3 text-sm outline-none focus:border-secondary">
+          </div>
+          <div class="sm:col-span-2 md:col-span-1 flex items-end justify-end">
+            <button id="voucherSubmitBtn" type="submit" disabled class="bg-ink text-white font-semibold px-8 py-3 rounded-full hover:-translate-y-0.5 hover:shadow-lg transition-all text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" data-i18n="seller.voucher_add">Thêm mã giảm giá</button>
+          </div>
+          <p id="voucherMsg" class="hidden sm:col-span-2 md:col-span-3 text-xs font-medium"></p>
+        </form>
+      </div>
+
+      <div class="bg-white rounded-3xl shadow-soft p-6 md:p-8">
+        <h2 class="font-bold text-xl mb-5" data-i18n="seller.vouchers_history_title">Lịch sử tạo mã giảm giá</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm min-w-[1120px]">
+            <thead>
+              <tr class="text-left text-muted border-b border-secondary-50">
+                <th class="pb-3 pr-3 font-semibold w-12 text-center" data-i18n="admin.th_stt">STT</th>
+                <th class="pb-3 pr-3 font-semibold" data-i18n="seller.voucher_code_label">Mã giảm giá</th>
+                <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.voucher_value_label">Giá trị</th>
+                <th class="pb-3 pr-3 font-semibold" data-i18n="seller.voucher_material_label">Áp dụng cho vật liệu</th>
+                <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.voucher_min_order_label">Đơn tối thiểu</th>
+                <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.voucher_max_discount_label">Giảm tối đa</th>
+                <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.voucher_expires_label">Hạn dùng</th>
+                <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.voucher_usage_th">Đã dùng</th>
+                <th class="pb-3 pr-3 font-semibold text-center" data-i18n="seller.orders_th_status">Trạng thái</th>
+                <th class="pb-3 font-semibold text-center" data-i18n="admin.th_action">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="vouchersList"></tbody>
+          </table>
+        </div>
+        <p id="vouchersEmpty" class="hidden text-sm text-muted text-center py-8" data-i18n="seller.vouchers_empty">Bạn chưa tạo mã giảm giá nào.</p>
+      </div>
     </div>
 
   </div>
-</section>
+</main>
+</div>
+
+<!-- TOAST THÔNG BÁO -->
+<div id="toastContainer" class="fixed top-20 right-5 z-[90] flex flex-col gap-2 items-end pointer-events-none"></div>
+
+<!-- MODAL XÁC NHẬN -->
+<div id="confirmModal" class="hidden fixed inset-0 z-[85] flex items-center justify-center px-6">
+  <div id="confirmBackdrop" class="absolute inset-0 bg-ink/50 backdrop-blur-sm"></div>
+  <div class="relative bg-white rounded-3xl shadow-soft p-6 md:p-8 w-full max-w-sm text-center">
+    <p class="font-bold text-lg mb-2" data-i18n="seller.confirm_title">Xác nhận</p>
+    <p id="confirmMessage" class="text-sm text-muted mb-6"></p>
+    <div class="flex justify-center gap-3">
+      <button id="confirmCancelBtn" type="button" class="border border-secondary-100 text-secondary font-semibold px-6 py-2.5 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="common.cancel">Hủy</button>
+      <button id="confirmOkBtn" type="button" class="bg-ink text-white font-semibold px-6 py-2.5 rounded-full">Xác nhận</button>
+    </div>
+  </div>
+</div>
 
 <script>
   async function api(url, options = {}) {
@@ -228,13 +442,159 @@
   ];
   const pCategorySelect = CustomSelect.init(document.getElementById('pCategory'), CAT_OPTIONS, 'van');
   const mCategorySelect = CustomSelect.init(document.getElementById('mCategory'), CAT_OPTIONS, 'van');
+
+  // ===== Upload ảnh vật liệu (nén qua canvas, lưu base64) =====
+  let currentMaterialImage = '';
+  const mImageInput = document.getElementById('mImageInput');
+  const mImageDropzone = document.getElementById('mImageDropzone');
+  const mImagePreview = document.getElementById('mImagePreview');
+  const mImagePlaceholder = document.getElementById('mImagePlaceholder');
+  const mImageRemove = document.getElementById('mImageRemove');
+
+  function setMaterialImage(dataUrl) {
+    currentMaterialImage = dataUrl || '';
+    if (currentMaterialImage) {
+      mImagePreview.src = currentMaterialImage;
+      mImagePreview.classList.remove('hidden');
+      mImagePlaceholder.classList.add('hidden');
+      mImageRemove.classList.remove('hidden');
+      mImageRemove.classList.add('flex');
+    } else {
+      mImagePreview.removeAttribute('src');
+      mImagePreview.classList.add('hidden');
+      mImagePlaceholder.classList.remove('hidden');
+      mImageRemove.classList.add('hidden');
+      mImageRemove.classList.remove('flex');
+    }
+  }
+
+  function handleMaterialImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 5 * 1024 * 1024) {
+      showToast(window.I18N.t('seller.material_image_too_large'), 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 900;
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const c = document.createElement('canvas');
+        c.width = width; c.height = height;
+        c.getContext('2d').drawImage(img, 0, 0, width, height);
+        setMaterialImage(c.toDataURL('image/jpeg', .82));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  mImageDropzone.addEventListener('click', () => mImageInput.click());
+  mImageInput.addEventListener('change', () => handleMaterialImageFile(mImageInput.files[0]));
+  mImageDropzone.addEventListener('dragover', (e) => { e.preventDefault(); mImageDropzone.classList.add('border-secondary-300'); });
+  mImageDropzone.addEventListener('dragleave', () => mImageDropzone.classList.remove('border-secondary-300'));
+  mImageDropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    mImageDropzone.classList.remove('border-secondary-300');
+    if (e.dataTransfer.files[0]) handleMaterialImageFile(e.dataTransfer.files[0]);
+  });
+  mImageRemove.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setMaterialImage('');
+    mImageInput.value = '';
+  });
+  function updateVoucherSubmitState() {
+    const form = document.getElementById('voucherForm');
+    const btn = document.getElementById('voucherSubmitBtn');
+    btn.disabled = !form.checkValidity();
+  }
+  function syncMaxDiscountState(type) {
+    const input = document.getElementById('vMaxDiscount');
+    const disabled = type !== 'percent';
+    input.disabled = disabled;
+    input.classList.toggle('opacity-50', disabled);
+    input.classList.toggle('cursor-not-allowed', disabled);
+    input.classList.toggle('bg-secondary-50', disabled);
+    if (disabled) input.value = '';
+    updateVoucherSubmitState();
+  }
   const vTypeSelect = CustomSelect.init(document.getElementById('vType'), [
     { value: 'percent', labelKey: 'seller.voucher_type_percent' },
     { value: 'fixed', labelKey: 'seller.voucher_type_fixed' }
-  ], 'percent');
+  ], 'percent', syncMaxDiscountState);
+  syncMaxDiscountState(vTypeSelect.getValue());
+  const vMaterialSelect = CustomSelect.init(document.getElementById('vMaterial'), [
+    { value: '0', labelKey: 'seller.voucher_all_materials' }
+  ], '0');
+  document.getElementById('voucherForm').addEventListener('input', updateVoucherSubmitState);
+  updateVoucherSubmitState();
   function statusLabel(status) {
     return window.I18N ? window.I18N.t('status.' + status) : status;
   }
+
+  // ===== Toast thông báo =====
+  function showToast(message, type = 'success') {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = 'pointer-events-auto flex items-center gap-2.5 bg-white rounded-2xl shadow-soft px-4 py-3 text-sm font-medium border ' + (type === 'success' ? 'border-green-200' : 'border-red-200');
+    t.style.cssText = 'transform:translateX(24px);opacity:0;transition:all .25s ease';
+    const icon = type === 'success'
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3E7A45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M8 12l3 3 5-6"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B3261E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+    t.innerHTML = icon + '<span>' + escapeHtml(message) + '</span>';
+    c.appendChild(t);
+    requestAnimationFrame(() => { t.style.transform = 'translateX(0)'; t.style.opacity = '1'; });
+    setTimeout(() => {
+      t.style.transform = 'translateX(24px)'; t.style.opacity = '0';
+      setTimeout(() => t.remove(), 250);
+    }, 3000);
+  }
+
+  // ===== Modal xác nhận (thay confirm mặc định) =====
+  let confirmResolve = null;
+  function showConfirm(message, okLabel, danger = false) {
+    return new Promise(resolve => {
+      confirmResolve = resolve;
+      document.getElementById('confirmMessage').textContent = message;
+      const ok = document.getElementById('confirmOkBtn');
+      ok.textContent = okLabel || window.I18N.t('common.confirm');
+      ok.className = 'text-white font-semibold px-6 py-2.5 rounded-full transition-colors ' + (danger ? 'bg-red-600 hover:bg-red-700' : 'bg-ink hover:bg-secondary-600');
+      document.getElementById('confirmModal').classList.remove('hidden');
+    });
+  }
+  function closeConfirm(val) {
+    document.getElementById('confirmModal').classList.add('hidden');
+    if (confirmResolve) { confirmResolve(val); confirmResolve = null; }
+  }
+  document.getElementById('confirmOkBtn').addEventListener('click', () => closeConfirm(true));
+  document.getElementById('confirmCancelBtn').addEventListener('click', () => closeConfirm(false));
+  document.getElementById('confirmBackdrop').addEventListener('click', () => closeConfirm(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeConfirm(false); });
+
+  // ===== Sidebar navigation =====
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  function closeSidebar(){ sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+  document.getElementById('sidebarToggle').addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+  });
+  overlay.addEventListener('click', closeSidebar);
+  function showTab(name){
+    if (!document.getElementById('tab-' + name)) name = 'messages';
+    document.querySelectorAll('.side-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    history.replaceState(null, '', '#' + name); // giữ tab hiện tại khi reload
+    closeSidebar();
+  }
+  document.querySelectorAll('.side-btn').forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
+  if (location.hash.length > 1) showTab(location.hash.slice(1));
   function formatVND(n) { return Number(n || 0).toLocaleString('vi-VN') + 'đ'; }
 
   let currentStatus = 'pending';
@@ -246,10 +606,12 @@
     badge.className = 'text-sm font-semibold px-4 py-1.5 rounded-full badge-' + status;
     document.getElementById('pendingNotice').classList.toggle('hidden', status !== 'pending');
     document.getElementById('blockedNotice').classList.toggle('hidden', status !== 'blocked');
+    updateMaterialSubmitState();
+  }
+  function updateMaterialSubmitState() {
+    const form = document.getElementById('materialForm');
     const submitBtn = document.getElementById('materialSubmitBtn');
-    submitBtn.disabled = status !== 'approved';
-    submitBtn.classList.toggle('opacity-50', status !== 'approved');
-    submitBtn.classList.toggle('cursor-not-allowed', status !== 'approved');
+    submitBtn.disabled = currentStatus !== 'approved' || !form.checkValidity();
   }
 
   async function loadProfile() {
@@ -265,36 +627,93 @@
     applyStatusUI(profile.status);
   }
 
-  function materialRow(m) {
-    const div = document.createElement('div');
-    div.className = 'flex items-center justify-between gap-4 border border-secondary-50 rounded-xl px-5 py-4';
-    div.innerHTML = `
-      <div class="min-w-0">
-        <p class="font-semibold text-sm truncate">${m.title}</p>
-        <p class="text-xs text-muted">${catLabel(m.category)}${m.spec ? ' · ' + m.spec : ''}</p>
-      </div>
-      <div class="flex items-center gap-4 shrink-0">
-        <span class="font-heading font-bold text-accent-600 text-sm">${m.price || ''}</span>
+  function materialRow(m, stt) {
+    const pp = String(m.price || '').split('/');
+    const priceOnly = pp[0] || '';
+    const unit = pp.length > 1 ? pp.slice(1).join('/') : '—';
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-secondary-50 last:border-0 align-middle';
+    const thumb = m.image
+      ? `<img src="${escapeHtml(m.image)}" alt="" class="w-11 h-11 rounded-lg object-cover border border-secondary-100 mx-auto">`
+      : `<div class="w-11 h-11 rounded-lg bg-secondary-50 flex items-center justify-center text-muted mx-auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`;
+    tr.innerHTML = `
+      <td class="py-3 pr-3 text-muted text-center">${stt}</td>
+      <td class="py-3 pr-3 text-center">${thumb}</td>
+      <td class="py-3 pr-3 font-mono text-xs whitespace-nowrap text-center">${escapeHtml(m.code || '') || '—'}</td>
+      <td class="py-3 pr-3 font-semibold max-w-[220px]"><p class="truncate" title="${escapeHtml(m.title)}">${escapeHtml(m.title)}</p></td>
+      <td class="py-3 pr-3 text-center">${catLabel(m.category)}</td>
+      <td class="py-3 pr-3 text-center font-heading font-bold text-warm-600 whitespace-nowrap">${escapeHtml(priceOnly)}</td>
+      <td class="py-3 pr-3 text-center">${escapeHtml(unit)}</td>
+      <td class="py-3 pr-3 text-muted max-w-[220px]"><p class="truncate" title="${escapeHtml(m.spec || '')}">${escapeHtml(m.spec || '') || '—'}</p></td>
+      <td class="py-3 pr-3 text-muted max-w-[240px]"><p class="truncate" title="${escapeHtml(m.description || '')}">${escapeHtml(m.description || '') || '—'}</p></td>
+      <td class="py-3 text-center whitespace-nowrap">
+        <button data-id="${m.id}" class="edit-material text-xs font-semibold text-secondary hover:underline mr-3">${window.I18N.t('common.edit')}</button>
         <button data-id="${m.id}" class="delete-material text-xs font-semibold text-red-600 hover:underline">${window.I18N.t('common.delete')}</button>
-      </div>`;
-    return div;
+      </td>`;
+    return tr;
   }
 
+  let sellerMaterials = [];
   async function loadMaterials() {
     const { materials } = await api('/api/seller/materials');
+    sellerMaterials = materials;
+    const currentMaterialFilter = vMaterialSelect.getValue();
+    const materialOptions = [{ value: '0', labelKey: 'seller.voucher_all_materials' }]
+      .concat(materials.map(m => ({ value: String(m.id), labelKey: m.code || m.title })));
+    const stillExists = materialOptions.some(o => o.value === currentMaterialFilter);
+    vMaterialSelect.setOptions(materialOptions, stillExists ? currentMaterialFilter : '0');
     const list = document.getElementById('materialsList');
     list.innerHTML = '';
     document.getElementById('materialsCount').textContent = materials.length;
     document.getElementById('materialsEmpty').classList.toggle('hidden', materials.length > 0);
-    materials.forEach(m => list.appendChild(materialRow(m)));
+    materials.forEach((m, i) => list.appendChild(materialRow(m, i + 1)));
     list.querySelectorAll('.delete-material').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!confirm(window.I18N.t('common.confirm_delete_material'))) return;
+        const ok = await showConfirm(window.I18N.t('common.confirm_delete_material'), window.I18N.t('common.delete'), true);
+        if (!ok) return;
         await api('/api/seller/materials/' + btn.dataset.id, { method: 'DELETE' });
+        if (String(editingMaterialId) === String(btn.dataset.id)) exitEditMode();
+        showToast(window.I18N.t('seller.material_deleted'));
         loadMaterials();
       });
     });
+    list.querySelectorAll('.edit-material').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const m = sellerMaterials.find(x => String(x.id) === String(btn.dataset.id));
+        if (m) enterEditMode(m);
+      });
+    });
   }
+
+  // ===== Chế độ sửa vật liệu =====
+  let editingMaterialId = null;
+  function enterEditMode(m) {
+    editingMaterialId = m.id;
+    mCategorySelect.setValue(m.category);
+    document.getElementById('mTitle').value = m.title || '';
+    document.getElementById('mCode').value = m.code || '';
+    const pp = String(m.price || '').split('/');
+    document.getElementById('mPrice').value = pp[0] || '';
+    document.getElementById('mUnit').value = pp.length > 1 ? pp.slice(1).join('/') : '';
+    document.getElementById('mSpec').value = m.spec || '';
+    document.getElementById('mDescription').value = m.description || '';
+    setMaterialImage(m.image || '');
+    document.getElementById('materialSubmitBtn').textContent = window.I18N.t('seller.update_material');
+    document.getElementById('materialCancelEdit').classList.remove('hidden');
+    document.getElementById('materialMsg').classList.add('hidden');
+    document.getElementById('materialForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    updateMaterialSubmitState();
+  }
+  function exitEditMode() {
+    editingMaterialId = null;
+    document.getElementById('materialForm').reset();
+    setMaterialImage('');
+    document.getElementById('materialSubmitBtn').textContent = window.I18N.t('seller.submit_material');
+    document.getElementById('materialCancelEdit').classList.add('hidden');
+    updateMaterialSubmitState();
+  }
+  document.getElementById('materialCancelEdit').addEventListener('click', exitEditMode);
+  document.getElementById('materialForm').addEventListener('input', updateMaterialSubmitState);
 
   // ===== Đơn hàng =====
   const ORDER_STATUSES = ['pending', 'confirmed', 'shipping', 'completed', 'cancelled'];
@@ -306,34 +725,40 @@
     cancelled: 'bg-red-50 text-red-600'
   };
 
-  function orderRow(o) {
-    const div = document.createElement('div');
-    div.className = 'border border-secondary-50 rounded-xl p-4';
-    const linesHtml = o.items.map(i => `<div class="flex items-center justify-between text-xs gap-2"><span class="truncate">${escapeHtml(i.title)} × ${i.qty}</span><span class="text-muted shrink-0">${escapeHtml(i.priceText || '')}</span></div>`).join('');
+  function orderRow(o, stt) {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-secondary-50 last:border-0 align-top';
+    const splitPrice = (t) => { const p = String(t || '').split('/'); return { price: p[0] || '', unit: p.length > 1 ? p.slice(1).join('/') : '—' }; };
+    const titles = o.items.map(i => `<p class="truncate max-w-[220px]" title="${escapeHtml(i.title)}">${escapeHtml(i.title)}</p>`).join('');
+    const codes = o.items.map(i => `<p class="font-mono text-xs">${escapeHtml(i.code || '') || '—'}</p>`).join('');
+    const prices = o.items.map(i => `<p>${escapeHtml(splitPrice(i.priceText).price)}</p>`).join('');
+    const units  = o.items.map(i => `<p>${escapeHtml(splitPrice(i.priceText).unit)}</p>`).join('');
+    const qtys   = o.items.map(i => `<p>${i.qty}</p>`).join('');
     const discountHtml = o.discount > 0
-      ? `<div class="flex items-center justify-between text-xs text-green-700 mb-1"><span>${window.I18N.t('checkout.discount')}${o.voucherCode ? ' (' + escapeHtml(o.voucherCode) + ')' : ''}</span><span>−${formatVND(o.discount)}</span></div>`
-      : '';
-    div.innerHTML = `
-      <div class="flex items-center justify-between gap-3 mb-2">
-        <div class="min-w-0">
-          <p class="font-semibold text-sm truncate">${escapeHtml(o.customerName)}</p>
-          <p class="text-xs text-muted truncate">${escapeHtml(o.customerPhone)} · ${escapeHtml(o.customerAddress)}</p>
-        </div>
-        <p class="text-[11px] text-muted shrink-0">${fmtTime(o.createdAt)}</p>
-      </div>
-      <div class="space-y-1 mb-2">${linesHtml}</div>
-      ${discountHtml}
-      <div class="flex items-center justify-between text-sm font-semibold pt-2 border-t border-secondary-50 mb-3">
-        <span>${window.I18N.t('cart.grand_total')}</span><span class="text-accent-600">${formatVND(o.total)}</span>
-      </div>
-      <div class="flex items-center justify-between gap-3">
-        <span class="text-xs text-muted">${window.I18N.t(o.paymentMethod === 'bank_transfer' ? 'checkout.payment_bank' : 'checkout.payment_cod')}</span>
-        <button type="button" class="order-status-btn text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 ${ORDER_STATUS_BADGE[o.status] || 'bg-secondary-50 text-secondary'}" data-id="${o.id}" data-status="${o.status}">
+      ? `<span class="text-green-700">−${formatVND(o.discount)}</span>${o.voucherCode ? `<br><span class="text-[10px] text-muted">(${escapeHtml(o.voucherCode)})</span>` : ''}`
+      : '—';
+    tr.innerHTML = `
+      <td class="py-3 pr-3 text-muted text-center">${stt}</td>
+      <td class="py-3 pr-3 text-center space-y-0.5">${codes}</td>
+      <td class="py-3 pr-3 font-medium space-y-0.5">${titles}</td>
+      <td class="py-3 pr-3">
+        <p class="font-semibold truncate max-w-[180px]">${escapeHtml(o.customerName)}</p>
+        <p class="text-xs text-muted">${escapeHtml(o.customerPhone)}</p>
+        <p class="text-xs text-muted truncate max-w-[180px]" title="${escapeHtml(o.customerAddress)}">${escapeHtml(o.customerAddress)}</p>
+      </td>
+      <td class="py-3 pr-3 text-muted whitespace-nowrap text-center">${fmtTime(o.createdAt)}</td>
+      <td class="py-3 pr-3 text-center space-y-0.5 whitespace-nowrap">${prices}</td>
+      <td class="py-3 pr-3 text-center space-y-0.5">${units}</td>
+      <td class="py-3 pr-3 text-center space-y-0.5">${qtys}</td>
+      <td class="py-3 pr-3 text-center whitespace-nowrap">${discountHtml}</td>
+      <td class="py-3 pr-3 text-center font-heading font-bold text-warm-600 whitespace-nowrap">${formatVND(o.total)}</td>
+      <td class="py-3">
+        <button type="button" class="order-status-btn mx-auto text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 ${ORDER_STATUS_BADGE[o.status] || 'bg-secondary-50 text-secondary'}" data-id="${o.id}" data-status="${o.status}">
           <span class="order-status-btn-label">${window.I18N.t('order_status.' + o.status)}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-      </div>`;
-    return div;
+      </td>`;
+    return tr;
   }
 
   async function loadOrders() {
@@ -341,9 +766,17 @@
     const list = document.getElementById('ordersList');
     list.innerHTML = '';
     document.getElementById('ordersEmpty').classList.toggle('hidden', orders.length > 0);
-    orders.forEach(o => list.appendChild(orderRow(o)));
+    orders.forEach((o, i) => list.appendChild(orderRow(o, i + 1)));
     list.querySelectorAll('.order-status-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => { e.stopPropagation(); openOrderStatusMenu(btn); });
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Clicking the same trigger again while its menu is open should close it (toggle).
+        if (activeOrderStatusBtn === btn && orderStatusMenuEl && !orderStatusMenuEl.classList.contains('hidden')) {
+          closeOrderStatusMenu();
+          return;
+        }
+        openOrderStatusMenu(btn);
+      });
     });
   }
 
@@ -385,55 +818,91 @@
       opt.textContent = window.I18N.t('order_status.' + opt.dataset.status);
       opt.classList.toggle('font-semibold', opt.dataset.status === btn.dataset.status);
     });
+    document.querySelectorAll('.order-status-btn svg').forEach(svg => svg.classList.remove('rotate-180'));
     activeOrderStatusBtn = btn;
     const rect = btn.getBoundingClientRect();
     const menuWidth = menu.offsetWidth || 176;
     let left = Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8);
     left = Math.max(8, left);
     menu.style.left = left + 'px';
+    // Render below first (so we can measure its real height), then flip above the
+    // button instead whenever there isn't enough room below but there is above.
     menu.style.top = (rect.bottom + 6) + 'px';
     menu.classList.remove('hidden');
+    const menuHeight = menu.offsetHeight;
+    const spaceBelow = window.innerHeight - rect.bottom - 6;
+    const spaceAbove = rect.top - 6;
+    if (menuHeight > spaceBelow && spaceAbove > spaceBelow) {
+      menu.style.top = Math.max(8, rect.top - menuHeight - 6) + 'px';
+    }
+    const svg = btn.querySelector('svg');
+    if (svg) svg.classList.add('rotate-180');
   }
   function closeOrderStatusMenu() {
     if (orderStatusMenuEl) orderStatusMenuEl.classList.add('hidden');
+    document.querySelectorAll('.order-status-btn svg').forEach(svg => svg.classList.remove('rotate-180'));
     activeOrderStatusBtn = null;
   }
 
   // ===== Mã giảm giá =====
-  function voucherRow(v) {
-    const div = document.createElement('div');
-    div.className = 'flex items-center justify-between gap-3 border border-secondary-50 rounded-xl px-4 py-3';
-    const valueLabel = v.discountType === 'percent' ? `${v.discountValue}%` : formatVND(v.discountValue);
-    div.innerHTML = `
-      <div class="min-w-0">
-        <p class="font-mono font-semibold text-sm">${escapeHtml(v.code)}</p>
-        <p class="text-xs text-muted">${valueLabel}</p>
-      </div>
-      <div class="flex items-center gap-3 shrink-0">
-        <label class="flex items-center gap-1.5 text-xs text-muted">
-          <input type="checkbox" class="voucher-active-toggle" data-id="${v.id}" ${v.active ? 'checked' : ''}>
-          <span>${window.I18N.t('seller.voucher_active')}</span>
-        </label>
-        <button data-id="${v.id}" class="delete-voucher text-xs font-semibold text-red-600 hover:underline">${window.I18N.t('common.delete')}</button>
-      </div>`;
-    return div;
+  function voucherStatusInfo(v) {
+    const today = new Date().toISOString().slice(0, 10);
+    if (!v.active) return { cls: 'badge-pending', label: window.I18N.t('seller.voucher_status_off') };
+    if (v.expiresAt && v.expiresAt < today) return { cls: 'badge-blocked', label: window.I18N.t('seller.voucher_status_expired') };
+    if (v.usageLimit > 0 && v.usedCount >= v.usageLimit) return { cls: 'badge-blocked', label: window.I18N.t('seller.voucher_status_used_up') };
+    return { cls: 'badge-approved', label: window.I18N.t('seller.voucher_status_active') };
   }
 
+  function voucherRow(v, stt) {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-secondary-50 last:border-0 align-top';
+    const valueLabel = v.discountType === 'percent' ? `${v.discountValue}%` : formatVND(v.discountValue);
+    const status = voucherStatusInfo(v);
+    const usageLabel = v.usageLimit > 0 ? `${v.usedCount}/${v.usageLimit}` : `${v.usedCount}`;
+    tr.innerHTML = `
+      <td class="py-3 pr-3 text-muted text-center">${stt}</td>
+      <td class="py-3 pr-3 font-mono font-semibold">${escapeHtml(v.code)}</td>
+      <td class="py-3 pr-3 text-center font-heading font-bold text-warm-600 whitespace-nowrap">${valueLabel}</td>
+      <td class="py-3 pr-3 max-w-[200px]"><p class="truncate" title="${escapeHtml(v.materialId ? v.materialTitle : window.I18N.t('seller.voucher_all_materials'))}">${v.materialId ? escapeHtml(v.materialTitle) : window.I18N.t('seller.voucher_all_materials')}</p></td>
+      <td class="py-3 pr-3 text-center whitespace-nowrap">${v.minOrder ? formatVND(v.minOrder) : '—'}</td>
+      <td class="py-3 pr-3 text-center whitespace-nowrap">${v.maxDiscount ? formatVND(v.maxDiscount) : '—'}</td>
+      <td class="py-3 pr-3 text-center whitespace-nowrap">${v.expiresAt || window.I18N.t('seller.voucher_no_expiry')}</td>
+      <td class="py-3 pr-3 text-center whitespace-nowrap">${usageLabel}</td>
+      <td class="py-3 pr-3 text-center"><span class="text-xs font-semibold px-3 py-1 rounded-full ${status.cls}">${status.label}</span></td>
+      <td class="py-3 text-center whitespace-nowrap">
+        <button data-id="${v.id}" data-active="${v.active ? 1 : 0}" class="toggle-voucher text-xs font-semibold text-secondary hover:underline mr-3">${v.active ? window.I18N.t('seller.voucher_deactivate') : window.I18N.t('seller.voucher_activate')}</button>
+        <button data-id="${v.id}" class="delete-voucher text-xs font-semibold text-red-600 hover:underline">${window.I18N.t('common.delete')}</button>
+      </td>`;
+    return tr;
+  }
+
+  let sellerVouchers = [];
   async function loadVouchers() {
     const { vouchers } = await api('/api/seller/vouchers');
+    sellerVouchers = vouchers;
     const list = document.getElementById('vouchersList');
     list.innerHTML = '';
     document.getElementById('vouchersEmpty').classList.toggle('hidden', vouchers.length > 0);
-    vouchers.forEach(v => list.appendChild(voucherRow(v)));
-    list.querySelectorAll('.voucher-active-toggle').forEach(cb => {
-      cb.addEventListener('change', async () => {
-        await api('/api/seller/vouchers/' + cb.dataset.id, { method: 'PUT', body: { active: cb.checked } });
+    vouchers.forEach((v, i) => list.appendChild(voucherRow(v, i + 1)));
+
+    document.getElementById('voucherStatTotal').textContent = vouchers.length;
+    document.getElementById('voucherStatActive').textContent = vouchers.filter(v => voucherStatusInfo(v).cls === 'badge-approved').length;
+    document.getElementById('voucherStatUsed').textContent = vouchers.reduce((s, v) => s + (v.usedCount || 0), 0);
+
+    list.querySelectorAll('.toggle-voucher').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const nowActive = btn.dataset.active === '1';
+        await api('/api/seller/vouchers/' + btn.dataset.id, { method: 'PUT', body: { active: !nowActive } });
+        showToast(window.I18N.t(nowActive ? 'seller.voucher_deactivated' : 'seller.voucher_activated'));
+        loadVouchers();
       });
     });
     list.querySelectorAll('.delete-voucher').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!confirm(window.I18N.t('seller.confirm_delete_voucher'))) return;
+        const ok = await showConfirm(window.I18N.t('seller.confirm_delete_voucher'), window.I18N.t('common.delete'), true);
+        if (!ok) return;
         await api('/api/seller/vouchers/' + btn.dataset.id, { method: 'DELETE' });
+        showToast(window.I18N.t('seller.voucher_deleted'));
         loadVouchers();
       });
     });
@@ -441,25 +910,28 @@
 
   document.getElementById('voucherForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const msg = document.getElementById('voucherMsg');
     try {
       await api('/api/seller/vouchers', {
         method: 'POST',
         body: {
           code: document.getElementById('vCode').value.trim(),
           discountType: vTypeSelect.getValue(),
-          discountValue: document.getElementById('vValue').value
+          discountValue: document.getElementById('vValue').value,
+          materialId: vMaterialSelect.getValue(),
+          minOrder: document.getElementById('vMinOrder').value,
+          maxDiscount: document.getElementById('vMaxDiscount').value,
+          usageLimit: document.getElementById('vUsageLimit').value,
+          expiresAt: document.getElementById('vExpiresAt').value
         }
       });
       document.getElementById('voucherForm').reset();
-      msg.textContent = window.I18N.t('seller.voucher_added');
-      msg.className = 'sm:col-span-4 text-xs text-secondary font-medium';
-      msg.classList.remove('hidden');
+      vMaterialSelect.setValue('0');
+      syncMaxDiscountState(vTypeSelect.getValue());
+      updateVoucherSubmitState();
+      showToast(window.I18N.t('seller.voucher_added'));
       loadVouchers();
     } catch (err) {
-      msg.textContent = err.message;
-      msg.className = 'sm:col-span-4 text-xs text-red-600 font-medium';
-      msg.classList.remove('hidden');
+      showToast(err.message, 'error');
     }
   });
 
@@ -493,25 +965,32 @@
     e.preventDefault();
     const msg = document.getElementById('materialMsg');
     if (currentStatus !== 'approved') return;
+    const isEdit = editingMaterialId !== null;
+    const okConfirm = await showConfirm(window.I18N.t(isEdit ? 'seller.confirm_update' : 'seller.confirm_add'));
+    if (!okConfirm) return;
     try {
-      await api('/api/seller/materials', {
-        method: 'POST',
-        body: {
-          category: mCategorySelect.getValue(),
-          title: document.getElementById('mTitle').value.trim(),
-          spec: document.getElementById('mSpec').value.trim(),
-          price: document.getElementById('mPrice').value.trim()
-        }
+      await api(isEdit ? '/api/seller/materials/' + editingMaterialId : '/api/seller/materials', {
+        method: isEdit ? 'PUT' : 'POST',
+        body: (() => {
+          const price = document.getElementById('mPrice').value.trim();
+          const unit = document.getElementById('mUnit').value.trim();
+          return {
+            category: mCategorySelect.getValue(),
+            title: document.getElementById('mTitle').value.trim(),
+            code: document.getElementById('mCode').value.trim(),
+            spec: document.getElementById('mSpec').value.trim(),
+            price: price && unit ? price + '/' + unit : price,
+            description: document.getElementById('mDescription').value.trim(),
+            image: currentMaterialImage
+          };
+        })()
       });
-      document.getElementById('materialForm').reset();
-      msg.textContent = window.I18N.t('seller.material_added');
-      msg.className = 'sm:col-span-2 text-sm text-secondary font-medium';
-      msg.classList.remove('hidden');
+      exitEditMode();
+      msg.classList.add('hidden');
+      showToast(window.I18N.t(isEdit ? 'seller.material_updated' : 'seller.material_added'));
       loadMaterials();
     } catch (err) {
-      msg.textContent = err.message;
-      msg.className = 'sm:col-span-2 text-sm text-red-600 font-medium';
-      msg.classList.remove('hidden');
+      showToast(err.message, 'error');
     }
   });
 
@@ -553,6 +1032,11 @@
     const badge = document.getElementById('chatUnreadTotal');
     if (totalUnread > 0) { badge.textContent = totalUnread > 9 ? '9+' : totalUnread; badge.classList.remove('hidden'); }
     else badge.classList.add('hidden');
+    const sideBadge = document.getElementById('sideChatBadge');
+    if (sideBadge) {
+      if (totalUnread > 0) { sideBadge.textContent = totalUnread > 9 ? '9+' : totalUnread; sideBadge.classList.remove('hidden'); sideBadge.classList.add('flex'); }
+      else { sideBadge.classList.add('hidden'); sideBadge.classList.remove('flex'); }
+    }
 
     document.getElementById('chatConvEmpty').classList.toggle('hidden', conversations.length > 0);
     list.innerHTML = '';

@@ -92,6 +92,9 @@ CREATE TABLE IF NOT EXISTS materials (
   title TEXT NOT NULL,
   spec TEXT NOT NULL DEFAULT '',
   price TEXT NOT NULL DEFAULT '',
+  description TEXT NOT NULL DEFAULT '',
+  image TEXT NOT NULL DEFAULT '',
+  code TEXT NOT NULL DEFAULT '',
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -156,14 +159,48 @@ CREATE TABLE IF NOT EXISTS vouchers (
   discount_type TEXT NOT NULL CHECK(discount_type IN ('percent','fixed')),
   discount_value INTEGER NOT NULL,
   active INTEGER NOT NULL DEFAULT 1,
+  expires_at TEXT NOT NULL DEFAULT '',
+  min_order INTEGER NOT NULL DEFAULT 0,
+  max_discount INTEGER NOT NULL DEFAULT 0,
+  usage_limit INTEGER NOT NULL DEFAULT 0,
+  used_count INTEGER NOT NULL DEFAULT 0,
+  material_id INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE(seller_id, code)
 );
 `);
 
+// vouchers.expires_at / min_order / max_discount / usage_limit / used_count / material_id were added later.
+const vouchersCols = db.prepare("PRAGMA table_info(vouchers)").all().map(c => c.name);
+const voucherNewCols = [
+  ['expires_at', "TEXT NOT NULL DEFAULT ''"],
+  ['min_order', 'INTEGER NOT NULL DEFAULT 0'],
+  ['max_discount', 'INTEGER NOT NULL DEFAULT 0'],
+  ['usage_limit', 'INTEGER NOT NULL DEFAULT 0'],
+  ['used_count', 'INTEGER NOT NULL DEFAULT 0'],
+  ['material_id', 'INTEGER NOT NULL DEFAULT 0']
+];
+for (const [col, def] of voucherNewCols) {
+  if (!vouchersCols.includes(col)) {
+    db.exec(`ALTER TABLE vouchers ADD COLUMN ${col} ${def}`);
+  }
+}
+
 // Earlier versions of "orders" only recorded a bare chat-inquiry snapshot
 // (no status/checkout fields). Rebuild it once to the full checkout schema,
 // same rename-recreate-copy approach as the users migration above.
+// materials.description / materials.image / materials.code were added later — older databases need the columns.
+const materialsCols = db.prepare("PRAGMA table_info(materials)").all().map(c => c.name);
+if (!materialsCols.includes('description')) {
+  db.exec("ALTER TABLE materials ADD COLUMN description TEXT NOT NULL DEFAULT ''");
+}
+if (!materialsCols.includes('image')) {
+  db.exec("ALTER TABLE materials ADD COLUMN image TEXT NOT NULL DEFAULT ''");
+}
+if (!materialsCols.includes('code')) {
+  db.exec("ALTER TABLE materials ADD COLUMN code TEXT NOT NULL DEFAULT ''");
+}
+
 const ordersTableRow = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='orders'").get();
 if (ordersTableRow && !ordersTableRow.sql.includes('status')) {
   db.pragma('foreign_keys = OFF');

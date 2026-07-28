@@ -14,7 +14,7 @@
 <script src="i18n.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
-    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, warm:{DEFAULT:'#8A6844',50:'#F5EEE5',600:'#6E5236'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
     fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
     boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)' },
   }}}
@@ -26,100 +26,301 @@
   .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
   .hidden{display:none}
   .tab-btn.active{background:#3A3632;color:#fff}
+  .side-btn{display:flex;align-items:center;gap:.65rem;width:100%;text-align:left;padding:.6rem .8rem;border-radius:.75rem;font-size:.875rem;font-weight:500;color:#3A3632;transition:background .15s}
+  .side-btn:hover{background:#F2F0EE}
+  .side-btn.active{background:#3A3632;color:#fff}
+  .side-btn.active svg{stroke:#fff}
+  .side-btn svg{stroke:#6B6259;flex-shrink:0}
   .lang-btn.active,
   html[lang="vi"] .lang-btn[data-lang="vi"],
   html[lang="en"] .lang-btn[data-lang="en"]{background:#3A3632;color:#fff}
   .badge-pending{background:#F1F2F0;color:#7D8688}
   .badge-approved{background:#EAF3EA;color:#3E7A45}
   .badge-blocked{background:#FBE9E7;color:#B3261E}
+  @media (min-width:1024px){
+    #tab-overview:not(.hidden){display:flex;flex-direction:column;height:calc(100vh - 116px)}
+    #tab-sellers:not(.hidden),#tab-materials:not(.hidden),#tab-customers:not(.hidden),#tab-contacts:not(.hidden){
+      display:flex;flex-direction:column;height:calc(100vh - 116px);overflow:hidden
+    }
+    .table-scroll{flex:1;min-height:0;overflow:auto}
+  }
 </style>
 </head>
 <body class="bg-cream text-ink overflow-x-hidden min-h-screen">
 
-<!-- NAVBAR -->
-<header class="fixed top-3 md:top-5 inset-x-3 md:inset-x-6 z-50">
-  <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 md:px-5 py-2 glass rounded-full shadow-soft">
-    <a href="index.html" class="flex items-center shrink-0"><img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto"></a>
-    <div class="hidden sm:block text-sm font-semibold text-secondary" data-i18n="admin.navbar_title">Bảng điều khiển quản trị</div>
-    <div class="flex items-center gap-3">
-      <span id="userGreeting" class="hidden sm:inline text-sm text-muted"></span>
-      <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
-        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
-        <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-secondary-100 flex flex-col -translate-x-full md:translate-x-0 transition-transform duration-200">
+  <a href="index.html" class="flex items-center gap-2 px-5 h-[72px] border-b border-secondary-50 shrink-0">
+    <img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto">
+  </a>
+  <nav class="flex-1 overflow-y-auto px-3 py-5 space-y-6">
+    <div>
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-muted mb-2" data-i18n="admin.menu_overview">Tổng quan</p>
+      <button class="side-btn active" data-tab="overview">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span data-i18n="admin.menu_dashboard">Bảng điều khiển</span>
+      </button>
+    </div>
+    <div>
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-muted mb-2" data-i18n="admin.menu_group_manage">Quản lý</p>
+      <div class="space-y-1">
+        <button class="side-btn" data-tab="sellers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M5 9v11h14V9M9 20v-6h6v6"/></svg>
+          <span data-i18n="nav.sellers">Nhà bán hàng</span>
+        </button>
+        <button class="side-btn" data-tab="materials">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4zm0 5l9 4 9-4M3 17l9 4 9-4"/></svg>
+          <span data-i18n="nav.materials">Vật liệu</span>
+        </button>
+        <button class="side-btn" data-tab="customers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <span data-i18n="admin.menu_customers">Khách hàng</span>
+        </button>
+        <button class="side-btn" data-tab="contacts">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+          <span data-i18n="admin.menu_contacts">Đơn liên hệ</span>
+        </button>
+        <button class="side-btn" data-tab="reviews">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <span data-i18n="admin.menu_reviews">Đánh giá</span>
+        </button>
       </div>
-      <button id="logoutBtn" class="border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors" data-i18n="common.logout">Đăng xuất</button>
+    </div>
+    <div>
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-muted mb-2" data-i18n="admin.menu_group_system">Hệ thống</p>
+      <div class="space-y-1">
+        <button class="side-btn" data-tab="settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2a2 2 0 110-4h.09A1.65 1.65 0 004.6 8.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V2a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span data-i18n="admin.menu_settings">Cài đặt</span>
+        </button>
+      </div>
     </div>
   </nav>
-</header>
+  <div class="border-t border-secondary-50 px-5 py-4 shrink-0">
+    <p id="userGreeting" class="text-xs text-muted truncate mb-3"></p>
+    <button id="logoutBtn" class="w-full border border-secondary-100 text-secondary px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-50 transition-colors" data-i18n="common.logout">Đăng xuất</button>
+  </div>
+</aside>
+<div id="sidebarOverlay" class="hidden fixed inset-0 z-40 bg-ink/40 md:hidden"></div>
 
-<section class="relative pt-28 pb-16 px-6">
-  <div class="max-w-6xl mx-auto">
-
-    <div class="mb-8">
-      <h1 class="font-extrabold text-3xl md:text-4xl leading-tight mb-1" data-i18n="admin.h1">Quản trị hệ thống</h1>
-      <p class="font-script text-2xl text-accent-600" data-i18n="admin.tagline">toàn cảnh Material AI</p>
-    </div>
-
-    <!-- STATS -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-      <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
-        <p class="font-script text-4xl text-accent-600" id="statTotalSellers">0</p>
-        <p class="text-xs text-muted mt-1" data-i18n="admin.stat_total_sellers">Tổng nhà bán hàng</p>
-      </div>
-      <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
-        <p class="font-script text-4xl text-secondary" id="statPending">0</p>
-        <p class="text-xs text-muted mt-1" data-i18n="status.pending">Chờ duyệt</p>
-      </div>
-      <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
-        <p class="font-script text-4xl text-secondary" id="statApproved">0</p>
-        <p class="text-xs text-muted mt-1" data-i18n="status.approved">Đã duyệt</p>
-      </div>
-      <div class="bg-white rounded-2xl p-5 shadow-soft text-center">
-        <p class="font-script text-4xl text-accent-600" id="statMaterials">0</p>
-        <p class="text-xs text-muted mt-1" data-i18n="admin.stat_materials">Tổng vật liệu</p>
+<!-- MAIN -->
+<main class="flex-1 md:ml-64 min-w-0">
+  <div class="sticky top-0 z-30 bg-cream/90 backdrop-blur border-b border-secondary-50 px-6 h-[72px] flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <button id="sidebarToggle" class="md:hidden text-secondary" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div>
+        <h1 class="font-extrabold text-lg leading-tight" data-i18n="admin.h1">Quản trị hệ thống</h1>
+        <p class="text-xs text-muted" data-i18n="admin.tagline">Toàn cảnh Material AI</p>
       </div>
     </div>
+    <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold shrink-0">
+      <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
+      <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
+    </div>
+  </div>
 
-    <!-- TABS -->
-    <div class="flex gap-3 mb-6">
-      <button class="tab-btn active px-5 py-2 rounded-full font-semibold text-sm border border-secondary-100" data-tab="sellers" data-i18n="nav.sellers">Nhà bán hàng</button>
-      <button class="tab-btn px-5 py-2 rounded-full font-semibold text-sm border border-secondary-100" data-tab="materials" data-i18n="nav.materials">Vật liệu</button>
+  <div class="px-6 lg:px-10 py-5">
+
+    <!-- OVERVIEW -->
+    <div id="tab-overview" class="tab-panel">
+      <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3 mb-5 lg:shrink-0">
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="statTotalSellers">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.stat_total_sellers">Tổng nhà bán hàng</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-secondary" id="statPending">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="status.pending">Chờ duyệt</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-secondary" id="statApproved">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="status.approved">Đã duyệt</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="statMaterials">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.stat_materials">Tổng vật liệu</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-secondary" id="statCustomers">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.stat_customers">Khách hàng</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="statOrders">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.stat_orders">Lượt đặt mua</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-secondary" id="statConversations">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.stat_conversations">Cuộc chat liên hệ</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="statMessages">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.stat_messages">Tin nhắn trao đổi</p>
+        </div>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-3 lg:grid-rows-2 lg:flex-1 lg:min-h-0">
+        <!-- Hồ sơ chờ duyệt -->
+        <div class="bg-white rounded-2xl p-5 shadow-soft lg:flex lg:flex-col lg:min-h-0">
+          <div class="flex items-center justify-between mb-3">
+            <p class="font-semibold" data-i18n="admin.pending_sellers">Hồ sơ chờ duyệt</p>
+            <button class="goto-tab text-xs font-semibold text-warm-600 hover:underline" data-tab="sellers" data-i18n="admin.view_all">Xem tất cả →</button>
+          </div>
+          <div id="pendingList" class="space-y-2.5 lg:flex-1 lg:min-h-0 lg:overflow-y-auto"></div>
+        </div>
+        <!-- Phân bố theo danh mục -->
+        <div class="bg-white rounded-2xl p-5 shadow-soft lg:flex lg:flex-col lg:min-h-0">
+          <div class="flex items-center justify-between mb-3">
+            <p class="font-semibold" data-i18n="admin.chart_by_category">Vật liệu theo danh mục</p>
+            <button class="goto-tab text-xs font-semibold text-warm-600 hover:underline" data-tab="materials" data-i18n="admin.view_all">Xem tất cả →</button>
+          </div>
+          <div id="catChart" class="space-y-2.5 lg:flex-1 lg:min-h-0 lg:overflow-y-auto"></div>
+        </div>
+        <!-- Top nhà bán hàng -->
+        <div class="bg-white rounded-2xl p-5 shadow-soft lg:flex lg:flex-col lg:min-h-0">
+          <div class="flex items-center justify-between mb-3">
+            <p class="font-semibold" data-i18n="admin.top_sellers">Top nhà bán hàng</p>
+            <button class="goto-tab text-xs font-semibold text-warm-600 hover:underline" data-tab="sellers" data-i18n="admin.view_all">Xem tất cả →</button>
+          </div>
+          <div id="topSellersList" class="space-y-2.5 lg:flex-1 lg:min-h-0 lg:overflow-y-auto"></div>
+        </div>
+        <!-- Vật liệu mới nhất -->
+        <div class="bg-white rounded-2xl p-5 shadow-soft lg:flex lg:flex-col lg:min-h-0">
+          <div class="flex items-center justify-between mb-3">
+            <p class="font-semibold" data-i18n="admin.latest_materials">Vật liệu mới nhất</p>
+            <button class="goto-tab text-xs font-semibold text-warm-600 hover:underline" data-tab="materials" data-i18n="admin.view_all">Xem tất cả →</button>
+          </div>
+          <div id="latestMaterials" class="space-y-2.5 lg:flex-1 lg:min-h-0 lg:overflow-y-auto"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- SELLERS TAB -->
-    <div id="tab-sellers" class="tab-panel bg-white rounded-3xl shadow-soft p-6 md:p-8 overflow-x-auto">
-      <table class="w-full text-sm min-w-[720px]">
+    <!-- SELLERS -->
+    <div id="tab-sellers" class="tab-panel hidden space-y-5">
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="sellerStatTotal">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.sellers_stat_total">Tổng nhà bán hàng</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-secondary" id="sellerStatNew">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.sellers_stat_new_month">Nhà bán hàng mới tháng này</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="sellerStatPending">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="status.pending">Chờ duyệt</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-3xl shadow-soft p-5 md:p-6 overflow-x-auto">
+        <h2 class="font-bold text-xl mb-5" data-i18n="nav.sellers">Nhà bán hàng</h2>
+        <div class="table-scroll"><table class="w-full text-sm min-w-[720px]">
+          <thead>
+            <tr class="text-left text-muted border-b border-secondary-50">
+              <th class="pb-3 pr-3 font-semibold w-12" data-i18n="admin.th_stt">STT</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_name">Nhà bán hàng</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_category">Ngành hàng</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_address">Địa chỉ</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_materials">Vật liệu</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_status">Trạng thái</th>
+              <th class="pb-3 font-semibold text-right" data-i18n="admin.th_action">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="sellersTableBody"></tbody>
+        </table></div>
+        <div id="sellersPager" class="flex justify-end items-center gap-1 mt-4 text-sm"></div>
+      </div>
+    </div>
+
+    <!-- MATERIALS -->
+    <div id="tab-materials" class="tab-panel hidden bg-white rounded-3xl shadow-soft p-5 md:p-6 overflow-x-auto">
+      <h2 class="font-bold text-xl mb-5" data-i18n="nav.materials">Vật liệu</h2>
+      <div class="table-scroll"><table class="w-full text-sm min-w-[820px]">
         <thead>
           <tr class="text-left text-muted border-b border-secondary-50">
-            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_name">Nhà bán hàng</th>
-            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_category">Ngành hàng</th>
-            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_materials">Vật liệu</th>
-            <th class="pb-3 font-semibold" data-i18n="admin.sellers_th_status">Trạng thái</th>
-            <th class="pb-3 font-semibold text-right" data-i18n="admin.th_action">Hành động</th>
-          </tr>
-        </thead>
-        <tbody id="sellersTableBody"></tbody>
-      </table>
-    </div>
-
-    <!-- MATERIALS TAB -->
-    <div id="tab-materials" class="tab-panel hidden bg-white rounded-3xl shadow-soft p-6 md:p-8 overflow-x-auto">
-      <table class="w-full text-sm min-w-[720px]">
-        <thead>
-          <tr class="text-left text-muted border-b border-secondary-50">
+            <th class="pb-3 pr-3 font-semibold w-12" data-i18n="admin.th_stt">STT</th>
+            <th class="pb-3 font-semibold" data-i18n="seller.material_code_label">Mã vật liệu</th>
             <th class="pb-3 font-semibold" data-i18n="admin.materials_th_name">Vật liệu</th>
             <th class="pb-3 font-semibold" data-i18n="admin.materials_th_seller">Nhà bán hàng</th>
             <th class="pb-3 font-semibold" data-i18n="admin.materials_th_category">Danh mục</th>
             <th class="pb-3 font-semibold" data-i18n="admin.materials_th_price">Giá</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.materials_th_unit">Đơn vị tính</th>
             <th class="pb-3 font-semibold text-right" data-i18n="admin.th_action">Hành động</th>
           </tr>
         </thead>
         <tbody id="materialsTableBody"></tbody>
-      </table>
+      </table></div>
+      <div id="materialsPager" class="flex justify-end items-center gap-1 mt-4 text-sm"></div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="tab-customers" class="tab-panel hidden space-y-5">
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="customerStatTotal">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.customers_stat_total">Tổng khách hàng</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-secondary" id="customerStatNew">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.customers_stat_new_month">Khách mới tháng này</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-script text-3xl text-warm-600" id="customerStatOrders">0</p>
+          <p class="text-xs text-muted mt-1" data-i18n="admin.customers_stat_orders">Tổng đơn hàng</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-3xl shadow-soft p-5 md:p-6 overflow-x-auto">
+        <h2 class="font-bold text-xl mb-5" data-i18n="admin.menu_customers">Khách hàng</h2>
+        <div class="table-scroll"><table class="w-full text-sm min-w-[960px]">
+          <thead>
+            <tr class="text-left text-muted border-b border-secondary-50">
+              <th class="pb-3 pr-3 font-semibold w-12" data-i18n="admin.th_stt">STT</th>
+              <th class="pb-3 pr-3 font-semibold" data-i18n="admin.customers_th_name">Khách hàng</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.customers_th_email">Email</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.customers_th_status">Trạng thái</th>
+              <th class="pb-3 font-semibold text-center" data-i18n="admin.customers_th_orders">Đơn đã đặt</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.materials_th_seller">Nhà bán hàng</th>
+              <th class="pb-3 font-semibold" data-i18n="admin.customers_th_created">Ngày tạo</th>
+            </tr>
+          </thead>
+          <tbody id="customersTableBody"></tbody>
+        </table></div>
+        <p id="customersEmpty" class="hidden text-sm text-muted mt-4" data-i18n="admin.no_data">Chưa có dữ liệu.</p>
+        <div id="customersPager" class="flex justify-end items-center gap-1 mt-4 text-sm"></div>
+      </div>
+    </div>
+
+    <!-- CONTACTS / CHAT -->
+    <div id="tab-contacts" class="tab-panel hidden bg-white rounded-3xl shadow-soft p-5 md:p-6 overflow-x-auto">
+      <h2 class="font-bold text-xl mb-5" data-i18n="admin.menu_contacts">Đơn liên hệ</h2>
+      <div class="table-scroll"><table class="w-full text-sm min-w-[720px]">
+        <thead>
+          <tr class="text-left text-muted border-b border-secondary-50">
+            <th class="pb-3 pr-3 font-semibold w-12" data-i18n="admin.th_stt">STT</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.contacts_th_customer">Khách hàng</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.contacts_th_seller">Nhà bán hàng</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.contacts_th_messages">Tin nhắn</th>
+            <th class="pb-3 font-semibold" data-i18n="admin.contacts_th_last">Hoạt động cuối</th>
+          </tr>
+        </thead>
+        <tbody id="contactsTableBody"></tbody>
+      </table></div>
+      <p id="contactsEmpty" class="hidden text-sm text-muted mt-4" data-i18n="admin.no_data">Chưa có dữ liệu.</p>
+      <div id="contactsPager" class="flex justify-end items-center gap-1 mt-4 text-sm"></div>
+    </div>
+    <div id="tab-reviews" class="tab-panel hidden bg-white rounded-3xl shadow-soft p-12 text-center">
+      <p class="font-semibold text-lg mb-2" data-i18n="admin.menu_reviews">Đánh giá</p>
+      <p class="text-muted text-sm" data-i18n="admin.coming_soon">Chức năng đang được phát triển — sẽ ra mắt trong phiên bản tới.</p>
+    </div>
+    <div id="tab-settings" class="tab-panel hidden bg-white rounded-3xl shadow-soft p-12 text-center">
+      <p class="font-semibold text-lg mb-2" data-i18n="admin.menu_settings">Cài đặt</p>
+      <p class="text-muted text-sm" data-i18n="admin.coming_soon">Chức năng đang được phát triển — sẽ ra mắt trong phiên bản tới.</p>
     </div>
 
   </div>
-</section>
+</main>
+</div>
 
 <script>
   async function api(url, options = {}) {
@@ -141,14 +342,27 @@
     return window.I18N ? window.I18N.t('status.' + status) : status;
   }
 
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
-    });
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  function closeSidebar(){ sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+  document.getElementById('sidebarToggle').addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
   });
+  overlay.addEventListener('click', closeSidebar);
+
+  function showTab(name){
+    if (!document.getElementById('tab-' + name)) name = 'overview';
+    document.querySelectorAll('.side-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    history.replaceState(null, '', '#' + name); // giữ tab hiện tại khi reload
+    closeSidebar();
+  }
+  document.querySelectorAll('.side-btn').forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
+  document.querySelectorAll('.goto-tab').forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
+  // Khôi phục tab từ URL hash khi mở/reload trang
+  if (location.hash.length > 1) showTab(location.hash.slice(1));
 
   async function loadStats() {
     const s = await api('/api/admin/stats');
@@ -156,17 +370,52 @@
     document.getElementById('statPending').textContent = s.pendingSellers;
     document.getElementById('statApproved').textContent = s.approvedSellers;
     document.getElementById('statMaterials').textContent = s.totalMaterials;
+    // Các trường mới — mặc định 0 nếu server chưa restart với API mở rộng
+    document.getElementById('statCustomers').textContent = s.totalCustomers ?? 0;
+    document.getElementById('statOrders').textContent = s.totalOrders ?? 0;
+    document.getElementById('statConversations').textContent = s.totalConversations ?? 0;
+    document.getElementById('statMessages').textContent = s.totalMessages ?? 0;
   }
 
-  function sellerRow(s) {
+  // ===== Phân trang dùng chung: 10 dòng/trang, pager góc dưới phải =====
+  const PAGE_SIZE = 10;
+  const tableState = {};
+  function renderPagedTable(name, bodyId, pagerId, rowFn, afterFn) {
+    const st = tableState[name];
+    const totalPages = Math.max(1, Math.ceil(st.items.length / PAGE_SIZE));
+    st.page = Math.min(Math.max(1, st.page || 1), totalPages);
+    const body = document.getElementById(bodyId);
+    body.innerHTML = '';
+    const start = (st.page - 1) * PAGE_SIZE;
+    st.items.slice(start, start + PAGE_SIZE).forEach((item, i) => body.appendChild(rowFn(item, start + i + 1)));
+    if (afterFn) afterFn(body);
+    const pager = document.getElementById(pagerId);
+    pager.innerHTML = '';
+    const mk = (label, page, opt = {}) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.className = 'min-w-[32px] h-8 px-2 rounded-lg font-semibold transition-colors ' +
+        (opt.active ? 'bg-ink text-white' : opt.disabled ? 'text-secondary-100 cursor-default' : 'text-secondary hover:bg-secondary-50');
+      if (!opt.disabled && !opt.active) b.addEventListener('click', () => { st.page = page; renderPagedTable(name, bodyId, pagerId, rowFn, afterFn); });
+      return b;
+    };
+    pager.appendChild(mk('‹', st.page - 1, { disabled: st.page === 1 }));
+    for (let p = 1; p <= totalPages; p++) pager.appendChild(mk(String(p), p, { active: p === st.page }));
+    pager.appendChild(mk('›', st.page + 1, { disabled: st.page === totalPages }));
+  }
+
+  function sellerRow(s, stt) {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-secondary-50 last:border-0';
     tr.innerHTML = `
+      <td class="py-3 pr-3 text-muted">${stt}</td>
       <td class="py-3 pr-3">
         <p class="font-semibold">${s.business_name}</p>
         <p class="text-xs text-muted">${s.email}</p>
       </td>
       <td class="py-3 pr-3">${catLabel(s.category)}</td>
+      <td class="py-3 pr-3 text-muted max-w-[220px] truncate" title="${s.address || ''}">${s.address || '—'}</td>
       <td class="py-3 pr-3">${s.materials_count}</td>
       <td class="py-3 pr-3"><span class="text-xs font-semibold px-3 py-1 rounded-full badge-${s.status}">${statusLabel(s.status)}</span></td>
       <td class="py-3 text-right whitespace-nowrap">
@@ -177,58 +426,201 @@
     return tr;
   }
 
-  async function loadSellers() {
-    const { sellers } = await api('/api/admin/sellers');
-    const body = document.getElementById('sellersTableBody');
-    body.innerHTML = '';
-    sellers.forEach(s => body.appendChild(sellerRow(s)));
-
-    body.querySelectorAll('.set-status').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        await api('/api/admin/sellers/' + btn.dataset.id + '/status', { method: 'PUT', body: { status: btn.dataset.status } });
-        loadSellers();
-        loadStats();
+  function renderSellersTable() {
+    renderPagedTable('sellers', 'sellersTableBody', 'sellersPager', sellerRow, (body) => {
+      body.querySelectorAll('.set-status').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await api('/api/admin/sellers/' + btn.dataset.id + '/status', { method: 'PUT', body: { status: btn.dataset.status } });
+          loadSellers();
+          loadStats();
+        });
       });
-    });
-    body.querySelectorAll('.delete-seller').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (!confirm(window.I18N.t('admin.confirm_delete_seller'))) return;
-        await api('/api/admin/sellers/' + btn.dataset.id, { method: 'DELETE' });
-        loadSellers();
-        loadStats();
-        loadMaterials();
+      body.querySelectorAll('.delete-seller').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm(window.I18N.t('admin.confirm_delete_seller'))) return;
+          await api('/api/admin/sellers/' + btn.dataset.id, { method: 'DELETE' });
+          loadSellers();
+          loadStats();
+          loadMaterials();
+        });
       });
     });
   }
+  async function loadSellers() {
+    const { sellers } = await api('/api/admin/sellers');
+    tableState.sellers = { items: sellers, page: tableState.sellers?.page || 1 };
+    renderSellersTable();
 
-  function materialRow(m) {
+    const now = new Date();
+    const newThisMonth = sellers.filter(s => {
+      const d = new Date((s.created_at || '').replace(' ', 'T') + 'Z');
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    }).length;
+    const pending = sellers.filter(s => s.status === 'pending').length;
+    document.getElementById('sellerStatTotal').textContent = sellers.length;
+    document.getElementById('sellerStatNew').textContent = newThisMonth;
+    document.getElementById('sellerStatPending').textContent = pending;
+  }
+
+  function materialRow(m, stt) {
+    // Tách "800.000đ/m²" thành giá "800.000đ" + đơn vị tính "m²"
+    const priceParts = String(m.price || '').split('/');
+    const priceOnly = priceParts[0] || '';
+    const unit = priceParts.length > 1 ? priceParts.slice(1).join('/') : '—';
     const tr = document.createElement('tr');
     tr.className = 'border-b border-secondary-50 last:border-0';
     tr.innerHTML = `
+      <td class="py-3 pr-3 text-muted">${stt}</td>
+      <td class="py-3 pr-3 font-mono text-xs whitespace-nowrap">${m.code || '—'}</td>
       <td class="py-3 pr-3">
         <p class="font-semibold">${m.title}</p>
         <p class="text-xs text-muted">${m.spec || ''}</p>
       </td>
       <td class="py-3 pr-3">${m.seller_name}</td>
       <td class="py-3 pr-3">${catLabel(m.category)}</td>
-      <td class="py-3 pr-3 font-heading font-bold text-accent-600">${m.price || ''}</td>
+      <td class="py-3 pr-3 font-heading font-bold text-accent-600">${priceOnly}</td>
+      <td class="py-3 pr-3">${unit}</td>
       <td class="py-3 text-right"><button data-id="${m.id}" class="delete-material text-xs font-semibold text-red-600 hover:underline">${window.I18N.t('common.delete')}</button></td>`;
     return tr;
   }
 
-  async function loadMaterials() {
-    const { materials } = await api('/api/admin/materials');
-    const body = document.getElementById('materialsTableBody');
-    body.innerHTML = '';
-    materials.forEach(m => body.appendChild(materialRow(m)));
-    body.querySelectorAll('.delete-material').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (!confirm(window.I18N.t('common.confirm_delete_material'))) return;
-        await api('/api/admin/materials/' + btn.dataset.id, { method: 'DELETE' });
-        loadMaterials();
-        loadStats();
+  function renderMaterialsTable() {
+    renderPagedTable('materials', 'materialsTableBody', 'materialsPager', materialRow, (body) => {
+      body.querySelectorAll('.delete-material').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm(window.I18N.t('common.confirm_delete_material'))) return;
+          await api('/api/admin/materials/' + btn.dataset.id, { method: 'DELETE' });
+          loadMaterials();
+          loadStats();
+        });
       });
     });
+  }
+  async function loadMaterials() {
+    const { materials } = await api('/api/admin/materials');
+    tableState.materials = { items: materials, page: tableState.materials?.page || 1 };
+    renderMaterialsTable();
+  }
+
+  // ===== Khách hàng =====
+  function formatVND(n) { return Number(n || 0).toLocaleString('vi-VN') + 'đ'; }
+
+  function customerRow(c, stt) {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-secondary-50 last:border-0';
+    tr.innerHTML = `
+      <td class="py-3 pr-3 text-muted">${stt}</td>
+      <td class="py-3 pr-3 font-semibold">${c.name || '—'}</td>
+      <td class="py-3 pr-3 text-muted">${c.email}</td>
+      <td class="py-3 pr-3"><span class="text-xs font-semibold px-3 py-1 rounded-full badge-${c.status}">${statusLabel(c.status)}</span></td>
+      <td class="py-3 pr-3 text-center">${c.orders_count}</td>
+      <td class="py-3 pr-3 max-w-[220px]"><p class="truncate" title="${(c.sellers || '').split(',').join(', ')}">${c.sellers ? c.sellers.split(',').join(', ') : '—'}</p></td>
+      <td class="py-3 pr-3 text-muted">${(c.created_at || '').slice(0, 10)}</td>`;
+    return tr;
+  }
+  async function loadCustomers() {
+    try {
+      const { customers } = await api('/api/admin/customers');
+      tableState.customers = { items: customers, page: tableState.customers?.page || 1 };
+      renderPagedTable('customers', 'customersTableBody', 'customersPager', customerRow);
+      document.getElementById('customersEmpty').classList.toggle('hidden', customers.length > 0);
+
+      const now = new Date();
+      const newThisMonth = customers.filter(c => {
+        const d = new Date((c.created_at || '').replace(' ', 'T') + 'Z');
+        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      }).length;
+      const totalOrders = customers.reduce((s, c) => s + (c.orders_count || 0), 0);
+      document.getElementById('customerStatTotal').textContent = customers.length;
+      document.getElementById('customerStatNew').textContent = newThisMonth;
+      document.getElementById('customerStatOrders').textContent = totalOrders;
+    } catch (e) {
+      document.getElementById('customersEmpty').classList.remove('hidden');
+    }
+  }
+
+  // ===== Đơn liên hệ (hội thoại chat) =====
+  function contactRow(c, stt) {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-secondary-50 last:border-0';
+    tr.innerHTML = `
+      <td class="py-3 pr-3 text-muted">${stt}</td>
+      <td class="py-3 pr-3 font-semibold">${c.customer_name || '—'}</td>
+      <td class="py-3 pr-3">${c.seller_name || '—'}</td>
+      <td class="py-3 pr-3">${c.messages_count}</td>
+      <td class="py-3 pr-3 text-muted">${(c.last_message_at || c.created_at || '').slice(0, 16)}</td>`;
+    return tr;
+  }
+  async function loadContacts() {
+    try {
+      const { conversations } = await api('/api/admin/conversations');
+      tableState.contacts = { items: conversations, page: tableState.contacts?.page || 1 };
+      renderPagedTable('contacts', 'contactsTableBody', 'contactsPager', contactRow);
+      document.getElementById('contactsEmpty').classList.toggle('hidden', conversations.length > 0);
+    } catch (e) {
+      document.getElementById('contactsEmpty').classList.remove('hidden');
+    }
+  }
+
+  async function loadOverview() {
+    const [{ sellers }, { materials }] = await Promise.all([api('/api/admin/sellers'), api('/api/admin/materials')]);
+
+    // 1. Hồ sơ chờ duyệt (tối đa 5, duyệt nhanh)
+    const pendingEl = document.getElementById('pendingList');
+    const pending = sellers.filter(s => s.status === 'pending').slice(0, 5);
+    pendingEl.innerHTML = pending.length ? '' : `<p class="text-sm text-muted">${window.I18N.t('admin.no_pending')}</p>`;
+    pending.forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center justify-between gap-3';
+      row.innerHTML = `
+        <div class="min-w-0">
+          <p class="font-semibold text-sm truncate">${s.business_name}</p>
+          <p class="text-xs text-muted truncate">${s.email} · ${catLabel(s.category)}</p>
+        </div>
+        <button data-id="${s.id}" class="quick-approve shrink-0 bg-ink text-white text-xs font-semibold px-4 py-1.5 rounded-full hover:bg-secondary-600 transition-colors">${window.I18N.t('admin.action_approve')}</button>`;
+      pendingEl.appendChild(row);
+    });
+    pendingEl.querySelectorAll('.quick-approve').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api('/api/admin/sellers/' + btn.dataset.id + '/status', { method: 'PUT', body: { status: 'approved' } });
+        await Promise.all([loadStats(), loadSellers(), loadOverview()]);
+      });
+    });
+
+    // 2. Bar chart vật liệu theo danh mục
+    const counts = {};
+    materials.forEach(m => { counts[m.category] = (counts[m.category] || 0) + 1; });
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const max = entries.length ? entries[0][1] : 1;
+    document.getElementById('catChart').innerHTML = entries.map(([cat, n]) => `
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span class="font-medium">${catLabel(cat)}</span><span class="text-muted">${n}</span></div>
+        <div class="h-2.5 bg-secondary-50 rounded-full overflow-hidden"><div class="h-full bg-warm rounded-full" style="width:${Math.round(n / max * 100)}%"></div></div>
+      </div>`).join('') || `<p class="text-sm text-muted">—</p>`;
+
+    // 3. Top nhà bán hàng theo số vật liệu
+    const top = [...sellers].sort((a, b) => (b.materials_count || 0) - (a.materials_count || 0)).slice(0, 5);
+    document.getElementById('topSellersList').innerHTML = top.map((s, i) => `
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-full bg-warm-50 text-warm-600 text-xs font-bold flex items-center justify-center shrink-0">${i + 1}</span>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-sm truncate">${s.business_name}</p>
+          <p class="text-xs text-muted">${catLabel(s.category)}</p>
+        </div>
+        <span class="text-xs font-semibold px-3 py-1 rounded-full badge-${s.status}">${statusLabel(s.status)}</span>
+        <span class="text-sm font-bold shrink-0">${s.materials_count || 0}</span>
+      </div>`).join('') || `<p class="text-sm text-muted">—</p>`;
+
+    // 4. Vật liệu mới nhất (id lớn nhất)
+    const latest = [...materials].sort((a, b) => (b.id || 0) - (a.id || 0)).slice(0, 5);
+    document.getElementById('latestMaterials').innerHTML = latest.map(m => `
+      <div class="flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <p class="font-semibold text-sm truncate">${m.title}</p>
+          <p class="text-xs text-muted truncate">${m.seller_name} · ${catLabel(m.category)}</p>
+        </div>
+        <span class="text-sm font-heading font-bold text-warm-600 shrink-0">${m.price || ''}</span>
+      </div>`).join('') || `<p class="text-sm text-muted">—</p>`;
   }
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -239,6 +631,9 @@
   document.addEventListener('i18n:change', () => {
     loadSellers();
     loadMaterials();
+    loadCustomers();
+    loadContacts();
+    loadOverview();
   });
 
   (async function init() {
@@ -246,7 +641,7 @@
       const { user } = await api('/api/auth/me');
       if (user.role !== 'admin') { window.location.href = user.role === 'seller' ? 'seller-dashboard.html' : 'index.html'; return; }
       document.getElementById('userGreeting').textContent = user.email;
-      await Promise.all([loadStats(), loadSellers(), loadMaterials()]);
+      await Promise.all([loadStats(), loadSellers(), loadMaterials(), loadCustomers(), loadContacts(), loadOverview()]);
     } catch (err) {
       window.location.href = 'login.html';
     }

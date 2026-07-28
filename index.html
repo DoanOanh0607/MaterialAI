@@ -15,7 +15,7 @@
 <script src="i18n.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
-    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
+    colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, warm:{DEFAULT:'#8A6844',50:'#F5EEE5',600:'#6E5236'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
     fontFamily: { heading:['Inter','sans-serif'], body:['Roboto','sans-serif'] },
     boxShadow: { soft:'0 10px 40px -10px rgba(33,30,26,0.15)', glass:'0 8px 32px 0 rgba(58,54,50,0.15)' },
   }}}
@@ -26,9 +26,10 @@
   .font-script{font-family:'Inter',sans-serif;font-style:italic;font-weight:700}
   .glass{background:rgba(251,247,242,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(251,247,242,.6)}
   .blob{position:absolute;border-radius:9999px;filter:blur(80px);z-index:-1;opacity:.5}
-  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
   .reveal.in-view{opacity:1;transform:translateY(0)}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 24px -8px rgba(154,163,164,.5)}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 24px -8px rgba(33,30,26,.45)}
   .btn-accent:hover{transform:translateY(-2px);box-shadow:0 12px 24px -8px rgba(58,54,50,.3)}
   .tab-btn.active{background:#9AA3A4;color:#211E1A}
   .lang-btn.active,
@@ -36,6 +37,7 @@
   html[lang="en"] .lang-btn[data-lang="en"]{background:#3A3632;color:#fff}
   .nav-active{background:#9AA3A4;color:#211E1A;font-weight:600}
 </style>
+<noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
 </head>
 <body class="bg-cream text-ink overflow-x-hidden">
 
@@ -51,11 +53,12 @@
       <a href="contact.html" class="px-4 py-2 rounded-full hover:bg-secondary-50 transition-colors" data-i18n="nav.contact">Liên hệ</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
-      <a href="login.html" class="nav-login-link border border-secondary-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
+      <a href="login.html" class="nav-login-link px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors" data-i18n="nav.login">Đăng nhập</a>
       <button type="button" class="nav-customer-btn hidden items-center gap-2 border border-secondary-100 pl-1.5 pr-4 py-1.5 rounded-full text-sm font-medium hover:bg-secondary-50 transition-colors">
         <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
         <span class="nav-customer-name truncate max-w-[120px]"></span>
       </button>
+      <a href="#" class="nav-dashboard-link hidden items-center gap-1.5 bg-ink text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary-600 transition-colors" data-i18n="nav.dashboard">Trang quản lý</a>
       <div class="flex items-center gap-1 border border-secondary-100 rounded-full p-1 text-xs font-bold">
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="vi">VI</button>
         <button type="button" class="lang-btn px-2.5 py-1 rounded-full transition-colors" data-lang="en">EN</button>
@@ -80,6 +83,7 @@
       <span class="nav-customer-avatar w-7 h-7 rounded-full bg-accent-50 text-accent-600 text-xs font-bold flex items-center justify-center shrink-0"></span>
       <span class="nav-customer-name truncate max-w-[140px]"></span>
     </button>
+    <a href="#" class="nav-dashboard-link hidden items-center gap-1.5 bg-ink text-white px-5 py-2.5 rounded-full w-fit font-semibold" data-i18n="nav.dashboard">Trang quản lý</a>
   </div>
 </header>
 <script>(function(){var h;try{h=JSON.parse(localStorage.getItem("materialai_customer_hint"));}catch(e){h=null;}if(!h)return;function ini(n){var p=String(n||"").trim().split(/\s+/).filter(Boolean);if(!p.length)return"?";return(p.length>=2?p[0][0]+p[1][0]:p[0].slice(0,2)).toUpperCase();}document.querySelectorAll(".nav-login-link").forEach(function(a){a.classList.add("hidden");});document.querySelectorAll(".nav-customer-btn").forEach(function(b){b.classList.remove("hidden");b.classList.add("flex");var av=b.querySelector(".nav-customer-avatar");if(av)av.textContent=ini(h.name||h.email);var nm=b.querySelector(".nav-customer-name");if(nm)nm.textContent=h.name||h.email;});})();</script>
@@ -89,17 +93,31 @@
   <div class="blob w-96 h-96 bg-secondary/20 -top-20 -left-20"></div>
   <div class="blob w-96 h-96 bg-accent/20 top-40 right-0"></div>
   <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-    <div class="reveal">
-      <span class="inline-block bg-accent-50 text-secondary font-semibold text-sm px-4 py-1.5 rounded-full mb-5" data-i18n="home.badge">Tìm kiếm vật liệu bằng AI</span>
-      <h1 class="font-extrabold text-4xl md:text-6xl leading-tight mb-2" data-i18n-html="home.h1">Tìm đúng vật liệu nội thất chỉ với <span class="text-accent-600">một tấm ảnh</span></h1>
-      <p class="font-script text-3xl text-accent-600 mb-6" data-i18n="home.tagline">nhanh · chính xác · minh bạch</p>
+    <div>
+      <span class="inline-block bg-warm-50 text-warm-600 font-semibold text-sm px-4 py-1.5 rounded-full mb-5" data-i18n="home.badge">Tìm kiếm vật liệu bằng AI</span>
+      <h1 class="font-extrabold text-4xl md:text-6xl leading-tight mb-3" data-i18n-html="home.h1">Tìm đúng vật liệu nội thất chỉ với <span class="text-warm">một tấm ảnh</span></h1>
+      <p class="font-script text-2xl text-warm-600 mb-6" data-i18n="home.tagline">Nhanh · Chính xác · Minh bạch</p>
       <p class="text-muted text-lg mb-8 max-w-lg" data-i18n="home.hero_desc">Upload ảnh vật liệu bạn cần — Material AI đối chiếu với hàng ngàn mẫu ván ép, đá, gạch, sơn, gỗ tự nhiên, kính từ các nhà bán hàng và trả về những lựa chọn tương tự nhất kèm giá.</p>
       <div class="flex flex-wrap gap-4">
-        <a href="materials.html" class="btn-primary bg-accent text-ink px-7 py-3.5 rounded-full font-semibold shadow-soft" data-i18n="home.cta_upload">Upload ảnh tìm kiếm</a>
-        <a href="materials.html#upload" class="btn-accent bg-white border border-secondary-100 text-secondary px-7 py-3.5 rounded-full font-semibold" data-i18n="home.cta_for_sellers">Dành cho nhà bán hàng</a>
+        <a href="materials.html#upload" class="btn-primary bg-ink text-white px-7 py-3.5 rounded-full font-semibold shadow-soft" data-i18n="home.cta_upload">Upload ảnh tìm kiếm</a>
+        <a href="register.html" class="btn-accent bg-transparent border border-secondary-100 text-secondary px-7 py-3.5 rounded-full font-semibold hover:bg-white" data-i18n="home.cta_seller_register">Đăng ký nhà bán hàng</a>
+      </div>
+      <div class="grid grid-cols-3 gap-3 mt-8 max-w-lg">
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-extrabold text-2xl md:text-3xl text-warm mb-1">500+</p>
+          <p class="text-xs md:text-sm text-muted leading-snug" data-i18n="home.stat_sellers">nhà bán hàng</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-extrabold text-2xl md:text-3xl text-warm mb-1">12.000+</p>
+          <p class="text-xs md:text-sm text-muted leading-snug" data-i18n="home.stat_materials">mẫu vật liệu</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <p class="font-extrabold text-2xl md:text-3xl text-warm mb-1">100%</p>
+          <p class="text-xs md:text-sm text-muted leading-snug" data-i18n="home.stat_free">miễn phí cho người tìm</p>
+        </div>
       </div>
     </div>
-    <div class="reveal relative pb-7 md:pb-8">
+    <div class="relative pb-7 md:pb-8">
       <div class="relative rounded-3xl overflow-hidden shadow-soft aspect-[4/5] md:aspect-[3/4]">
         <img src="images/P1.webp" alt="Mẫu vật liệu nội thất: đá, gỗ, vân đá được kiến trúc sư lựa chọn" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/0 to-ink/0"></div>
@@ -172,19 +190,19 @@
     </div>
 
     <div id="tab-customer" class="tab-panel grid md:grid-cols-3 gap-8 reveal">
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.c1_quote">"Tôi chỉ cần chụp ảnh sàn gỗ nhà mẫu là tìm được loại tương tự với giá tốt hơn."</p><p class="font-semibold text-sm" data-i18n="about.c1_name">Chị Hồng Anh — Khách hàng cá nhân</p></div>
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.c2_quote">"Giao diện dễ dùng, thông tin giá rõ ràng, không cần gọi điện hỏi nhiều nơi."</p><p class="font-semibold text-sm" data-i18n="about.c2_name">Anh Quốc Bảo — Chủ nhà</p></div>
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.c3_quote">"Tìm được đúng mẫu gạch ốp đã thích từ một tấm ảnh trên mạng."</p><p class="font-semibold text-sm" data-i18n="about.c3_name">Chị Thu Trang — Khách hàng</p></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="5/5 sao">★★★★★</div><p class="text-muted mb-6" data-i18n="about.c1_quote">"Tôi chỉ cần chụp ảnh sàn gỗ nhà mẫu là tìm được loại tương tự với giá tốt hơn."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-warm-50 text-warm-600 text-xs font-bold flex items-center justify-center shrink-0">HA</span><p class="font-semibold text-sm" data-i18n="about.c1_name">Chị Hồng Anh — Khách hàng cá nhân</p></div></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="4/5 sao">★★★★<span class="text-secondary-100">★</span></div><p class="text-muted mb-6" data-i18n="about.c2_quote">"Giao diện dễ dùng, thông tin giá rõ ràng, không cần gọi điện hỏi nhiều nơi."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-secondary-50 text-secondary text-xs font-bold flex items-center justify-center shrink-0">QB</span><p class="font-semibold text-sm" data-i18n="about.c2_name">Anh Quốc Bảo — Chủ nhà</p></div></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="5/5 sao">★★★★★</div><p class="text-muted mb-6" data-i18n="about.c3_quote">"Tìm được đúng mẫu gạch ốp đã thích từ một tấm ảnh trên mạng."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-accent-50 text-secondary text-xs font-bold flex items-center justify-center shrink-0">TT</span><p class="font-semibold text-sm" data-i18n="about.c3_name">Chị Thu Trang — Khách hàng</p></div></div>
     </div>
     <div id="tab-seller" class="tab-panel hidden grid md:grid-cols-3 gap-8 reveal">
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.s1_quote">"Từ khi đăng sản phẩm lên Material AI, lượng khách liên hệ tăng rõ rệt."</p><p class="font-semibold text-sm" data-i18n="about.s1_name">Anh Minh Khôi — Nhà bán đá tự nhiên</p></div>
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.s2_quote">"Upload thông số và giá rất nhanh, không mất thời gian như trước."</p><p class="font-semibold text-sm" data-i18n="about.s2_name">Chị Bích Ngọc — Đại lý sơn</p></div>
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.s3_quote">"Khách tìm đến đúng sản phẩm mình có, tỉ lệ chốt đơn cao hơn hẳn."</p><p class="font-semibold text-sm" data-i18n="about.s3_name">Anh Văn Hải — Xưởng ván công nghiệp</p></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="5/5 sao">★★★★★</div><p class="text-muted mb-6" data-i18n="about.s1_quote">"Từ khi đăng sản phẩm lên Material AI, lượng khách liên hệ tăng rõ rệt."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-secondary-50 text-secondary text-xs font-bold flex items-center justify-center shrink-0">MK</span><p class="font-semibold text-sm" data-i18n="about.s1_name">Anh Minh Khôi — Nhà bán đá tự nhiên</p></div></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="4/5 sao">★★★★<span class="text-secondary-100">★</span></div><p class="text-muted mb-6" data-i18n="about.s2_quote">"Upload thông số và giá rất nhanh, không mất thời gian như trước."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-warm-50 text-warm-600 text-xs font-bold flex items-center justify-center shrink-0">BN</span><p class="font-semibold text-sm" data-i18n="about.s2_name">Chị Bích Ngọc — Đại lý sơn</p></div></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="5/5 sao">★★★★★</div><p class="text-muted mb-6" data-i18n="about.s3_quote">"Khách tìm đến đúng sản phẩm mình có, tỉ lệ chốt đơn cao hơn hẳn."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-accent-50 text-secondary text-xs font-bold flex items-center justify-center shrink-0">VH</span><p class="font-semibold text-sm" data-i18n="about.s3_name">Anh Văn Hải — Xưởng ván công nghiệp</p></div></div>
     </div>
     <div id="tab-engineer" class="tab-panel hidden grid md:grid-cols-3 gap-8 reveal">
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.e1_quote">"Cần vật liệu thay thế gấp khi thi công, tra cứu bằng ảnh tiết kiệm rất nhiều thời gian."</p><p class="font-semibold text-sm" data-i18n="about.e1_name">Kỹ sư Thanh Tùng — Giám sát công trình</p></div>
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.e2_quote">"Thông số kỹ thuật đầy đủ giúp tôi lên hồ sơ vật liệu cho dự án nhanh hơn."</p><p class="font-semibold text-sm" data-i18n="about.e2_name">Chị Ngọc Lan — Kiến trúc sư nội thất</p></div>
-      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-accent-600 mb-3">★★★★★</div><p class="text-muted mb-6" data-i18n="about.e3_quote">"So sánh giá giữa nhiều nhà cung cấp trên cùng một nền tảng rất tiện."</p><p class="font-semibold text-sm" data-i18n="about.e3_name">Kỹ sư Đức Anh — Kỹ sư xây dựng</p></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="5/5 sao">★★★★★</div><p class="text-muted mb-6" data-i18n="about.e1_quote">"Cần vật liệu thay thế gấp khi thi công, tra cứu bằng ảnh tiết kiệm rất nhiều thời gian."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-secondary-50 text-secondary text-xs font-bold flex items-center justify-center shrink-0">TT</span><p class="font-semibold text-sm" data-i18n="about.e1_name">Kỹ sư Thanh Tùng — Giám sát công trình</p></div></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="4/5 sao">★★★★<span class="text-secondary-100">★</span></div><p class="text-muted mb-6" data-i18n="about.e2_quote">"Thông số kỹ thuật đầy đủ giúp tôi lên hồ sơ vật liệu cho dự án nhanh hơn."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-warm-50 text-warm-600 text-xs font-bold flex items-center justify-center shrink-0">NL</span><p class="font-semibold text-sm" data-i18n="about.e2_name">Chị Ngọc Lan — Kiến trúc sư nội thất</p></div></div>
+      <div class="bg-white rounded-2xl p-8 shadow-soft"><div class="text-amber-500 mb-3" aria-label="5/5 sao">★★★★★</div><p class="text-muted mb-6" data-i18n="about.e3_quote">"So sánh giá giữa nhiều nhà cung cấp trên cùng một nền tảng rất tiện."</p><div class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-accent-50 text-secondary text-xs font-bold flex items-center justify-center shrink-0">DA</span><p class="font-semibold text-sm" data-i18n="about.e3_name">Kỹ sư Đức Anh — Kỹ sư xây dựng</p></div></div>
     </div>
   </div>
 </section>
@@ -232,6 +250,18 @@
   </div>
 </section>
 
+<!-- FINAL CTA -->
+<section class="py-12 md:py-16 px-6">
+  <div class="max-w-4xl mx-auto text-center bg-ink text-white rounded-3xl px-8 py-12 md:py-14 reveal">
+    <h2 class="font-bold text-3xl md:text-4xl mb-4" data-i18n="home.final_cta_h2">Sẵn sàng tìm vật liệu cho dự án của bạn?</h2>
+    <p class="text-white/70 mb-8 max-w-xl mx-auto" data-i18n="home.final_cta_sub">Chụp hoặc tải một tấm ảnh — nhận ngay danh sách vật liệu tương tự kèm giá từ hàng trăm nhà bán hàng.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="materials.html" class="btn-primary bg-warm text-white px-8 py-3.5 rounded-full font-semibold" data-i18n="home.cta_upload">Upload ảnh tìm kiếm</a>
+      <a href="register.html" class="border border-white/30 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white/10 transition-colors" data-i18n="home.cta_seller_register">Đăng ký nhà bán hàng</a>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="bg-ink text-white/80 px-6 py-8">
   <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
@@ -254,7 +284,8 @@
       <p class="font-semibold text-white mb-3" data-i18n="footer.contact_title">Liên hệ</p>
       <ul class="space-y-2 text-sm">
         <li>hotro@materialai.vn</li>
-        <li>+84 909 000 000</li>
+        <li><span data-i18n="footer.hotline">Hotline</span>: +84 909 000 000</li>
+        <li><a href="https://zalo.me/84909000000" target="_blank" rel="noopener" class="hover:text-accent transition-colors">Zalo: 0909 000 000</a></li>
       </ul>
     </div>
   </div>
@@ -263,13 +294,13 @@
 
 <!-- HELP WIDGET + BACK TO TOP -->
 <div class="fixed bottom-5 right-5 z-[70] flex flex-col items-end gap-3">
-  <div id="helpBubble" class="relative bg-white rounded-2xl shadow-soft px-5 py-3.5 max-w-[210px]">
+  <div id="helpBubble" class="hidden relative bg-white rounded-2xl shadow-soft px-5 py-3.5 max-w-[210px]">
     <button id="helpBubbleClose" type="button" class="absolute top-2 right-2 text-muted hover:text-ink text-sm leading-none" data-i18n-aria-label="common.close" aria-label="Đóng">✕</button>
     <a href="contact.html" class="font-semibold text-secondary hover:underline pr-3 block" data-i18n="home.help_bubble">Chúng tôi có thể giúp gì cho bạn?</a>
     <div class="absolute -bottom-1.5 right-9 w-3.5 h-3.5 bg-white rotate-45"></div>
   </div>
-  <a href="contact.html" data-i18n-aria-label="home.help_widget_label" aria-label="Trợ giúp" class="w-16 h-16 rounded-full bg-accent-50 border-2 border-accent flex items-center justify-center shadow-soft hover:-translate-y-0.5 transition-transform">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 21c5 0 9-3.8 9-8.5S17 4 12 4s-9 3.8-9 8.5c0 1.8.6 3.5 1.7 4.8L4 21l3.9-1.1c1.2.6 2.6 1.1 4.1 1.1z" stroke="#3A3632" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8.3" cy="12.5" r="1.1" fill="#3A3632"/><circle cx="12" cy="12.5" r="1.1" fill="#3A3632"/><circle cx="15.7" cy="12.5" r="1.1" fill="#3A3632"/></svg>
+  <a id="helpWidgetBtn" href="contact.html" data-i18n-aria-label="home.help_widget_label" aria-label="Trợ giúp" class="w-14 h-14 rounded-full bg-accent-50 border-2 border-accent flex items-center justify-center shadow-soft hover:-translate-y-0.5 transition-transform">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 21c5 0 9-3.8 9-8.5S17 4 12 4s-9 3.8-9 8.5c0 1.8.6 3.5 1.7 4.8L4 21l3.9-1.1c1.2.6 2.6 1.1 4.1 1.1z" stroke="#3A3632" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8.3" cy="12.5" r="1.1" fill="#3A3632"/><circle cx="12" cy="12.5" r="1.1" fill="#3A3632"/><circle cx="15.7" cy="12.5" r="1.1" fill="#3A3632"/></svg>
   </a>
   <button id="backToTopBtn" type="button" class="hidden w-16 h-14 rounded-xl bg-ink text-white flex flex-col items-center justify-center gap-0.5 shadow-soft hover:-translate-y-0.5 transition-all" data-i18n-aria-label="home.back_to_top_label" aria-label="Lên đầu trang">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -281,6 +312,8 @@
   document.getElementById('menuBtn')?.addEventListener('click',()=>document.getElementById('mobileMenu')?.classList.toggle('hidden'));
   const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.15});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  // Fallback: đảm bảo nội dung trong viewport luôn hiển thị dù IO chậm/lỗi
+  setTimeout(()=>{document.querySelectorAll('.reveal:not(.in-view)').forEach(el=>{if(el.getBoundingClientRect().top<window.innerHeight)el.classList.add('in-view');});},700);
   document.querySelectorAll('.faq-item').forEach(item=>{
     const btn=item.querySelector('.faq-q'), panel=item.querySelector('.faq-a'), icon=item.querySelector('.faq-icon');
     btn.addEventListener('click',()=>{
@@ -320,7 +353,21 @@
       title.textContent = file.name;
       sub.textContent = I18N.t('home.dropzone_selected');
       zone.classList.add('border-accent');
-      setTimeout(()=>{ window.location.href = 'materials.html'; }, 700);
+      // Mang ảnh sang trang Vật liệu (nén xuống ~800px để vừa sessionStorage)
+      const img = new Image();
+      img.onload = ()=>{
+        try{
+          const max = 800, scale = Math.min(1, max/Math.max(img.width, img.height));
+          const c = document.createElement('canvas');
+          c.width = Math.round(img.width*scale); c.height = Math.round(img.height*scale);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          sessionStorage.setItem('materialai_search_image', c.toDataURL('image/jpeg', .8));
+          sessionStorage.setItem('materialai_search_image_name', file.name);
+        }catch(e){/* ảnh quá lớn hoặc storage đầy — vẫn chuyển trang */}
+        window.location.href = 'materials.html#upload';
+      };
+      img.onerror = ()=>{ window.location.href = 'materials.html#upload'; };
+      img.src = url;
     }
 
     zone.addEventListener('click', ()=> fileInput.click());
@@ -342,8 +389,13 @@
   // Help bubble + back-to-top
   (function(){
     const bubble = document.getElementById('helpBubble');
+    const helpBtn = document.getElementById('helpWidgetBtn');
+    let bubbleDismissed = false;
+    helpBtn?.addEventListener('mouseenter', ()=>{ if(!bubbleDismissed) bubble.classList.remove('hidden'); });
+    helpBtn?.addEventListener('mouseleave', ()=> bubble.classList.add('hidden'));
     document.getElementById('helpBubbleClose')?.addEventListener('click', (e)=>{
       e.preventDefault(); e.stopPropagation();
+      bubbleDismissed = true;
       bubble.classList.add('hidden');
     });
 

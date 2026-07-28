@@ -8,7 +8,7 @@ const { requireAuth, requireRole } = require('./middleware/auth');
 const app = express();
 const PORT = process.env.PORT || 5500;
 
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 app.use(session({
   // Dev-only secret. Set SESSION_SECRET in the environment before deploying anywhere real.
   secret: process.env.SESSION_SECRET || 'materialai-dev-secret-change-me',
@@ -102,6 +102,28 @@ app.post('/api/auth/login', (req, res) => {
   res.json({ user: publicUser(user) });
 });
 
+app.post('/api/auth/forgot-password/verify', (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'Vui lòng nhập email.' });
+  const user = db.prepare('SELECT id FROM users WHERE email = ?').get(String(email).trim());
+  if (!user) return res.status(404).json({ error: 'Không tìm thấy tài khoản với email này.' });
+  res.json({ ok: true });
+});
+
+app.post('/api/auth/forgot-password/reset', (req, res) => {
+  const { email, newPassword } = req.body || {};
+  if (!email || !newPassword) return res.status(400).json({ error: 'Thiếu email hoặc mật khẩu mới.' });
+  if (String(newPassword).length < 8) {
+    return res.status(400).json({ error: 'Mật khẩu cần tối thiểu 8 ký tự.' });
+  }
+  const user = db.prepare('SELECT id FROM users WHERE email = ?').get(String(email).trim());
+  if (!user) return res.status(404).json({ error: 'Không tìm thấy tài khoản với email này.' });
+
+  const hash = bcrypt.hashSync(String(newPassword), 10);
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hash, user.id);
+  res.json({ ok: true });
+});
+
 app.post('/api/auth/logout', (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
 });
@@ -145,10 +167,10 @@ app.post('/api/seller/materials', requireAuth, requireRole('seller'), (req, res)
   if (fresh.status !== 'approved') {
     return res.status(403).json({ error: 'Tài khoản đang chờ admin duyệt, chưa thể đăng vật liệu.' });
   }
-  const { category, title, spec, price } = req.body || {};
+  const { category, title, spec, price, description, image, code } = req.body || {};
   if (!category || !title) return res.status(400).json({ error: 'Thiếu danh mục hoặc tên vật liệu.' });
-  const info = db.prepare('INSERT INTO materials (seller_id, category, title, spec, price) VALUES (?, ?, ?, ?, ?)')
-    .run(req.session.user.id, category, title, spec || '', price || '');
+  const info = db.prepare('INSERT INTO materials (seller_id, category, title, spec, price, description, image, code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .run(req.session.user.id, category, title, spec || '', price || '', description || '', image || '', code || '');
   const row = db.prepare('SELECT * FROM materials WHERE id = ?').get(info.lastInsertRowid);
   res.status(201).json({ material: row });
 });
@@ -156,10 +178,10 @@ app.post('/api/seller/materials', requireAuth, requireRole('seller'), (req, res)
 app.put('/api/seller/materials/:id', requireAuth, requireRole('seller'), (req, res) => {
   const existing = db.prepare('SELECT * FROM materials WHERE id = ?').get(req.params.id);
   if (!existing || existing.seller_id !== req.session.user.id) return res.status(404).json({ error: 'Không tìm thấy vật liệu.' });
-  const { category, title, spec, price } = req.body || {};
+  const { category, title, spec, price, description, image, code } = req.body || {};
   if (!category || !title) return res.status(400).json({ error: 'Thiếu danh mục hoặc tên vật liệu.' });
-  db.prepare('UPDATE materials SET category=?, title=?, spec=?, price=? WHERE id=?')
-    .run(category, title, spec || '', price || '', req.params.id);
+  db.prepare('UPDATE materials SET category=?, title=?, spec=?, price=?, description=?, image=?, code=? WHERE id=?')
+    .run(category, title, spec || '', price || '', description || '', image || '', code || '', req.params.id);
   res.json({ material: db.prepare('SELECT * FROM materials WHERE id = ?').get(req.params.id) });
 });
 
@@ -220,7 +242,37 @@ app.get('/api/admin/stats', requireAuth, requireRole('admin'), (req, res) => {
   const approvedSellers = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role='seller' AND status='approved'").get().n;
   const blockedSellers = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role='seller' AND status='blocked'").get().n;
   const totalMaterials = db.prepare('SELECT COUNT(*) AS n FROM materials').get().n;
-  res.json({ totalSellers, pendingSellers, approvedSellers, blockedSellers, totalMaterials });
+  const totalCustomers = db.prepare("SELECT COUNT(*) AS n FROM users WHERE role='customer'").get().n;
+  const totalOrders = db.prepare('SELECT COUNT(*) AS n FROM orders').get().n;
+  const totalConversations = db.prepare('SELECT COUNT(*) AS n FROM conversations').get().n;
+  const totalMessages = db.prepare('SELECT COUNT(*) AS n FROM messages').get().n;
+  res.json({ totalSellers, pendingSellers, approvedSellers, blockedSellers, totalMaterials, totalCustomers, totalOrders, totalConversations, totalMessages });
+});
+
+app.get('/api/admin/customers', requireAuth, requireRole('admin'), (req, res) => {
+  const rows = db.prepare(`
+    SELECT u.id, u.email, u.name, u.status, u.created_at,
+           (SELECT COUNT(*) FROM orders o WHERE o.customer_id = u.id) AS orders_count,
+           (SELECT COALESCE(SUM(o.total), 0) FROM orders o WHERE o.customer_id = u.id) AS total_spend,
+           (SELECT GROUP_CONCAT(DISTINCT o.seller_name) FROM orders o WHERE o.customer_id = u.id) AS sellers
+    FROM users u WHERE u.role = 'customer'
+    ORDER BY u.created_at DESC
+  `).all();
+  res.json({ customers: rows });
+});
+
+app.get('/api/admin/conversations', requireAuth, requireRole('admin'), (req, res) => {
+  const rows = db.prepare(`
+    SELECT c.id, c.customer_name, c.created_at,
+           COALESCE(p.business_name, u.email) AS seller_name,
+           (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id) AS messages_count,
+           (SELECT MAX(m.created_at) FROM messages m WHERE m.conversation_id = c.id) AS last_message_at
+    FROM conversations c
+    JOIN users u ON u.id = c.seller_id
+    LEFT JOIN seller_profiles p ON p.user_id = c.seller_id
+    ORDER BY c.id DESC
+  `).all();
+  res.json({ conversations: rows });
 });
 
 /* ===================== CART (customer, authenticated) ===================== */
@@ -318,12 +370,12 @@ function parsePriceServer(text) {
 const ORDER_STATUSES = ['pending', 'confirmed', 'shipping', 'completed', 'cancelled'];
 
 app.post('/api/vouchers/check', requireAuth, requireRole('customer'), (req, res) => {
-  const { sellerId, code } = req.body || {};
+  const { sellerId, code, items } = req.body || {};
   if (!sellerId || !code) return res.status(400).json({ error: 'Thiếu thông tin.' });
-  const voucher = db.prepare('SELECT * FROM vouchers WHERE seller_id = ? AND code = ? AND active = 1')
-    .get(sellerId, String(code).trim().toUpperCase());
-  if (!voucher) return res.status(404).json({ error: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.' });
-  res.json({ voucher: { code: voucher.code, discountType: voucher.discount_type, discountValue: voucher.discount_value } });
+  const voucher = findVoucherWithMaterial(sellerId, code);
+  const check = validateVoucher(voucher, Array.isArray(items) ? items : []);
+  if (!check.ok) return res.status(404).json({ error: check.error });
+  res.json({ voucher: { code: voucher.code, discountType: voucher.discount_type, discountValue: voucher.discount_value, discount: check.discount } });
 });
 
 app.post('/api/orders', requireAuth, requireRole('customer'), (req, res) => {
@@ -337,20 +389,23 @@ app.post('/api/orders', requireAuth, requireRole('customer'), (req, res) => {
   if (!items.length) return res.status(400).json({ error: 'Giỏ hàng của nhà bán hàng này đang trống.' });
 
   const sellerName = items[0].seller_name;
-  const itemsSnapshot = items.map(i => ({ title: i.title, spec: i.spec, priceText: i.price_text, qty: i.qty }));
+  // cart_items chỉ lưu tên vật liệu (không có material_id liên kết), nên khớp mã vật liệu
+  // theo tên với bảng materials của người bán — best-effort, để trống nếu không khớp được.
+  const codeByTitle = db.prepare('SELECT title, code FROM materials WHERE seller_id = ?').all(sellerId)
+    .reduce((map, m) => { map[m.title] = m.code; return map; }, {});
+  const itemsSnapshot = items.map(i => ({ title: i.title, spec: i.spec, priceText: i.price_text, qty: i.qty, code: codeByTitle[i.title] || '' }));
   const subtotal = itemsSnapshot.reduce((s, i) => s + parsePriceServer(i.priceText) * i.qty, 0);
 
   let discount = 0;
   let appliedCode = '';
+  let appliedVoucherId = null;
   if (voucherCode && String(voucherCode).trim()) {
-    const voucher = db.prepare('SELECT * FROM vouchers WHERE seller_id = ? AND code = ? AND active = 1')
-      .get(sellerId, String(voucherCode).trim().toUpperCase());
-    if (!voucher) return res.status(400).json({ error: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.' });
-    discount = voucher.discount_type === 'percent'
-      ? Math.round(subtotal * voucher.discount_value / 100)
-      : voucher.discount_value;
-    discount = Math.min(discount, subtotal);
+    const voucher = findVoucherWithMaterial(sellerId, voucherCode);
+    const check = validateVoucher(voucher, itemsSnapshot);
+    if (!check.ok) return res.status(400).json({ error: check.error });
+    discount = check.discount;
     appliedCode = voucher.code;
+    appliedVoucherId = voucher.id;
   }
   const total = subtotal - discount;
 
@@ -361,6 +416,9 @@ app.post('/api/orders', requireAuth, requireRole('customer'), (req, res) => {
     `).run(req.session.user.id, sellerId, sellerName, JSON.stringify(itemsSnapshot), subtotal, discount, total, appliedCode,
       String(customerName).trim(), String(customerPhone).trim(), String(customerAddress).trim(), method);
     db.prepare('DELETE FROM cart_items WHERE customer_id = ? AND seller_id = ?').run(req.session.user.id, sellerId);
+    if (appliedVoucherId) {
+      db.prepare('UPDATE vouchers SET used_count = used_count + 1 WHERE id = ?').run(appliedVoucherId);
+    }
     return info.lastInsertRowid;
   });
   const orderId = tx();
@@ -393,16 +451,68 @@ app.put('/api/seller/orders/:id/status', requireAuth, requireRole('seller'), (re
 /* ===================== SELLER VOUCHERS ===================== */
 
 function voucherOut(row) {
-  return { id: row.id, code: row.code, discountType: row.discount_type, discountValue: row.discount_value, active: !!row.active, createdAt: row.created_at };
+  return {
+    id: row.id, code: row.code, discountType: row.discount_type, discountValue: row.discount_value,
+    active: !!row.active, expiresAt: row.expires_at || '', minOrder: row.min_order || 0,
+    maxDiscount: row.max_discount || 0, usageLimit: row.usage_limit || 0, usedCount: row.used_count || 0,
+    materialId: row.material_id || 0, materialTitle: row.material_title || '',
+    createdAt: row.created_at
+  };
+}
+
+// Lấy voucher kèm tên vật liệu áp dụng (nếu mã chỉ áp dụng riêng cho 1 vật liệu, material_id != 0).
+function findVoucherWithMaterial(sellerId, code) {
+  return db.prepare(`
+    SELECT v.*, m.title AS material_title FROM vouchers v
+    LEFT JOIN materials m ON m.id = v.material_id AND v.material_id != 0
+    WHERE v.seller_id = ? AND v.code = ?
+  `).get(sellerId, String(code || '').trim().toUpperCase());
+}
+
+// Kiểm tra voucher còn hợp lệ (hạn dùng, đơn tối thiểu, giới hạn lượt, đúng vật liệu áp dụng)
+// và tính số tiền giảm thực tế (đã áp trần) dựa trên danh sách vật phẩm trong giỏ/đơn.
+// items: [{ title, priceText, qty }]
+function validateVoucher(voucher, items) {
+  if (!voucher || !voucher.active) return { ok: false, error: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.' };
+  if (voucher.expires_at && voucher.expires_at < new Date().toISOString().slice(0, 10)) {
+    return { ok: false, error: 'Mã giảm giá đã hết hạn sử dụng.' };
+  }
+  if (voucher.usage_limit > 0 && voucher.used_count >= voucher.usage_limit) {
+    return { ok: false, error: 'Mã giảm giá đã hết lượt sử dụng.' };
+  }
+  const subtotal = items.reduce((s, i) => s + parsePriceServer(i.priceText) * i.qty, 0);
+  if (voucher.min_order > 0 && subtotal < voucher.min_order) {
+    return { ok: false, error: `Đơn hàng cần tối thiểu ${voucher.min_order.toLocaleString('vi-VN')}đ để dùng mã này.` };
+  }
+  let baseAmount = subtotal;
+  if (voucher.material_id) {
+    const matched = items.filter(i => i.title === voucher.material_title);
+    if (!matched.length) {
+      return { ok: false, error: `Mã này chỉ áp dụng cho vật liệu "${voucher.material_title}".` };
+    }
+    baseAmount = matched.reduce((s, i) => s + parsePriceServer(i.priceText) * i.qty, 0);
+  }
+  let discount = voucher.discount_type === 'percent'
+    ? Math.round(baseAmount * voucher.discount_value / 100)
+    : voucher.discount_value;
+  if (voucher.discount_type === 'percent' && voucher.max_discount > 0) {
+    discount = Math.min(discount, voucher.max_discount);
+  }
+  discount = Math.min(discount, baseAmount);
+  return { ok: true, discount };
 }
 
 app.get('/api/seller/vouchers', requireAuth, requireRole('seller'), (req, res) => {
-  const rows = db.prepare('SELECT * FROM vouchers WHERE seller_id = ? ORDER BY id DESC').all(req.session.user.id);
+  const rows = db.prepare(`
+    SELECT v.*, m.title AS material_title FROM vouchers v
+    LEFT JOIN materials m ON m.id = v.material_id AND v.material_id != 0
+    WHERE v.seller_id = ? ORDER BY v.id DESC
+  `).all(req.session.user.id);
   res.json({ vouchers: rows.map(voucherOut) });
 });
 
 app.post('/api/seller/vouchers', requireAuth, requireRole('seller'), (req, res) => {
-  const { code, discountType, discountValue } = req.body || {};
+  const { code, discountType, discountValue, expiresAt, minOrder, maxDiscount, usageLimit, materialId } = req.body || {};
   if (!code || !['percent', 'fixed'].includes(discountType) || !discountValue) {
     return res.status(400).json({ error: 'Vui lòng điền đầy đủ mã, loại và giá trị giảm giá.' });
   }
@@ -410,12 +520,25 @@ app.post('/api/seller/vouchers', requireAuth, requireRole('seller'), (req, res) 
   if (!value || value <= 0 || (discountType === 'percent' && value > 100)) {
     return res.status(400).json({ error: 'Giá trị giảm giá không hợp lệ.' });
   }
+  let materialIdNum = Number(materialId) || 0;
+  if (materialIdNum) {
+    const material = db.prepare('SELECT id FROM materials WHERE id = ? AND seller_id = ?').get(materialIdNum, req.session.user.id);
+    if (!material) return res.status(400).json({ error: 'Vật liệu áp dụng không hợp lệ.' });
+  }
   const normalizedCode = String(code).trim().toUpperCase();
   const existing = db.prepare('SELECT id FROM vouchers WHERE seller_id = ? AND code = ?').get(req.session.user.id, normalizedCode);
   if (existing) return res.status(409).json({ error: 'Mã giảm giá này đã tồn tại.' });
-  const info = db.prepare('INSERT INTO vouchers (seller_id, code, discount_type, discount_value) VALUES (?, ?, ?, ?)')
-    .run(req.session.user.id, normalizedCode, discountType, value);
-  res.status(201).json({ voucher: voucherOut(db.prepare('SELECT * FROM vouchers WHERE id = ?').get(info.lastInsertRowid)) });
+  const info = db.prepare(`
+    INSERT INTO vouchers (seller_id, code, discount_type, discount_value, expires_at, min_order, max_discount, usage_limit, material_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(req.session.user.id, normalizedCode, discountType, value, String(expiresAt || ''),
+    Number(minOrder) || 0, Number(maxDiscount) || 0, Number(usageLimit) || 0, materialIdNum);
+  const created = db.prepare(`
+    SELECT v.*, m.title AS material_title FROM vouchers v
+    LEFT JOIN materials m ON m.id = v.material_id AND v.material_id != 0
+    WHERE v.id = ?
+  `).get(info.lastInsertRowid);
+  res.status(201).json({ voucher: voucherOut(created) });
 });
 
 app.put('/api/seller/vouchers/:id', requireAuth, requireRole('seller'), (req, res) => {
