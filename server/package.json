@@ -5,13 +5,13 @@
   "description": "Backend API + static server for Material AI (auth, seller dashboard, admin dashboard)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "seed": "node seed.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^17.4.2",
     "express": "^4.19.2",
-    "express-session": "^1.18.0"
+    "express-session": "^1.18.0",
+    "pg": "^8.22.0"
   }
 }
