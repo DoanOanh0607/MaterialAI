@@ -1,0 +1,12 @@
+.git
+.github
+.claude
+.vscode
+.env
+.env.*
+.DS_Store
+server
+supabase
+restart-server.command
+node_modules
+*.log
