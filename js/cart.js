@@ -51,10 +51,15 @@
   function formatVND(n) { return n.toLocaleString('vi-VN') + 'đ'; }
 
   function currentPage() {
-    return window.location.pathname.split('/').pop() || 'materials.html';
+    // login.html now lives in pages/; express the current page relative to
+    // that folder so the post-login redirect resolves correctly either way.
+    var path = window.location.pathname;
+    var file = path.split('/').pop() || 'materials.html';
+    return /\/pages\//.test(path) ? file : '../' + file;
   }
   function redirectToLogin() {
-    window.location.href = 'login.html?next=' + encodeURIComponent(currentPage());
+    var loginUrl = /\/pages\//.test(window.location.pathname) ? 'login.html' : 'pages/login.html';
+    window.location.href = loginUrl + '?next=' + encodeURIComponent(currentPage());
   }
 
   function initialsOf(name) {

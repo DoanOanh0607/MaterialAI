@@ -5,14 +5,14 @@
 <script>(function(){var l=localStorage.getItem('materialai_lang')==='en'?'en':'vi';document.documentElement.lang=l;if(l==='en')document.documentElement.style.visibility='hidden';})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bảng điều khiển nhà bán hàng – Material AI</title>
-<link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
-<link rel="icon" type="image/png" href="images/favicon-192.png" sizes="192x192">
-<link rel="apple-touch-icon" href="images/favicon-180.png">
+<link rel="icon" type="image/png" href="../images/favicon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="../images/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../images/favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="i18n.js"></script>
-<script src="custom-select.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/custom-select.js"></script>
 <script>
   tailwind.config = { theme: { extend: {
     colors: { primary:'#FFFFFF', secondary:{DEFAULT:'#3A3632',50:'#F2F0EE',100:'#E3DFDA',600:'#2C2925',700:'#201E1A'}, accent:{DEFAULT:'#9AA3A4',50:'#F1F2F0',100:'#E3E6E4',600:'#7D8688'}, warm:{DEFAULT:'#8A6844',50:'#F5EEE5',600:'#6E5236'}, cream:'#FBF6F0', ink:'#211E1A', muted:'#6B6259' },
@@ -45,8 +45,8 @@
 
 <!-- SIDEBAR -->
 <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-secondary-100 flex flex-col -translate-x-full md:translate-x-0 transition-transform duration-200">
-  <a href="index.html" class="flex items-center gap-2 px-5 h-[72px] border-b border-secondary-50 shrink-0">
-    <img src="images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto">
+  <a href="../index.html" class="flex items-center gap-2 px-5 h-[72px] border-b border-secondary-50 shrink-0">
+    <img src="../images/LOGO.png" alt="MateriAI" class="h-10 md:h-12 w-auto">
   </a>
   <nav class="flex-1 overflow-y-auto px-3 py-5 space-y-6">
     <div>
@@ -1110,7 +1110,7 @@
   (async function init() {
     try {
       const { user } = await api('/api/auth/me');
-      if (user.role !== 'seller') { window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'index.html'; return; }
+      if (user.role !== 'seller') { window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : '../index.html'; return; }
       await loadProfile();
       await loadMaterials();
       await loadOrders();
